@@ -1,16 +1,22 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import HomePage from "../pages/Home";
 import AboutPage from "../pages/About";
-import Navigation from "../pages/navigation/Navigation";
+import HomePage from "../pages/Home";
+import UseStateHook from "../pages/hookRef/UseStateHook";
+import BaseNavigation from "../pages/navigation/BaseNavigation";
+import HooksNavigation from "../pages/navigation/HooksNavigation";
 
 function Routing() {
     return <BrowserRouter>
-        <Navigation />
+        <BaseNavigation />
         <Routes>
             <Route path="/" element={<Navigate to="/home" />} />
             <Route path="/home" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/hooks" element={<HooksNavigation />} >
+                <Route path="useState" element={<UseStateHook />} />
+            </Route>
             <Route path="*" element={<Navigate to="/home" />} />
+
         </Routes>
     </BrowserRouter>;
 }

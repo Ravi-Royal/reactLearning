@@ -1,15 +1,16 @@
 import { Link } from "react-router-dom";
 import styles from "./Navigation.module.css";
 
-function Navigation() {
+function BaseNavigation() {
     return (
         <nav className={`${styles.navigation} p-0`}>
             <ul className="p-0">
             <Link className={styles.link} to="/home">Home</Link>
             <Link className={styles.link} to="/about">About</Link>
+            <Link className={styles.link} to="/hooks">Hooks</Link>
             </ul>
         </nav>
     );
 }
 
-export default Navigation;
+export default BaseNavigation;
