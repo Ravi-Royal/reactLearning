@@ -29,7 +29,7 @@ const StockResult: React.FC = () => {
       console.log('Parsed Stock Data:', normalized);
       const finalNormalized = formatNormalizedStockData(normalized);
       console.log('Formatted Stock Data:', finalNormalized);
-      setStockData(normalized);
+      setStockData(finalNormalized);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
       setError(errorMessage);
