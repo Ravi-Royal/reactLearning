@@ -8,6 +8,7 @@ function BaseNavigation() {
             <Link className={styles.link} to="/home">Home</Link>
             <Link className={styles.link} to="/about">About</Link>
             <Link className={styles.link} to="/hooks">Hooks</Link>
+            <Link className={styles.link} to="/stock">Stock</Link>
             </ul>
         </nav>
     );

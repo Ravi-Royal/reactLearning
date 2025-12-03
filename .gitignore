@@ -1,3 +1,5 @@
+# Ignore privateDocument folder
+src/privateDocument/
 # Logs
 logs
 *.log
