@@ -4,6 +4,7 @@ import HomePage from "../Home";
 import UseStateHook from "../components/hookRef/UseStateHook";
 import BaseNavigation from "../navigation/BaseNavigation";
 import HooksNavigation from "../navigation/HooksNavigation";
+import UseEffectHook from "../components/hookRef/useEffectHook";
 
 function Routing() {
     return <BrowserRouter>
@@ -15,6 +16,7 @@ function Routing() {
             <Route path="/hooks" element={<Outlet />}>
                 <Route index element={<HooksNavigation />} />
                 <Route path="useState" element={<UseStateHook />} />
+                <Route path="useEffect" element={<UseEffectHook />} />
             </Route>
             <Route path="*" element={<Navigate to="/home" replace/>} />
 
