@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 function UseEffectHook() {
 
     const [count, setCount] = useState(0);
-    const [timerstarted, setTimerStarted] = useState(false);
+    const [timerStarted, setTimerStarted] = useState(false);
 
     useEffect(() => {
         // Side effect logic here
-        if (timerstarted) {
+        if (timerStarted) {
             const intervalRef = setInterval(() => {
                 console.log('set timeout called');
                 setCount((prevCount) => prevCount + 1);
@@ -18,16 +18,14 @@ function UseEffectHook() {
                 clearInterval(intervalRef);
             };
         }
-    }, [timerstarted]);
+    }, [timerStarted]);
 
     return (
         <div>
             <h2 className="mb-4">useEffect Hook Page</h2>
 
-            <button className="p-2 bg-blue-500 text-white rounded hover:bg-blue-700" onClick={() => setTimerStarted((prevValue) => !prevValue)}>Toggle Timer</button>
-            <div>
-                current timer status : {timerstarted ? 'Started' : 'Stopped'}
-            </div>
+            <button className="p-2 bg-blue-500 text-white rounded hover:bg-blue-700" onClick={() => setTimerStarted((prevValue) => !prevValue)}>{timerStarted ? 'Stop Timer' : 'Start Timer'}</button>
+
             <div className="mt-4">
                 count : {count}
             </div>
