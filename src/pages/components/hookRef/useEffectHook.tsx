@@ -6,6 +6,7 @@ function UseEffectHook() {
     const [timerStarted, setTimerStarted] = useState(false);
 
     useEffect(() => {
+        console.log('useEffect called');
         // Side effect logic here
         if (timerStarted) {
             const intervalRef = setInterval(() => {
@@ -29,6 +30,8 @@ function UseEffectHook() {
             <div className="mt-4">
                 count : {count}
             </div>
+
+            <button className="mt-4 p-2 bg-green-500 text-white rounded hover:bg-green-700" onClick={() => setCount(0)}>Reset Count</button>
         </div>
     )
 }
