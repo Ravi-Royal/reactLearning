@@ -1,9 +1,9 @@
 import { BrowserRouter, Navigate, Route, Routes, Outlet } from "react-router-dom";
-import AboutPage from "../pages/About";
-import HomePage from "../pages/Home";
-import UseStateHook from "../pages/components/hookRef/UseStateHook";
-import BaseNavigation from "../pages/navigation/BaseNavigation";
-import HooksNavigation from "../pages/navigation/HooksNavigation";
+import AboutPage from "../About";
+import HomePage from "../Home";
+import UseStateHook from "../components/hookRef/UseStateHook";
+import BaseNavigation from "../navigation/BaseNavigation";
+import HooksNavigation from "../navigation/HooksNavigation";
 
 function Routing() {
     return <BrowserRouter>
