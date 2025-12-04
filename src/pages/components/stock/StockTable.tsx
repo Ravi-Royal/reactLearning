@@ -2,6 +2,8 @@ import React from 'react';
 import { stockColumns, pnlColumnKeys, StockColumnKey } from './StockResult.types';
 import type { StockColumnKeyType, StockData, PriceMap } from './StockResult.types';
 import PriceCell from './PriceCell';
+import NearLowIndicator from './NearLowIndicator';
+import PriceVsValueIndicator from './PriceVsValueIndicator';
 
 interface StockTableProps {
   stockData: StockData[];
@@ -42,6 +44,37 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                       className={`border border-gray-300 px-4 py-2${col.align === 'right' ? ' text-right' : ''} ${color}`}
                     >
                       {value}
+                    </td>
+                  );
+                }
+
+                // New column: Near 52W Low indicator
+                if (col.key === StockColumnKey.NearFiftyTwoWeekLow) {
+                  const priceData = priceMap[row.Symbol];
+                  const price = priceData?.price ?? null;
+                  const low = priceData?.fiftyTwoWeekLow ?? null;
+
+                  return (
+                    <td
+                      key={col.key}
+                      className={`border border-gray-300 px-4 py-2${col.align === 'right' ? ' text-right' : ''}`}
+                      style={{ textAlign: col.align === 'right' ? 'right' : 'left' }}
+                    >
+                      <NearLowIndicator price={price} low={low} />
+                    </td>
+                  );
+                }
+
+                if (col.key === StockColumnKey.PriceVsValue) {
+                  // Compare current price with buy/sell per stock
+                  const priceData = priceMap[row.Symbol];
+                  const price = priceData?.price ?? row['Current Price'] ?? null;
+                  const buyPerStock = row['Buy Value Per Stock'] ?? null;
+                  const sellPerStock = row['Sell Value Per Stock'] ?? null;
+
+                  return (
+                    <td key={col.key} className={`border border-gray-300 px-4 py-2${col.align === 'right' ? ' text-right' : ''}`}>
+                      <PriceVsValueIndicator price={price as number | null} buyPerStock={buyPerStock as number | null} sellPerStock={sellPerStock as number | null} />
                     </td>
                   );
                 }
