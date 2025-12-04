@@ -1,7 +1,7 @@
 
 import * as XLSX from 'xlsx';
-import type { YahooFinanceResponse, StockData } from './StockResult.types';
-import { StockColumnKey } from './StockResult.types';
+import type { YahooFinanceResponse, StockData, StockPriceInfo, PriceFetchResult } from './StockResult.types';
+import { StockColumnKey, YAHOO_FINANCE_CONFIG } from './StockResult.types';
 
 /**
  * Parse an Excel ArrayBuffer and return normalized stock data.
@@ -108,61 +108,85 @@ export function formatNormalizedStockData(data: StockData[]): StockData[] {
 /**
  * Fetch current stock price from Yahoo Finance API.
  * @param symbol Stock symbol (e.g., 'AAPL')
- * @returns Current price or null if not available
+ * @param exchange Exchange to use ('NS' or 'BO')
+ * @returns Stock price information
  */
-export async function yahooFinance(symbol: string, isNse = true): Promise<number | null> {
+export async function yahooFinance(symbol: string, exchange: string = YAHOO_FINANCE_CONFIG.exchanges.nse): Promise<StockPriceInfo> {
     try {
         const apiSymbol = symbol.split('-')[0]; // Use split only for API call
-        const url = `/yahooFinance/v8/finance/chart/${apiSymbol}.${isNse ? 'NS' : 'BO'}`;
+        const url = `${YAHOO_FINANCE_CONFIG.baseUrl}/${apiSymbol}.${exchange}`;
         const res = await fetch(url);
-        if (res.ok) {
-            const data: YahooFinanceResponse = await res.json();
-            const quote = data.chart.result[0]?.meta?.regularMarketPrice;
-            return quote || null;
+
+        if (!res.ok) {
+            console.warn(`Yahoo Finance API error for ${symbol}: ${res.status} ${res.statusText}`);
+            return createEmptyPriceInfo();
         }
-        return null;
+
+        const data: YahooFinanceResponse = await res.json();
+        const meta = data.chart.result[0]?.meta;
+
+        return {
+            price: meta?.regularMarketPrice || null,
+            fiftyTwoWeekHigh: meta?.fiftyTwoWeekHigh || null,
+            fiftyTwoWeekLow: meta?.fiftyTwoWeekLow || null,
+        };
     } catch (error) {
         console.warn('Yahoo Finance API error for', symbol, error);
-        return null;
+        return createEmptyPriceInfo();
     }
 }
 
 /**
- * Fetch current stock prices using Yahoo Finance API (NS first, then BO as fallback).
- * @param symbols Array of stock symbols
- * @returns Map of symbol to price (null if not found)
+ * Create empty price info object
  */
-export async function fetchStockPrices(symbols: string[]): Promise<Record<string, number | null>> {
+function createEmptyPriceInfo(): StockPriceInfo {
+    return {
+        price: null,
+        fiftyTwoWeekHigh: null,
+        fiftyTwoWeekLow: null,
+    };
+}
+
+/**
+ * Fetch current stock prices using Yahoo Finance API with fallback logic.
+ * @param symbols Array of stock symbols
+ * @returns Map of symbol to price data
+ */
+export async function fetchStockPrices(symbols: string[]): Promise<Record<string, StockPriceInfo>> {
     const uniqueSymbols = Array.from(new Set(symbols.filter(Boolean)));
     if (uniqueSymbols.length === 0) return {};
 
-    const priceMap: Record<string, number | null> = {};
+    const priceMap: Record<string, StockPriceInfo> = {};
 
-    // First, try Yahoo Finance NS for all symbols in parallel
-    const nsResults = await fetchPricesFromAPI(uniqueSymbols, (symbol) => yahooFinance(symbol, true));
+    // First, try primary exchange for all symbols in parallel
+    const primaryResults = await fetchPricesFromAPI(uniqueSymbols, (symbol) =>
+        yahooFinance(symbol, YAHOO_FINANCE_CONFIG.exchanges.nse)
+    );
 
-    // Build initial price map from NS results
-    nsResults.forEach(({ symbol, price }) => {
-        priceMap[symbol] = price;
+    // Build initial price map from primary results
+    primaryResults.forEach(({ symbol, ...priceInfo }) => {
+        priceMap[symbol] = priceInfo;
     });
 
-    // Find symbols where NS returned null
-    const nullSymbols = nsResults
+    // Find symbols where primary exchange returned null price
+    const failedSymbols = primaryResults
         .filter(({ price }) => price === null)
         .map(({ symbol }) => symbol);
 
-    console.log('Symbols with null prices from NS:', nullSymbols);
+    console.log('Symbols with null prices from primary exchange:', failedSymbols);
 
-    // If there are null symbols, try BO in parallel
-    if (nullSymbols.length > 0) {
-        const boResults = await fetchPricesFromAPI(nullSymbols, (symbol) => yahooFinance(symbol, false));
+    // If there are failed symbols, try fallback exchange in parallel
+    if (failedSymbols.length > 0) {
+        const fallbackResults = await fetchPricesFromAPI(failedSymbols, (symbol) =>
+            yahooFinance(symbol, YAHOO_FINANCE_CONFIG.exchanges.bse)
+        );
 
-        console.log('BO results:', boResults);
+        console.log('Fallback exchange results:', fallbackResults);
 
-        // Update the price map with BO results
-        boResults.forEach(({ symbol, price }) => {
-            if (price !== null) {
-                priceMap[symbol] = price;
+        // Update the price map with fallback results (only if primary was null)
+        fallbackResults.forEach(({ symbol, ...priceInfo }) => {
+            if (priceMap[symbol].price === null && priceInfo.price !== null) {
+                priceMap[symbol] = priceInfo;
             }
         });
     }
@@ -174,18 +198,24 @@ export async function fetchStockPrices(symbols: string[]): Promise<Record<string
  * Generic helper function to fetch prices from any API in parallel.
  * @param symbols Array of stock symbols
  * @param apiFunction Function that takes a symbol and returns a price promise
- * @returns Array of {symbol, price} objects
+ * @returns Array of price fetch results
  */
 async function fetchPricesFromAPI(
     symbols: string[],
-    apiFunction: (symbol: string) => Promise<number | null>
-): Promise<Array<{ symbol: string; price: number | null }>> {
+    apiFunction: (symbol: string) => Promise<StockPriceInfo>
+): Promise<PriceFetchResult[]> {
     const promises = symbols.map(async (symbol) => {
         try {
-            const price = await apiFunction(symbol);
-            return { symbol, price };
+            const priceInfo = await apiFunction(symbol);
+            return {
+                symbol,
+                ...priceInfo,
+            };
         } catch {
-            return { symbol, price: null };
+            return {
+                symbol,
+                ...createEmptyPriceInfo(),
+            };
         }
     });
 

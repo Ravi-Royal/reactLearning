@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { formatNormalizedStockData, parseStockExcel, fetchStockPrices } from './StockResult.helper';
-import { stockColumns, pnlColumnKeys } from './StockResult.types';
+import { stockColumns, pnlColumnKeys, StockColumnKey } from './StockResult.types';
 import type { StockColumnKeyType, StockData, PriceMap } from './StockResult.types';
 
 const StockResult: React.FC = () => {
@@ -60,6 +60,24 @@ const StockResult: React.FC = () => {
     loadExcelData();
   };
 
+  /**
+   * Render a price cell with loading and null value handling
+   */
+  const renderPriceCell = (symbol: string, priceKey: keyof PriceMap[string], align?: 'left' | 'right') => {
+    const priceData = priceMap[symbol];
+    const value = priceData?.[priceKey];
+
+    return (
+      <td
+        className={`border border-gray-300 px-4 py-2${align === 'right' ? ' text-right' : ''}`}
+      >
+        {priceData !== undefined
+          ? value ?? <span className="text-gray-400">N/A</span>
+          : <span className="text-gray-400">Loading...</span>}
+      </td>
+    );
+  };
+
   if (loading) {
     return <div className="p-4">Loading Excel data...</div>;
   }
@@ -99,7 +117,6 @@ const StockResult: React.FC = () => {
           <table className="min-w-full border-collapse border border-gray-300">
             <thead className="bg-gray-100">
               <tr>
-                {/* Add a new column for current price */}
                 {stockColumns.map((col: { key: StockColumnKeyType; label: string; align?: 'left' | 'right' }) => (
                   <th
                     key={col.key}
@@ -109,7 +126,6 @@ const StockResult: React.FC = () => {
                     {col.label}
                   </th>
                 ))}
-                <th className="border border-gray-300 px-4 py-2 sticky top-0 bg-gray-100 z-20" style={{ top: 0 }}>Current Price</th>
               </tr>
             </thead>
             <tbody>
@@ -129,6 +145,20 @@ const StockResult: React.FC = () => {
                         </td>
                       );
                     }
+
+                    // Special handling for price-related columns using the helper function
+                    if (col.key === StockColumnKey.CurrentPrice) {
+                      return renderPriceCell(row.Symbol, 'price', col.align);
+                    }
+
+                    if (col.key === StockColumnKey.FiftyTwoWeekHigh) {
+                      return renderPriceCell(row.Symbol, 'fiftyTwoWeekHigh', col.align);
+                    }
+
+                    if (col.key === StockColumnKey.FiftyTwoWeekLow) {
+                      return renderPriceCell(row.Symbol, 'fiftyTwoWeekLow', col.align);
+                    }
+
                     return (
                       <td
                         key={col.key}
@@ -138,12 +168,6 @@ const StockResult: React.FC = () => {
                       </td>
                     );
                   })}
-                  {/* Current Price cell */}
-                  <td className="border border-gray-300 px-4 py-2 text-right">
-                    {priceMap[row.Symbol] !== undefined
-                      ? priceMap[row.Symbol] ?? <span className="text-gray-400">N/A</span>
-                      : <span className="text-gray-400">Loading...</span>}
-                  </td>
                 </tr>
               ))}
             </tbody>

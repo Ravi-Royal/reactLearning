@@ -85,6 +85,9 @@ export const StockColumnKey = {
     RealizedPL: 'Realized P&L',
     RealizedPLPct: 'Realized P&L Pct.',
     PreviousClosingPrice: 'Previous Closing Price',
+    FiftyTwoWeekHigh: '52W High',
+    FiftyTwoWeekLow: '52W Low',
+    CurrentPrice: 'Current Price',
     OpenQuantity: 'Open Quantity',
     OpenQuantityType: 'Open Quantity Type',
     OpenValue: 'Open Value',
@@ -123,6 +126,9 @@ export const stockColumns: Array<{ key: StockColumnKeyType; label: string; align
     { key: StockColumnKey.RealizedPL, label: 'Realized P&L', align: 'right' },
     { key: StockColumnKey.RealizedPLPct, label: 'Realized P&L %', align: 'right' },
     { key: StockColumnKey.PreviousClosingPrice, label: 'Previous Close', align: 'right' },
+    { key: StockColumnKey.FiftyTwoWeekHigh, label: '52W High', align: 'right' },
+    { key: StockColumnKey.FiftyTwoWeekLow, label: '52W Low', align: 'right' },
+    { key: StockColumnKey.CurrentPrice, label: 'Current Price', align: 'right' },
     { key: StockColumnKey.OpenQuantity, label: 'Open Quantity', align: 'right' },
     { key: StockColumnKey.OpenQuantityType, label: 'Open Qty Type' },
     { key: StockColumnKey.OpenValue, label: 'Open Value', align: 'right' },
@@ -152,9 +158,54 @@ export interface StockData {
     [StockColumnKey.CustomUnrealisedStockValue]?: number;
     [StockColumnKey.BuyValuePerStock]?: number;
     [StockColumnKey.SellValuePerStock]?: number;
+    [StockColumnKey.FiftyTwoWeekHigh]?: number;
+    [StockColumnKey.FiftyTwoWeekLow]?: number;
+    [StockColumnKey.CurrentPrice]?: number;
 }
 
 /**
- * Type for price mapping from symbol to price
+ * Type for price mapping from symbol to price data
  */
-export type PriceMap = Record<string, number | null>;
+export type PriceMap = Record<string, {
+    price: number | null;
+    fiftyTwoWeekHigh: number | null;
+    fiftyTwoWeekLow: number | null;
+}>;
+
+/**
+ * Common interface for stock price information
+ */
+export interface StockPriceInfo {
+    price: number | null;
+    fiftyTwoWeekHigh: number | null;
+    fiftyTwoWeekLow: number | null;
+}
+
+/**
+ * Result of fetching prices for multiple symbols
+ */
+export interface PriceFetchResult extends StockPriceInfo {
+    symbol: string;
+}
+
+/**
+ * Configuration for stock price API calls
+ */
+export interface StockApiConfig {
+    baseUrl: string;
+    exchanges: {
+        nse: string;
+        bse: string;
+    };
+}
+
+/**
+ * Yahoo Finance API configuration
+ */
+export const YAHOO_FINANCE_CONFIG: StockApiConfig = {
+    baseUrl: '/yahooFinance/v8/finance/chart',
+    exchanges: {
+        nse: 'NS',    // National Stock Exchange
+        bse: 'BO',    // Bombay Stock Exchange
+    },
+} as const;
