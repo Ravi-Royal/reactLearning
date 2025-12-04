@@ -1,15 +1,1 @@
-.navigation {
-  background-color: #87eb8c;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-.link {
-  margin-right: 15px;
-  text-decoration: none;
-  color: #007bff;
-}
-
-.link:hover {
-  text-decoration: underline;
-}
+/* Navigation styling is now handled with Tailwind classes in BaseNavigation.tsx */

@@ -1,14 +1,65 @@
-import { Link } from "react-router-dom";
-import styles from "./Navigation.module.css";
+import { useRef, useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 function BaseNavigation() {
+    const [open, setOpen] = useState(false);
+    const dropdownRef = useRef<HTMLLIElement | null>(null);
+
+    useEffect(() => {
+        function onDocumentClick(e: MouseEvent) {
+            if (!dropdownRef.current) return;
+            if (!dropdownRef.current.contains(e.target as Node)) {
+                setOpen(false);
+            }
+        }
+
+        function onKeyDown(e: KeyboardEvent) {
+            if (e.key === 'Escape') setOpen(false);
+        }
+
+        document.addEventListener('click', onDocumentClick);
+        document.addEventListener('keydown', onKeyDown);
+        return () => {
+            document.removeEventListener('click', onDocumentClick);
+            document.removeEventListener('keydown', onKeyDown);
+        };
+    }, []);
+
     return (
-        <nav className={`${styles.navigation} p-0`}>
-            <ul className="p-0">
-            <Link className={styles.link} to="/home">Home</Link>
-            <Link className={styles.link} to="/about">About</Link>
-            <Link className={styles.link} to="/hooks">Hooks</Link>
-            <Link className={styles.link} to="/stock">Stock</Link>
+        <nav className="bg-green-200 p-2 rounded">
+            <ul className="flex gap-3 items-center">
+                <li>
+                    <Link className="text-blue-600 hover:underline px-2 py-1 rounded" to="/home">Home</Link>
+                </li>
+                <li>
+                    <Link className="text-blue-600 hover:underline px-2 py-1 rounded" to="/about">About</Link>
+                </li>
+                <li>
+                    <Link className="text-blue-600 hover:underline px-2 py-1 rounded" to="/hooks">Hooks</Link>
+                </li>
+
+                <li ref={dropdownRef} className="relative">
+                    <button
+                        onClick={() => setOpen((s) => !s)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'ArrowDown') setOpen(true);
+                        }}
+                        aria-haspopup="menu"
+                        aria-expanded={open}
+                        className="text-blue-600 hover:underline px-2 py-1 rounded inline-flex items-center"
+                    >
+                        Stock <span className="ml-1">▾</span>
+                    </button>
+
+                    <div
+                        className={`absolute left-0 mt-1 bg-white border border-gray-200 shadow-md min-w-[160px] z-50 ${open ? 'block' : 'hidden'}`}
+                        role="menu"
+                        aria-hidden={!open}
+                    >
+                        <Link className="block px-3 py-2 text-gray-700 hover:bg-gray-100" to="/stock" onClick={() => setOpen(false)}>Stock P&L Data</Link>
+                        <Link className="block px-3 py-2 text-gray-700 hover:bg-gray-100" to="/stock/favs" onClick={() => setOpen(false)}>My Fav List Stock</Link>
+                    </div>
+                </li>
             </ul>
         </nav>
     );

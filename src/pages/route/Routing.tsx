@@ -6,6 +6,7 @@ import BaseNavigation from "../navigation/BaseNavigation";
 import HooksNavigation from "../navigation/HooksNavigation";
 import UseEffectHook from "../components/hookRef/useEffectHook";
 import StockResult from "../components/stock/StockResult";
+import MyFavList from "../components/stock/MyFavList";
 
 function Routing() {
     return <BrowserRouter>
@@ -20,6 +21,7 @@ function Routing() {
                 <Route path="useEffect" element={<UseEffectHook />} />
             </Route>
             <Route path="/stock" element={<StockResult />} />
+            <Route path="/stock/favs" element={<MyFavList />} />
             <Route path="*" element={<Navigate to="/home" replace/>} />
 
         </Routes>
