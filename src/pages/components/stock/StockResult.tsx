@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { formatNormalizedStockData, parseStockExcel, stockColumns, fetchStockPrices } from './StockResult.helper';
-import { pnlColumnKeys } from './StockResult.helper';
-import type { StockColumnKeyType } from './StockResult.helper';
-import type { StockData, } from './StockResult.helper';
-
-type PriceMap = Record<string, number | null>;
+import { formatNormalizedStockData, parseStockExcel, fetchStockPrices } from './StockResult.helper';
+import { stockColumns, pnlColumnKeys } from './StockResult.types';
+import type { StockColumnKeyType, StockData, PriceMap } from './StockResult.types';
 
 const StockResult: React.FC = () => {
   const [stockData, setStockData] = useState<StockData[]>([]);
