@@ -117,6 +117,10 @@ export const pnlColumnKeys: StockColumnKeyType[] = [
 export const stockColumns: Array<{ key: StockColumnKeyType; label: string; align?: 'left' | 'right' }> = [
     { key: StockColumnKey.Symbol, label: 'Symbol' },
     { key: StockColumnKey.CustomRealisedStockValue, label: 'Custom Realised Stock Value', align: 'right' },
+    { key: StockColumnKey.FiftyTwoWeekHigh, label: '52W High', align: 'right' },
+    { key: StockColumnKey.FiftyTwoWeekLow, label: '52W Low', align: 'right' },
+    { key: StockColumnKey.CurrentPrice, label: 'Current Price', align: 'right' },
+    { key: StockColumnKey.CustomUnrealisedStockValue, label: 'Custom Unrealised Stock Value', align: 'right' },
     // { key: StockColumnKey.ISIN, label: 'ISIN' },
     { key: StockColumnKey.BuyValuePerStock, label: 'Buy Value Per Stock', align: 'right' },
     { key: StockColumnKey.SellValuePerStock, label: 'Sell Value Per Stock', align: 'right' },
@@ -126,15 +130,11 @@ export const stockColumns: Array<{ key: StockColumnKeyType; label: string; align
     { key: StockColumnKey.RealizedPL, label: 'Realized P&L', align: 'right' },
     { key: StockColumnKey.RealizedPLPct, label: 'Realized P&L %', align: 'right' },
     { key: StockColumnKey.PreviousClosingPrice, label: 'Previous Close', align: 'right' },
-    { key: StockColumnKey.FiftyTwoWeekHigh, label: '52W High', align: 'right' },
-    { key: StockColumnKey.FiftyTwoWeekLow, label: '52W Low', align: 'right' },
-    { key: StockColumnKey.CurrentPrice, label: 'Current Price', align: 'right' },
     { key: StockColumnKey.OpenQuantity, label: 'Open Quantity', align: 'right' },
     { key: StockColumnKey.OpenQuantityType, label: 'Open Qty Type' },
     { key: StockColumnKey.OpenValue, label: 'Open Value', align: 'right' },
     { key: StockColumnKey.UnrealizedPL, label: 'Unrealized P&L', align: 'right' },
     { key: StockColumnKey.UnrealizedPLPct, label: 'Unrealized P&L %', align: 'right' },
-    { key: StockColumnKey.CustomUnrealisedStockValue, label: 'Custom Unrealised Stock Value', align: 'right' },
 ];
 
 /**
