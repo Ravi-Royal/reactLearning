@@ -4,6 +4,7 @@ import HomePage from "../Home";
 import UseStateHook from "../components/hookRef/UseStateHook";
 import BaseNavigation from "../navigation/BaseNavigation";
 import HooksNavigation from "../navigation/HooksNavigation";
+import StockNavigation from "../navigation/StockNavigation";
 import UseEffectHook from "../components/hookRef/useEffectHook";
 import StockResult from "../components/stock/StockResult";
 import MyFavList from "../components/stock/MyFavList";
@@ -22,8 +23,11 @@ function Routing() {
                 <Route path="useEffect" element={<UseEffectHook />} />
                 <Route path="useRef" element={<UseRefHook />} />
             </Route>
-            <Route path="/stock" element={<StockResult />} />
-            <Route path="/stock/favs" element={<MyFavList />} />
+            <Route path="/stock" element={<Outlet />}>
+                <Route index element={<StockNavigation />} />
+                <Route path="analysis" element={<StockResult />} />
+                <Route path="favorites" element={<MyFavList />} />
+            </Route>
             <Route path="*" element={<Navigate to="/home" replace/>} />
 
         </Routes>
