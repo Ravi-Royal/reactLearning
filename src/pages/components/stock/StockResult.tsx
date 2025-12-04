@@ -1,17 +1,52 @@
 import React, { useState, useEffect } from 'react';
-import { formatNormalizedStockData, parseStockExcel, stockColumns } from './StockResult.helper';
+import { formatNormalizedStockData, parseStockExcel, stockColumns, yahooFinance } from './StockResult.helper';
 import { pnlColumnKeys } from './StockResult.helper';
 import type { StockColumnKeyType } from './StockResult.helper';
-import type { StockData,  } from './StockResult.helper';
+import type { StockData, } from './StockResult.helper';
+
+type PriceMap = Record<string, number | null>;
 
 const StockResult: React.FC = () => {
   const [stockData, setStockData] = useState<StockData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [priceMap, setPriceMap] = useState<PriceMap>({});
 
   useEffect(() => {
     loadExcelData();
   }, []);
+
+  useEffect(() => {
+    if (stockData.length > 0) {
+      fetchCurrentPrices(stockData.map(row => row.Symbol));
+    }
+  }, [stockData]);
+
+  // Fetch current prices using Alpha Vantage free API (demo function, limited data)
+  const fetchCurrentPrices = async (symbols: string[]) => {
+    try {
+      const uniqueSymbols = Array.from(new Set(symbols.filter(Boolean)));
+      if (uniqueSymbols.length === 0) return;
+
+      const map: PriceMap = {};
+
+      for (const symbol of uniqueSymbols) { 
+        try {
+          const price = await yahooFinance(symbol);
+          map[symbol] = price;
+          // Add delay to avoid rate limiting
+          // await new Promise(resolve => setTimeout(resolve, 1000));
+        } catch {
+          map[symbol] = null;
+        }
+      }
+
+      setPriceMap(map);
+    } catch (err) {
+      console.warn('Failed to fetch stock prices:', err);
+      // Don't set error state, just leave prices empty
+    }
+  };
 
   const loadExcelData = async () => {
     try {
@@ -82,6 +117,7 @@ const StockResult: React.FC = () => {
           <table className="min-w-full border-collapse border border-gray-300">
             <thead className="bg-gray-100">
               <tr>
+                {/* Add a new column for current price */}
                 {stockColumns.map((col: { key: StockColumnKeyType; label: string; align?: 'left' | 'right' }) => (
                   <th
                     key={col.key}
@@ -91,6 +127,7 @@ const StockResult: React.FC = () => {
                     {col.label}
                   </th>
                 ))}
+                <th className="border border-gray-300 px-4 py-2 sticky top-0 bg-gray-100 z-20" style={{ top: 0 }}>Current Price</th>
               </tr>
             </thead>
             <tbody>
@@ -119,6 +156,12 @@ const StockResult: React.FC = () => {
                       </td>
                     );
                   })}
+                  {/* Current Price cell */}
+                  <td className="border border-gray-300 px-4 py-2 text-right">
+                    {priceMap[row.Symbol] !== undefined
+                      ? priceMap[row.Symbol] ?? <span className="text-gray-400">N/A</span>
+                      : <span className="text-gray-400">Loading...</span>}
+                  </td>
                 </tr>
               ))}
             </tbody>

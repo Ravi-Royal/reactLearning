@@ -183,3 +183,25 @@ export function formatNormalizedStockData(data: StockData[]): StockData[] {
         };
     });
 }
+
+/**
+ * Fetch current stock price from Yahoo Finance API.
+ * @param symbol Stock symbol (e.g., 'AAPL')
+ * @returns Current price or null if not available
+ */
+export async function yahooFinance(symbol: string): Promise<number | null> {
+    try {
+        const url = `/yahooFinance/v8/finance/chart/${symbol}.NS`;
+        const res = await fetch(url);
+        if (res.ok) {
+            const data = await res.json();
+            console.log('Yahoo Finance API data for', symbol, data);
+            const quote = data.chart.result[0].meta.regularMarketPrice;
+            return quote || null;
+        }
+        return null;
+    } catch (error) {
+        console.warn('Yahoo Finance API error for', symbol, error);
+        return null;
+    }
+}

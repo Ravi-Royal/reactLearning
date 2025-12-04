@@ -12,4 +12,14 @@ export default defineConfig({
       },
     }),
   ],
+  server: {
+    proxy: {
+      // Any request starting with /yahooFinance will be forwarded to Yahoo
+      '/yahooFinance': {
+        target: 'https://query1.finance.yahoo.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/yahooFinance/, ''),
+      },
+    },
+  },
 })
