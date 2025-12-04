@@ -12,6 +12,9 @@ function HooksNavigation() {
                     <li>
                         <Link className="text-blue-500 hover:text-blue-700" to="useEffect">useEffect</Link>
                     </li>
+                    <li>
+                        <Link className="text-blue-500 hover:text-blue-700" to="useRef">useRef</Link>
+                    </li>
                 </ol>
             </nav>
         </div>
