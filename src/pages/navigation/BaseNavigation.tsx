@@ -1,29 +1,8 @@
-import { useRef, useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 function BaseNavigation() {
     const [open, setOpen] = useState(false);
-    const dropdownRef = useRef<HTMLLIElement | null>(null);
-
-    useEffect(() => {
-        function onDocumentClick(e: MouseEvent) {
-            if (!dropdownRef.current) return;
-            if (!dropdownRef.current.contains(e.target as Node)) {
-                setOpen(false);
-            }
-        }
-
-        function onKeyDown(e: KeyboardEvent) {
-            if (e.key === 'Escape') setOpen(false);
-        }
-
-        document.addEventListener('click', onDocumentClick);
-        document.addEventListener('keydown', onKeyDown);
-        return () => {
-            document.removeEventListener('click', onDocumentClick);
-            document.removeEventListener('keydown', onKeyDown);
-        };
-    }, []);
 
     return (
         <nav className="bg-green-200 p-2 rounded">
@@ -38,7 +17,11 @@ function BaseNavigation() {
                     <Link className="text-blue-600 hover:underline px-2 py-1 rounded" to="/hooks">Hooks</Link>
                 </li>
 
-                <li ref={dropdownRef} className="relative">
+                <li
+                    className="relative"
+                    onMouseEnter={() => setOpen(true)}
+                    onMouseLeave={() => setOpen(false)}
+                >
                     <button
                         onClick={() => setOpen((s) => !s)}
                         onKeyDown={(e) => {
@@ -52,7 +35,7 @@ function BaseNavigation() {
                     </button>
 
                     <div
-                        className={`absolute left-0 mt-1 bg-white border border-gray-200 shadow-md min-w-[160px] z-50 ${open ? 'block' : 'hidden'}`}
+                        className={`absolute left-0 bg-white border border-gray-200 shadow-md min-w-[160px] z-50 ${open ? 'block' : 'hidden'}`}
                         role="menu"
                         aria-hidden={!open}
                     >
