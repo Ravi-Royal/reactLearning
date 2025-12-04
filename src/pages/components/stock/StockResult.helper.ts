@@ -189,13 +189,13 @@ export function formatNormalizedStockData(data: StockData[]): StockData[] {
  * @param symbol Stock symbol (e.g., 'AAPL')
  * @returns Current price or null if not available
  */
-export async function yahooFinance(symbol: string): Promise<number | null> {
+export async function yahooFinance(symbol: string, isNse = true): Promise<number | null> {
     try {
-        const url = `/yahooFinance/v8/finance/chart/${symbol}.NS`;
+        const apiSymbol = symbol.split('-')[0]; // Use split only for API call
+        const url = `/yahooFinance/v8/finance/chart/${apiSymbol}.${isNse ? 'NS' : 'BO'}`;
         const res = await fetch(url);
         if (res.ok) {
             const data = await res.json();
-            console.log('Yahoo Finance API data for', symbol, data);
             const quote = data.chart.result[0].meta.regularMarketPrice;
             return quote || null;
         }
@@ -204,4 +204,69 @@ export async function yahooFinance(symbol: string): Promise<number | null> {
         console.warn('Yahoo Finance API error for', symbol, error);
         return null;
     }
+}
+
+/**
+ * Fetch current stock prices using Yahoo Finance API (NS first, then BO as fallback).
+ * @param symbols Array of stock symbols
+ * @returns Map of symbol to price (null if not found)
+ */
+export async function fetchStockPrices(symbols: string[]): Promise<Record<string, number | null>> {
+    const uniqueSymbols = Array.from(new Set(symbols.filter(Boolean)));
+    if (uniqueSymbols.length === 0) return {};
+
+    const priceMap: Record<string, number | null> = {};
+
+    // First, try Yahoo Finance NS for all symbols in parallel
+    const nsResults = await fetchPricesFromAPI(uniqueSymbols, (symbol) => yahooFinance(symbol, true));
+
+    // Build initial price map from NS results
+    nsResults.forEach(({ symbol, price }) => {
+        priceMap[symbol] = price;
+    });
+
+    // Find symbols where NS returned null
+    const nullSymbols = nsResults
+        .filter(({ price }) => price === null)
+        .map(({ symbol }) => symbol);
+
+    console.log('Symbols with null prices from NS:', nullSymbols);
+
+    // If there are null symbols, try BO in parallel
+    if (nullSymbols.length > 0) {
+        const boResults = await fetchPricesFromAPI(nullSymbols, (symbol) => yahooFinance(symbol, false));
+
+        console.log('BO results:', boResults);
+
+        // Update the price map with BO results
+        boResults.forEach(({ symbol, price }) => {
+            if (price !== null) {
+                priceMap[symbol] = price;
+            }
+        });
+    }
+
+    return priceMap;
+}
+
+/**
+ * Generic helper function to fetch prices from any API in parallel.
+ * @param symbols Array of stock symbols
+ * @param apiFunction Function that takes a symbol and returns a price promise
+ * @returns Array of {symbol, price} objects
+ */
+async function fetchPricesFromAPI(
+    symbols: string[],
+    apiFunction: (symbol: string) => Promise<number | null>
+): Promise<Array<{ symbol: string; price: number | null }>> {
+    const promises = symbols.map(async (symbol) => {
+        try {
+            const price = await apiFunction(symbol);
+            return { symbol, price };
+        } catch {
+            return { symbol, price: null };
+        }
+    });
+
+    return Promise.all(promises);
 }

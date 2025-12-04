@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { formatNormalizedStockData, parseStockExcel, stockColumns, yahooFinance } from './StockResult.helper';
+import { formatNormalizedStockData, parseStockExcel, stockColumns, fetchStockPrices } from './StockResult.helper';
 import { pnlColumnKeys } from './StockResult.helper';
 import type { StockColumnKeyType } from './StockResult.helper';
 import type { StockData, } from './StockResult.helper';
@@ -22,26 +22,11 @@ const StockResult: React.FC = () => {
     }
   }, [stockData]);
 
-  // Fetch current prices using Alpha Vantage free API (demo function, limited data)
+  // Fetch current prices using the reusable helper function
   const fetchCurrentPrices = async (symbols: string[]) => {
     try {
-      const uniqueSymbols = Array.from(new Set(symbols.filter(Boolean)));
-      if (uniqueSymbols.length === 0) return;
-
-      const map: PriceMap = {};
-
-      for (const symbol of uniqueSymbols) { 
-        try {
-          const price = await yahooFinance(symbol);
-          map[symbol] = price;
-          // Add delay to avoid rate limiting
-          // await new Promise(resolve => setTimeout(resolve, 1000));
-        } catch {
-          map[symbol] = null;
-        }
-      }
-
-      setPriceMap(map);
+      const priceMap = await fetchStockPrices(symbols);
+      setPriceMap(priceMap);
     } catch (err) {
       console.warn('Failed to fetch stock prices:', err);
       // Don't set error state, just leave prices empty
