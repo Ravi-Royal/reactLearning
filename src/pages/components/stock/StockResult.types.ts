@@ -158,9 +158,9 @@ export interface StockData {
     [StockColumnKey.CustomUnrealisedStockValue]?: number;
     [StockColumnKey.BuyValuePerStock]?: number;
     [StockColumnKey.SellValuePerStock]?: number;
-    [StockColumnKey.FiftyTwoWeekHigh]?: number;
-    [StockColumnKey.FiftyTwoWeekLow]?: number;
-    [StockColumnKey.CurrentPrice]?: number;
+    [StockColumnKey.FiftyTwoWeekHigh]?: number | null;
+    [StockColumnKey.FiftyTwoWeekLow]?: number | null;
+    [StockColumnKey.CurrentPrice]?: number | null;
 }
 
 /**
@@ -209,3 +209,16 @@ export const YAHOO_FINANCE_CONFIG: StockApiConfig = {
         bse: 'BO',    // Bombay Stock Exchange
     },
 } as const;
+
+/**
+ * Stored stock data with metadata and timestamps
+ */
+export interface StoredStockData {
+    metadata: {
+        lastUpdated: string;
+        lastPriceUpdate: string | null;
+        sourceFile: string;
+        version: string;
+    };
+    stocks: StockData[];
+}

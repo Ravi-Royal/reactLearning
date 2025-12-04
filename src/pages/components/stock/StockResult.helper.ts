@@ -1,6 +1,6 @@
 
 import * as XLSX from 'xlsx';
-import type { YahooFinanceResponse, StockData, StockPriceInfo, PriceFetchResult } from './StockResult.types';
+import type { YahooFinanceResponse, StockData, StockPriceInfo, PriceFetchResult, StoredStockData } from './StockResult.types';
 import { StockColumnKey, YAHOO_FINANCE_CONFIG } from './StockResult.types';
 
 /**
@@ -220,4 +220,125 @@ async function fetchPricesFromAPI(
     });
 
     return Promise.all(promises);
+}
+
+/**
+ * Load stock data from JSON file if it exists, otherwise return null
+ * @returns Stored stock data or null if file doesn't exist
+ */
+export async function loadStockDataFromJSON(): Promise<StoredStockData | null> {
+    try {
+        const response = await fetch('/src/privateDocument/stockData.json');
+        if (!response.ok) {
+            console.log('No stored data file found (stockData.json)');
+            return null;
+        }
+        const data = await response.json() as StoredStockData;
+        console.log(`Loaded ${data.stocks.length} stocks from stockData.json`);
+        return data;
+    } catch (error) {
+        console.warn('Error loading JSON data from file:', error);
+        return null;
+    }
+}
+
+/**
+ * Save stock data to JSON file with prices fetched from Yahoo API
+ * @param data Stock data to save
+ * @param sourceFile Original Excel file name
+ * @param fetchPrices Whether to fetch prices from Yahoo API (default: true)
+ * @returns Promise that resolves when data is saved
+ */
+export async function saveStockDataToJSON(data: StockData[], sourceFile: string, fetchPrices: boolean = true): Promise<void> {
+    let stocksWithPrices = data;
+
+    // Fetch prices from Yahoo API if requested
+    if (fetchPrices) {
+        console.log('Fetching prices from Yahoo Finance API...');
+        const symbols = data.map(stock => stock.Symbol);
+        const priceMap = await fetchStockPrices(symbols);
+
+        // Update stock data with fetched prices
+        stocksWithPrices = data.map(stock => ({
+            ...stock,
+            [StockColumnKey.CurrentPrice]: priceMap[stock.Symbol]?.price ?? null,
+            [StockColumnKey.FiftyTwoWeekHigh]: priceMap[stock.Symbol]?.fiftyTwoWeekHigh ?? null,
+            [StockColumnKey.FiftyTwoWeekLow]: priceMap[stock.Symbol]?.fiftyTwoWeekLow ?? null,
+        }));
+
+        console.log('Prices fetched and added to stock data');
+    }
+
+    const storedData: StoredStockData = {
+        metadata: {
+            lastUpdated: new Date().toISOString(),
+            lastPriceUpdate: fetchPrices ? new Date().toISOString() : null,
+            sourceFile,
+            version: '1.0',
+        },
+        stocks: stocksWithPrices,
+    };
+
+    // Save to JSON file
+    const jsonContent = JSON.stringify(storedData, null, 2);
+    const blob = new Blob([jsonContent], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    // Create download link to save the file
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'stockData.json';
+    link.click();
+    
+    // Clean up
+    URL.revokeObjectURL(url);
+    
+    console.log(`Stock data prepared for download: ${stocksWithPrices.length} records`);
+    console.log('Please save the downloaded stockData.json file to: src/privateDocument/stockData.json');
+}
+
+/**
+ * Update stock prices in the stored JSON data
+ * @param storedData Current stored data
+ * @returns Updated stored data with fresh prices
+ */
+export async function updateStockPricesInJSON(storedData: StoredStockData): Promise<StoredStockData> {
+    const symbols = storedData.stocks.map(stock => stock.Symbol);
+    const priceMap = await fetchStockPrices(symbols);
+
+    // Update the stock data with new prices
+    const updatedStocks = storedData.stocks.map(stock => ({
+        ...stock,
+        [StockColumnKey.CurrentPrice]: priceMap[stock.Symbol]?.price ?? stock[StockColumnKey.CurrentPrice] ?? null,
+        [StockColumnKey.FiftyTwoWeekHigh]: priceMap[stock.Symbol]?.fiftyTwoWeekHigh ?? stock[StockColumnKey.FiftyTwoWeekHigh] ?? null,
+        [StockColumnKey.FiftyTwoWeekLow]: priceMap[stock.Symbol]?.fiftyTwoWeekLow ?? stock[StockColumnKey.FiftyTwoWeekLow] ?? null,
+    }));
+
+    const updatedData: StoredStockData = {
+        ...storedData,
+        metadata: {
+            ...storedData.metadata,
+            lastPriceUpdate: new Date().toISOString(),
+        },
+        stocks: updatedStocks,
+    };
+
+    // Save updated data to file
+    const jsonContent = JSON.stringify(updatedData, null, 2);
+    const blob = new Blob([jsonContent], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    // Create download link to save the file
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'stockData.json';
+    link.click();
+    
+    // Clean up
+    URL.revokeObjectURL(url);
+    
+    console.log('Updated stock data prepared for download');
+    console.log('Please save the downloaded stockData.json file to: src/privateDocument/stockData.json');
+
+    return updatedData;
 }
