@@ -1,15 +1,15 @@
-import { BrowserRouter, Navigate, Route, Routes, Outlet } from "react-router-dom";
+import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router-dom";
 import AboutPage from "../About";
 import HomePage from "../Home";
+import UseEffectHook from "../components/hookRef/UseEffectHook";
+import UseReducerHook from "../components/hookRef/UseReducerHook";
+import UseRefHook from "../components/hookRef/UseRefHook";
 import UseStateHook from "../components/hookRef/UseStateHook";
+import MyFavList from "../components/stock/MyFavList";
+import StockResult from "../components/stock/StockResult";
 import BaseNavigation from "../navigation/BaseNavigation";
 import HooksNavigation from "../navigation/HooksNavigation";
 import StockNavigation from "../navigation/StockNavigation";
-import UseEffectHook from "../components/hookRef/useEffectHook";
-import StockResult from "../components/stock/StockResult";
-import MyFavList from "../components/stock/MyFavList";
-import UseRefHook from "../components/hookRef/useRefHook";
-import UseReducerHook from "../components/hookRef/UseReducerHook";
 
 function Routing() {
     return <BrowserRouter>
@@ -30,7 +30,7 @@ function Routing() {
                 <Route path="analysis" element={<StockResult />} />
                 <Route path="favorites" element={<MyFavList />} />
             </Route>
-            <Route path="*" element={<Navigate to="/home" replace/>} />
+            <Route path="*" element={<Navigate to="/home" replace />} />
 
         </Routes>
     </BrowserRouter>;
