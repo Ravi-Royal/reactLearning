@@ -9,6 +9,7 @@ import UseEffectHook from "../components/hookRef/useEffectHook";
 import StockResult from "../components/stock/StockResult";
 import MyFavList from "../components/stock/MyFavList";
 import UseRefHook from "../components/hookRef/useRefHook";
+import UseReducerHook from "../components/hookRef/UseReducerHook";
 
 function Routing() {
     return <BrowserRouter>
@@ -22,6 +23,7 @@ function Routing() {
                 <Route path="useState" element={<UseStateHook />} />
                 <Route path="useEffect" element={<UseEffectHook />} />
                 <Route path="useRef" element={<UseRefHook />} />
+                <Route path="useReducer" element={<UseReducerHook />} />
             </Route>
             <Route path="/stock" element={<Outlet />}>
                 <Route index element={<StockNavigation />} />
