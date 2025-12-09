@@ -1,7 +1,8 @@
 
 import * as XLSX from 'xlsx';
-import type { YahooFinanceResponse, StockData, StockPriceInfo, PriceFetchResult, StoredStockData } from './StockResult.types';
-import { StockColumnKey, YAHOO_FINANCE_CONFIG } from './StockResult.types';
+import { YAHOO_FINANCE_CONFIG } from '../../../constants/apiConfig';
+import type { PriceFetchResult, StockData, StockPriceInfo, StoredStockData, YahooFinanceResponse } from './StockResult.types';
+import { StockColumnKey } from './StockResult.types';
 
 /**
  * Parse an Excel ArrayBuffer and return normalized stock data.
@@ -283,16 +284,16 @@ export async function saveStockDataToJSON(data: StockData[], sourceFile: string,
     const jsonContent = JSON.stringify(storedData, null, 2);
     const blob = new Blob([jsonContent], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    
+
     // Create download link to save the file
     const link = document.createElement('a');
     link.href = url;
     link.download = 'stockData.json';
     link.click();
-    
+
     // Clean up
     URL.revokeObjectURL(url);
-    
+
     console.log(`Stock data prepared for download: ${stocksWithPrices.length} records`);
     console.log('Please save the downloaded stockData.json file to: src/privateDocument/stockData.json');
 }
@@ -327,16 +328,16 @@ export async function updateStockPricesInJSON(storedData: StoredStockData): Prom
     const jsonContent = JSON.stringify(updatedData, null, 2);
     const blob = new Blob([jsonContent], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    
+
     // Create download link to save the file
     const link = document.createElement('a');
     link.href = url;
     link.download = 'stockData.json';
     link.click();
-    
+
     // Clean up
     URL.revokeObjectURL(url);
-    
+
     console.log('Updated stock data prepared for download');
     console.log('Please save the downloaded stockData.json file to: src/privateDocument/stockData.json');
 
