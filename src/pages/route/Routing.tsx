@@ -7,7 +7,7 @@ import UseReducerHook from "../components/hookRef/UseReducerHook";
 import UseRefHook from "../components/hookRef/UseRefHook";
 import UseStateHook from "../components/hookRef/UseStateHook";
 import MyFavList from "../components/stock/MyFavList";
-import StockResult from "../components/stock/StockResult";
+import StockResult from "../components/stock/excelBasedResult/StockResult";
 import BaseNavigation from "../navigation/BaseNavigation";
 import HooksNavigation from "../navigation/HooksNavigation";
 import StockNavigation from "../navigation/StockNavigation";

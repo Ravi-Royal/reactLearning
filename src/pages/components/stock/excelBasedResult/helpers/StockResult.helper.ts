@@ -1,8 +1,8 @@
 
 import * as XLSX from 'xlsx';
-import { YAHOO_FINANCE_CONFIG } from '../../../constants/apiConfig';
-import type { PriceFetchResult, StockData, StockPriceInfo, StoredStockData, YahooFinanceResponse } from './StockResult.types';
-import { StockColumnKey } from './StockResult.types';
+import { YAHOO_FINANCE_CONFIG } from '../../../../../constants/apiConfig';
+import type { PriceFetchResult, StockData, StockPriceInfo, StoredStockData, YahooFinanceResponse } from '../types/StockResult.types';
+import { StockColumnKey } from '../types/StockResult.types';
 
 /**
  * Parse an Excel ArrayBuffer and return normalized stock data.

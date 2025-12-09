@@ -1,5 +1,5 @@
 import React from 'react';
-import type { PriceMap } from './StockResult.types';
+import type { PriceMap } from '../types/StockResult.types';
 
 interface PriceCellProps {
   symbol: string;

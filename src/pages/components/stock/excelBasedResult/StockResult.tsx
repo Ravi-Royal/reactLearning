@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { formatNormalizedStockData, parseStockExcel, loadStockDataFromJSON, saveStockDataToJSON, updateStockPricesInJSON } from './StockResult.helper';
-import type { StockData, PriceMap } from './StockResult.types';
-import StockControls from './StockControls';
-import StockMetadata from './StockMetadata';
-import StockTable from './StockTable';
+import React, { useEffect, useState } from 'react';
+import StockControls from './components/StockControls';
+import StockMetadata from './components/StockMetadata';
+import StockTable from './components/StockTable';
+import { formatNormalizedStockData, loadStockDataFromJSON, parseStockExcel, saveStockDataToJSON, updateStockPricesInJSON } from './helpers/StockResult.helper';
+import type { PriceMap, StockData } from './types/StockResult.types';
 
 /**
  * Main Stock Result component - orchestrates data loading and state management
@@ -61,8 +61,8 @@ const StockResult: React.FC = () => {
         const storedPriceMap: PriceMap = {};
         storedData.stocks.forEach(stock => {
           if (stock['Current Price'] !== undefined ||
-              stock['52W High'] !== undefined ||
-              stock['52W Low'] !== undefined) {
+            stock['52W High'] !== undefined ||
+            stock['52W Low'] !== undefined) {
             storedPriceMap[stock.Symbol] = {
               price: stock['Current Price'] ?? null,
               fiftyTwoWeekHigh: stock['52W High'] ?? null,
@@ -112,8 +112,8 @@ const StockResult: React.FC = () => {
         const updatedPriceMap: PriceMap = {};
         storedData.stocks.forEach(stock => {
           if (stock['Current Price'] !== undefined ||
-              stock['52W High'] !== undefined ||
-              stock['52W Low'] !== undefined) {
+            stock['52W High'] !== undefined ||
+            stock['52W Low'] !== undefined) {
             updatedPriceMap[stock.Symbol] = {
               price: stock['Current Price'] ?? null,
               fiftyTwoWeekHigh: stock['52W High'] ?? null,

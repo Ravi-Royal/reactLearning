@@ -1,8 +1,8 @@
 import React from 'react';
-import { stockColumns, pnlColumnKeys, StockColumnKey } from './StockResult.types';
-import type { StockColumnKeyType, StockData, PriceMap } from './StockResult.types';
-import PriceCell from './PriceCell';
+import type { PriceMap, StockColumnKeyType, StockData } from '../types/StockResult.types';
+import { pnlColumnKeys, StockColumnKey, stockColumns } from '../types/StockResult.types';
 import NearLowIndicator from './NearLowIndicator';
+import PriceCell from './PriceCell';
 import PriceVsValueIndicator from './PriceVsValueIndicator';
 
 interface StockTableProps {
