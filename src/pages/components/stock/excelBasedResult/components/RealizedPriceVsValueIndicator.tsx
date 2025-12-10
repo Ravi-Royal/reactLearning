@@ -1,18 +1,18 @@
 import React from 'react';
 
-interface PriceVsValueIndicatorProps {
+interface RealizedPriceVsValueIndicatorProps {
   price: number | null | undefined;
   buyPerStock: number | null | undefined;
   sellPerStock: number | null | undefined;
 }
 
 /**
- * Compares current price with Buy Value Per Stock and Sell Value Per Stock.
+ * Compares current price with realized Buy Value Per Stock and Sell Value Per Stock.
  * - price < buyPerStock: dark green
  * - price < sellPerStock: light green
  * - otherwise: neutral
  */
-const PriceVsValueIndicator: React.FC<PriceVsValueIndicatorProps> = ({ price, buyPerStock, sellPerStock }) => {
+const RealizedPriceVsValueIndicator: React.FC<RealizedPriceVsValueIndicatorProps> = ({ price, buyPerStock, sellPerStock }) => {
   if (price == null) return <span className="text-gray-400">N/A</span>;
 
   // Prioritize buy check (darker green)
@@ -37,4 +37,4 @@ const PriceVsValueIndicator: React.FC<PriceVsValueIndicatorProps> = ({ price, bu
   return <span className="text-gray-700">—</span>;
 };
 
-export default PriceVsValueIndicator;
+export default RealizedPriceVsValueIndicator;

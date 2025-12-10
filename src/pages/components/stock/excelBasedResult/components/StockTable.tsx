@@ -3,7 +3,7 @@ import type { PriceMap, StockColumnKeyType, StockData } from '../types/StockResu
 import { pnlColumnKeys, StockColumnKey, stockColumns } from '../types/StockResult.types';
 import NearLowIndicator from './NearLowIndicator';
 import PriceCell from './PriceCell';
-import PriceVsValueIndicator from './PriceVsValueIndicator';
+import RealizedPriceVsValueIndicator from './RealizedPriceVsValueIndicator';
 
 interface StockTableProps {
   stockData: StockData[];
@@ -65,7 +65,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                   );
                 }
 
-                if (col.key === StockColumnKey.PriceVsValue) {
+                if (col.key === StockColumnKey.RealizedPriceVsValue) {
                   // Compare current price with buy/sell per stock
                   const priceData = priceMap[row.Symbol];
                   const price = priceData?.price ?? row['Current Price'] ?? null;
@@ -74,7 +74,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
 
                   return (
                     <td key={col.key} className={`border border-gray-300 px-4 py-2${col.align === 'right' ? ' text-right' : ''}`}>
-                      <PriceVsValueIndicator price={price as number | null} buyPerStock={buyPerStock as number | null} sellPerStock={sellPerStock as number | null} />
+                      <RealizedPriceVsValueIndicator price={price as number | null} buyPerStock={buyPerStock as number | null} sellPerStock={sellPerStock as number | null} />
                     </td>
                   );
                 }
