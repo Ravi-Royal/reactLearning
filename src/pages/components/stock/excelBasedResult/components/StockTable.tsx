@@ -51,7 +51,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
 
                 // New column: Near 52W Low indicator
                 if (col.key === StockColumnKey.NearFiftyTwoWeekLow) {
-                  const priceData = priceMap[row.Symbol];
+                  const priceData = priceMap[row[StockColumnKey.Symbol] as string];
                   const price = priceData?.price ?? null;
                   const low = priceData?.fiftyTwoWeekLow ?? null;
 
@@ -68,10 +68,10 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
 
                 if (col.key === StockColumnKey.RealizedPriceVsValue) {
                   // Compare current price with buy/sell per stock
-                  const priceData = priceMap[row.Symbol];
-                  const price = priceData?.price ?? row['Current Price'] ?? null;
-                  const buyPerStock = row['Buy Value Per Stock'] ?? null;
-                  const sellPerStock = row['Sell Value Per Stock'] ?? null;
+                  const priceData = priceMap[row[StockColumnKey.Symbol] as string];
+                  const price = priceData?.price ?? row[StockColumnKey.CurrentPrice] ?? null;
+                  const buyPerStock = row[StockColumnKey.BuyValuePerStock] ?? null;
+                  const sellPerStock = row[StockColumnKey.SellValuePerStock] ?? null;
 
                   return (
                     <td key={col.key} className={`border border-gray-300 px-4 py-2${col.align === 'right' ? ' text-right' : ''}`}>
@@ -82,10 +82,10 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
 
                 if (col.key === StockColumnKey.UnrealizedProfit) {
                   // Compare current price with average open price (Open Value / Open Quantity)
-                  const priceData = priceMap[row.Symbol];
-                  const currentPrice = priceData?.price ?? row['Current Price'] ?? null;
-                  const openValue = row['Open Value'] ?? null;
-                  const openQuantity = row['Open Quantity'] ?? null;
+                  const priceData = priceMap[row[StockColumnKey.Symbol] as string];
+                  const currentPrice = priceData?.price ?? row[StockColumnKey.CurrentPrice] ?? null;
+                  const openValue = row[StockColumnKey.OpenValue] ?? null;
+                  const openQuantity = row[StockColumnKey.OpenQuantity] ?? null;
 
                   return (
                     <td key={col.key} className={`border border-gray-300 px-4 py-2${col.align === 'right' ? ' text-right' : ''}`}>
@@ -99,7 +99,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                   return (
                     <PriceCell
                       key={col.key}
-                      symbol={row.Symbol}
+                      symbol={row[StockColumnKey.Symbol] as string}
                       priceKey="price"
                       priceMap={priceMap}
                       align={col.align}
@@ -111,7 +111,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                   return (
                     <PriceCell
                       key={col.key}
-                      symbol={row.Symbol}
+                      symbol={row[StockColumnKey.Symbol] as string}
                       priceKey="fiftyTwoWeekHigh"
                       priceMap={priceMap}
                       align={col.align}
@@ -123,7 +123,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                   return (
                     <PriceCell
                       key={col.key}
-                      symbol={row.Symbol}
+                      symbol={row[StockColumnKey.Symbol] as string}
                       priceKey="fiftyTwoWeekLow"
                       priceMap={priceMap}
                       align={col.align}
