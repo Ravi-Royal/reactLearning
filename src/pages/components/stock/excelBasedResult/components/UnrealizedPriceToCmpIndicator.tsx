@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface UnrealizedProfitIndicatorProps {
+interface UnrealizedPriceToCmpIndicatorProps {
     currentPrice: number | null | undefined;
     openValue: number | null | undefined;
     openQuantity: number | null | undefined;
@@ -12,7 +12,7 @@ interface UnrealizedProfitIndicatorProps {
  * - currentPrice < avgOpenPrice: green (profit opportunity)
  * - otherwise: neutral
  */
-const UnrealizedProfitIndicator: React.FC<UnrealizedProfitIndicatorProps> = ({ currentPrice, openValue, openQuantity }) => {
+const UnrealizedPriceToCmpIndicator: React.FC<UnrealizedPriceToCmpIndicatorProps> = ({ currentPrice, openValue, openQuantity }) => {
     if (currentPrice == null || openValue == null || openQuantity == null || openQuantity === 0) {
         return <span className="text-gray-400">N/A</span>;
     }
@@ -34,4 +34,4 @@ const UnrealizedProfitIndicator: React.FC<UnrealizedProfitIndicatorProps> = ({ c
     return <span className="text-gray-700">—</span>;
 };
 
-export default UnrealizedProfitIndicator;
+export default UnrealizedPriceToCmpIndicator;
