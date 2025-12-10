@@ -4,6 +4,7 @@ import { pnlColumnKeys, StockColumnKey, stockColumns } from '../types/StockResul
 import NearLowIndicator from './NearLowIndicator';
 import PriceCell from './PriceCell';
 import RealizedPriceVsValueIndicator from './RealizedPriceVsValueIndicator';
+import UnrealizedProfitIndicator from './UnrealizedProfitIndicator';
 
 interface StockTableProps {
   stockData: StockData[];
@@ -75,6 +76,20 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                   return (
                     <td key={col.key} className={`border border-gray-300 px-4 py-2${col.align === 'right' ? ' text-right' : ''}`}>
                       <RealizedPriceVsValueIndicator price={price as number | null} buyPerStock={buyPerStock as number | null} sellPerStock={sellPerStock as number | null} />
+                    </td>
+                  );
+                }
+
+                if (col.key === StockColumnKey.UnrealizedProfit) {
+                  // Compare current price with average open price (Open Value / Open Quantity)
+                  const priceData = priceMap[row.Symbol];
+                  const currentPrice = priceData?.price ?? row['Current Price'] ?? null;
+                  const openValue = row['Open Value'] ?? null;
+                  const openQuantity = row['Open Quantity'] ?? null;
+
+                  return (
+                    <td key={col.key} className={`border border-gray-300 px-4 py-2${col.align === 'right' ? ' text-right' : ''}`}>
+                      <UnrealizedProfitIndicator currentPrice={currentPrice as number | null} openValue={openValue as number | null} openQuantity={openQuantity as number | null} />
                     </td>
                   );
                 }
