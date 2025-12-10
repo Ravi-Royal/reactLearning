@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router-dom";
 import AboutPage from "../About";
 import HomePage from "../Home";
+import UseCallbackHook from "../components/hookRef/UseCallbackHook";
 import UseContextHook from "../components/hookRef/UseContextHook";
 import UseEffectHook from "../components/hookRef/UseEffectHook";
 import UseReducerHook from "../components/hookRef/UseReducerHook";
@@ -26,6 +27,7 @@ function Routing() {
                 <Route path="useRef" element={<UseRefHook />} />
                 <Route path="useReducer" element={<UseReducerHook />} />
                 <Route path="useContext" element={<UseContextHook />} />
+                <Route path="useCallback" element={<UseCallbackHook />} />
             </Route>
             <Route path="/stock" element={<Outlet />}>
                 <Route index element={<StockNavigation />} />

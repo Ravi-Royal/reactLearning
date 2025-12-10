@@ -21,6 +21,9 @@ function HooksNavigation() {
                     <li>
                         <Link className="text-blue-500 hover:text-blue-700" to="useContext">useContext</Link>
                     </li>
+                    <li>
+                        <Link className="text-blue-500 hover:text-blue-700" to="useCallback">useCallback</Link>
+                    </li>
                 </ol>
             </nav>
         </div>

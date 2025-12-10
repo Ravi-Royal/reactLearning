@@ -7,9 +7,9 @@ function BaseNavigation() {
                 <li>
                     <Link className="text-blue-600 hover:underline px-2 py-1 rounded" to="/home">Home</Link>
                 </li>
-                <li>
+                {/* <li>
                     <Link className="text-blue-600 hover:underline px-2 py-1 rounded" to="/about">About</Link>
-                </li>
+                </li> */}
                 <li>
                     <Link className="text-blue-600 hover:underline px-2 py-1 rounded" to="/hooks">Hooks</Link>
                 </li>
