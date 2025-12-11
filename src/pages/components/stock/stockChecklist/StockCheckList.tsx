@@ -82,42 +82,44 @@ function StockCheckList() {
                 </div>
             </div>
 
-            <div className="grid gap-4">
-                {checklistItems.map((item) => (
-                    <div
-                        key={item.id}
-                        className={`p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${item.checked
-                            ? 'bg-green-50 border-green-200'
-                            : 'bg-white border-gray-200 hover:border-gray-300'
-                            }`}
-                        onClick={() => handleCheckChange(item.id)}
-                    >
-                        <div className="flex items-center gap-3">
-                            <input
-                                type="checkbox"
-                                checked={item.checked}
-                                onChange={() => handleCheckChange(item.id)}
-                                className="w-5 h-5 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500"
-                            />
-                            <label
-                                className={`text-sm font-medium cursor-pointer ${item.checked ? 'text-green-800' : 'text-gray-700'
-                                    }`}
-                            >
-                                {item.label} <span className={`text-xs px-2 py-1 rounded-full ${item.category === CHECKLIST_CATEGORIES.AI
-                                    ? 'bg-blue-100 text-blue-700'
-                                    : 'bg-purple-100 text-purple-700'
-                                    }`}>
-                                    ({item.category})
-                                </span>
-                            </label>
-                            {item.checked && (
-                                <svg className="w-5 h-5 text-green-600 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                </svg>
-                            )}
+            <div className="max-h-96 overflow-y-auto border border-gray-200 rounded-lg p-4 bg-gray-50">
+                <div className="grid gap-4">
+                    {checklistItems.map((item) => (
+                        <div
+                            key={item.id}
+                            className={`p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${item.checked
+                                ? 'bg-green-50 border-green-200'
+                                : 'bg-white border-gray-200 hover:border-gray-300'
+                                }`}
+                            onClick={() => handleCheckChange(item.id)}
+                        >
+                            <div className="flex items-center gap-3">
+                                <input
+                                    type="checkbox"
+                                    checked={item.checked}
+                                    onChange={() => handleCheckChange(item.id)}
+                                    className="w-5 h-5 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500"
+                                />
+                                <label
+                                    className={`text-sm font-medium cursor-pointer ${item.checked ? 'text-green-800' : 'text-gray-700'
+                                        }`}
+                                >
+                                    {item.label} <span className={`text-xs px-2 py-1 rounded-full ${item.category === CHECKLIST_CATEGORIES.AI
+                                        ? 'bg-blue-100 text-blue-700'
+                                        : 'bg-purple-100 text-purple-700'
+                                        }`}>
+                                        ({item.category})
+                                    </span>
+                                </label>
+                                {item.checked && (
+                                    <svg className="w-5 h-5 text-green-600 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                    </svg>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
 
             <div className="mt-8 p-4 bg-gray-50 rounded-lg">
