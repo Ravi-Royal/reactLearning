@@ -4,6 +4,7 @@ import { CHECKLIST_CATEGORIES } from './helpers/StockCheckList.constants';
 function StockCheckList() {
     const [checklistItems, setChecklistItems] = useState([
         { id: 'debt', label: 'Low debt-to-equity ratio (<1.0)', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
+        { id: 'yearOveryearDebt', label: 'Decreasing debt over the past 3 years', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
         { id: 'revenue', label: 'Consistent revenue growth (>10% YoY)', checked: false, category: CHECKLIST_CATEGORIES.AI },
         { id: 'profit', label: 'Strong profit margins (>15%)', checked: false, category: CHECKLIST_CATEGORIES.AI },
         { id: 'pe', label: 'Reasonable P/E ratio (<25)', checked: false, category: CHECKLIST_CATEGORIES.AI },
@@ -29,7 +30,7 @@ function StockCheckList() {
             <div className="mb-6">
                 <h1 className="text-2xl font-bold text-gray-800 mb-2">Stock Investment Checklist</h1>
                 <p className="text-gray-600 mb-4">Use this checklist to evaluate potential stock investments systematically.</p>
-                
+
                 <div className="flex flex-wrap gap-4 mb-4 text-xs">
                     <div className="flex items-center gap-2">
                         <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full">({CHECKLIST_CATEGORIES.AI})</span>
