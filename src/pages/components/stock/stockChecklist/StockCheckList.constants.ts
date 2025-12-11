@@ -9,6 +9,7 @@ export type ChecklistCategory = typeof CHECKLIST_CATEGORIES[keyof typeof CHECKLI
 export interface MyStockItem {
     name: string;
     catagery: string;
+    symbol?: string;
 }
 
 const STOCK_LIST_CATEGORIES = {
@@ -21,5 +22,6 @@ export const MY_STOCK_LIST: MyStockItem[] = [
     {
         name: 'Go Fashion (India) Ltd',
         catagery: STOCK_LIST_CATEGORIES.CHECK_STOCK,
+        symbol: 'gocolors'
     }
 ]

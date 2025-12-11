@@ -46,8 +46,6 @@ function StockCheckList() {
     const handleSelectStock = (stock: MyStockItem) => {
         setSelectedStock(stock);
         setIsModalOpen(false);
-        // Note: Preselection logic removed since MyStockItem doesn't have stock metrics
-        // You can add custom logic here based on stock category if needed
     };
 
     const checkedCount = checklistItems.filter(item => item.checked).length;
@@ -72,9 +70,16 @@ function StockCheckList() {
 
                 <div className="p-4 bg-blue-50 rounded-lg">
                     {selectedStock && (
-                        <div className="mb-4 p-3 bg-green-100 rounded-lg border border-green-200">
-                            <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium text-green-800">Evaluating: {selectedStock.name}</span>
+                        <div className="mb-4 p-4 bg-green-100 rounded-lg border border-green-200">
+                            <div className="flex items-center justify-between mb-3">
+                                <div>
+                                    <span className="text-sm font-medium text-green-800">Evaluating: {selectedStock.name}</span>
+                                    {selectedStock.symbol && (
+                                        <div className="text-xs text-green-600 mt-1">
+                                            Symbol: {selectedStock.symbol}
+                                        </div>
+                                    )}
+                                </div>
                                 <span className={`px-2 py-1 text-xs rounded-full font-medium ${selectedStock.catagery === 'Good Stock' ? 'bg-green-600 text-white' :
                                     selectedStock.catagery === 'Check Stock' ? 'bg-yellow-600 text-white' :
                                         'bg-red-600 text-white'
