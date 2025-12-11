@@ -8,6 +8,7 @@ import UseReducerHook from "../components/hookRef/UseReducerHook";
 import UseRefHook from "../components/hookRef/UseRefHook";
 import UseStateHook from "../components/hookRef/UseStateHook";
 import MyFavList from "../components/stock/MyFavList";
+import StockCheckList from "../components/stock/StockCheckList";
 import StockResult from "../components/stock/excelBasedResult/StockResult";
 import BaseNavigation from "../navigation/BaseNavigation";
 import HooksNavigation from "../navigation/HooksNavigation";
@@ -33,6 +34,7 @@ function Routing() {
                 <Route index element={<StockNavigation />} />
                 <Route path="analysis" element={<StockResult />} />
                 <Route path="favorites" element={<MyFavList />} />
+                <Route path="checklist" element={<StockCheckList />} />
             </Route>
             <Route path="*" element={<Navigate to="/home" replace />} />
 

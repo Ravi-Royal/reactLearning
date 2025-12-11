@@ -35,13 +35,29 @@ function StockNavigation() {
                 active: 'bg-green-600 text-white',
                 inactive: 'bg-green-50 text-green-600 hover:bg-green-100'
             }
+        },
+        {
+            id: 'checklist',
+            title: 'Stock Checklist',
+            description: 'Quick checklist to help you evaluate and track important stock metrics and criteria.',
+            icon: {
+                path: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
+                bgColor: 'bg-purple-100',
+                color: 'text-purple-600'
+            },
+            route: 'checklist',
+            buttonText: 'Open Checklist',
+            buttonColors: {
+                active: 'bg-purple-600 text-white',
+                inactive: 'bg-purple-50 text-purple-600 hover:bg-purple-100'
+            }
         }
     ];
 
     const quickStats = [
         {
             id: 'tools',
-            value: '2',
+            value: '3',
             label: 'Analysis Tools',
             color: 'text-blue-600'
         },
@@ -87,8 +103,8 @@ function StockNavigation() {
                         <Link
                             to={item.route}
                             className={`inline-flex items-center px-4 py-2 rounded-lg font-medium transition-colors ${location.pathname.includes(`/${item.route}`)
-                                    ? item.buttonColors.active
-                                    : item.buttonColors.inactive
+                                ? item.buttonColors.active
+                                : item.buttonColors.inactive
                                 }`}
                         >
                             {item.buttonText}
