@@ -51,11 +51,10 @@ function BaseNavigation() {
                             {navigationItems.map((item) => (
                                 <Link
                                     key={item.id}
-                                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                                        isActive(item)
+                                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive(item)
                                             ? 'bg-white text-gray-800 shadow-md'
                                             : 'text-blue-100 hover:text-gray-900 hover:bg-white'
-                                    }`}
+                                        }`}
                                     to={item.path}
                                 >
                                     {item.label}
