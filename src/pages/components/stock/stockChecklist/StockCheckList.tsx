@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { CHECKLIST_CATEGORIES } from './StockCheckList.constants';
+import type { MyStockItem } from './StockCheckList.constants';
+import { CHECKLIST_CATEGORIES, MY_STOCK_LIST } from './StockCheckList.constants';
 
 function StockCheckList() {
     const [checklistItems, setChecklistItems] = useState([
@@ -17,6 +18,9 @@ function StockCheckList() {
         { id: 'growth', label: 'Clear growth strategy', checked: false, category: CHECKLIST_CATEGORIES.AI }
     ]);
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedStock, setSelectedStock] = useState<MyStockItem | null>(null);
+
     const handleCheckChange = (id: string) => {
         setChecklistItems(items =>
             items.map(item =>
@@ -29,6 +33,21 @@ function StockCheckList() {
         setChecklistItems(items =>
             items.map(item => ({ ...item, checked: false }))
         );
+    };
+
+    const handleOpenModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleSelectStock = (stock: MyStockItem) => {
+        setSelectedStock(stock);
+        setIsModalOpen(false);
+        // Note: Preselection logic removed since MyStockItem doesn't have stock metrics
+        // You can add custom logic here based on stock category if needed
     };
 
     const checkedCount = checklistItems.filter(item => item.checked).length;
@@ -52,6 +71,19 @@ function StockCheckList() {
                 </div>
 
                 <div className="p-4 bg-blue-50 rounded-lg">
+                    {selectedStock && (
+                        <div className="mb-4 p-3 bg-green-100 rounded-lg border border-green-200">
+                            <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium text-green-800">Evaluating: {selectedStock.name}</span>
+                                <span className={`px-2 py-1 text-xs rounded-full font-medium ${selectedStock.catagery === 'Good Stock' ? 'bg-green-600 text-white' :
+                                    selectedStock.catagery === 'Check Stock' ? 'bg-yellow-600 text-white' :
+                                        'bg-red-600 text-white'
+                                    }`}>
+                                    {selectedStock.catagery}
+                                </span>
+                            </div>
+                        </div>
+                    )}
                     <div className="flex items-center justify-between">
                         <span className="text-sm font-medium text-blue-800">Progress:</span>
                         <span className="text-sm font-bold text-blue-600">{checkedCount}/{totalCount} criteria met</span>
@@ -67,6 +99,15 @@ function StockCheckList() {
 
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
+                    <button
+                        onClick={handleOpenModal}
+                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 flex items-center gap-2"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        Select Stock
+                    </button>
                     <button
                         onClick={handleUncheckAll}
                         className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200 flex items-center gap-2"
@@ -139,6 +180,68 @@ function StockCheckList() {
                     )}
                 </div>
             </div>
+
+            {/* Stock Selection Modal */}
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[85vh] overflow-hidden border border-gray-200">
+                        {/* Modal Header */}
+                        <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <h2 className="text-2xl font-bold">Select Stock</h2>
+                                </div>
+                                <button
+                                    onClick={handleCloseModal}
+                                    className="p-2 hover:bg-white hover:bg-opacity-20 rounded-xl transition-all duration-200 group"
+                                >
+                                    <svg className="w-6 h-6 group-hover:rotate-90 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Modal Content */}
+                        <div className="p-8">
+                            <div className="space-y-2 max-h-96 overflow-y-auto">
+                                {MY_STOCK_LIST.map((stock: MyStockItem, index: number) => (
+                                    <div
+                                        key={index}
+                                        onClick={() => handleSelectStock(stock)}
+                                        className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 cursor-pointer transition-all duration-200"
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <span className="font-medium text-gray-800">{stock.name}</span>
+                                            <span className={`px-2 py-1 text-xs rounded-full font-medium ${stock.catagery === 'Good Stock' ? 'bg-green-100 text-green-700' :
+                                                stock.catagery === 'Check Stock' ? 'bg-yellow-100 text-yellow-700' :
+                                                    'bg-red-100 text-red-700'
+                                                }`}>
+                                                {stock.catagery}
+                                            </span>
+                                        </div>
+                                        <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Modal Footer */}
+                        <div className="bg-gray-50 px-8 py-4 border-t border-gray-200">
+                            <div className="flex justify-end">
+                                <button
+                                    onClick={handleCloseModal}
+                                    className="px-6 py-2 text-gray-600 hover:bg-gray-200 rounded-lg transition-colors font-medium"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
