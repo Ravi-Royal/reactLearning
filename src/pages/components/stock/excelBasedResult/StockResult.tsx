@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Breadcrumbs from '../../../navigation/Breadcrumbs';
 import StockControls from './components/StockControls';
 import StockMetadata from './components/StockMetadata';
 import StockTable from './components/StockTable';
@@ -193,6 +194,7 @@ const StockResult: React.FC = () => {
 
   return (
     <div className="p-4">
+      <Breadcrumbs />
       <div className="mb-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold">Stock P&L Data</h1>
         <StockControls

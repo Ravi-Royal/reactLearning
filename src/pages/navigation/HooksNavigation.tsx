@@ -1,33 +1,60 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import Breadcrumbs from "./Breadcrumbs";
 
 function HooksNavigation() {
+    const location = useLocation();
+
+    const hooks = [
+        { name: 'useState', description: 'Manage component state', icon: '📦' },
+        { name: 'useEffect', description: 'Handle side effects', icon: '⚡' },
+        { name: 'useRef', description: 'Access DOM elements', icon: '🎯' },
+        { name: 'useReducer', description: 'Complex state logic', icon: '🔄' },
+        { name: 'useContext', description: 'Share state globally', icon: '🌐' },
+        { name: 'useCallback', description: 'Memoize functions', icon: '📝' },
+    ];
+
     return (
-        <div>
-            <h2 className="font-bold">Hooks Navigation Page</h2>
-            <nav className="flex gap-4 my-4">
-                <ol className="list-decimal pl-5">
-                    <li>
-                        <Link className="text-blue-500 hover:text-blue-700" to="useState">useState</Link>
-                    </li>
-                    <li>
-                        <Link className="text-blue-500 hover:text-blue-700" to="useEffect">useEffect</Link>
-                    </li>
-                    <li>
-                        <Link className="text-blue-500 hover:text-blue-700" to="useRef">useRef</Link>
-                    </li>
-                    <li>
-                        <Link className="text-blue-500 hover:text-blue-700" to="useReducer">useReducer</Link>
-                    </li>
-                    <li>
-                        <Link className="text-blue-500 hover:text-blue-700" to="useContext">useContext</Link>
-                    </li>
-                    <li>
-                        <Link className="text-blue-500 hover:text-blue-700" to="useCallback">useCallback</Link>
-                    </li>
-                </ol>
-            </nav>
+        <div className="p-6">
+            <Breadcrumbs />
+            <div className="mb-6">
+                <h1 className="text-2xl font-bold text-gray-800">React Hooks Explorer</h1>
+                <p className="text-gray-600 mt-1">Learn and experiment with React's built-in hooks</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {hooks.map((hook) => (
+                    <Link
+                        key={hook.name}
+                        to={hook.name.toLowerCase()}
+                        className={`block bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition-all duration-200 ${location.pathname.includes(hook.name.toLowerCase())
+                                ? 'ring-2 ring-blue-500 border-blue-300'
+                                : 'hover:border-gray-300'
+                            }`}
+                    >
+                        <div className="flex items-center gap-3 mb-3">
+                            <span className="text-2xl">{hook.icon}</span>
+                            <h3 className="text-lg font-semibold text-gray-800">{hook.name}</h3>
+                        </div>
+                        <p className="text-gray-600 text-sm mb-4">{hook.description}</p>
+                        <div className="flex items-center text-blue-600 text-sm font-medium">
+                            Explore Hook
+                            <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                        </div>
+                    </Link>
+                ))}
+            </div>
+
+            <div className="mt-8 bg-blue-50 rounded-lg p-4">
+                <h4 className="font-semibold text-gray-800 mb-2">About React Hooks</h4>
+                <p className="text-gray-600 text-sm">
+                    Hooks are functions that let you "hook into" React state and lifecycle features from function components.
+                    They let you use state and other React features without writing a class component.
+                </p>
+            </div>
         </div>
-    )
+    );
 }
 
 export default HooksNavigation;
