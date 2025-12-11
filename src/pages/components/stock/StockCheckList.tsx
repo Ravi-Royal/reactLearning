@@ -22,6 +22,12 @@ function StockCheckList() {
         );
     };
 
+    const handleUncheckAll = () => {
+        setChecklistItems(items =>
+            items.map(item => ({ ...item, checked: false }))
+        );
+    };
+
     const checkedCount = checklistItems.filter(item => item.checked).length;
     const totalCount = checklistItems.length;
 
@@ -53,6 +59,23 @@ function StockCheckList() {
                             style={{ width: `${(checkedCount / totalCount) * 100}%` }}
                         ></div>
                     </div>
+                </div>
+            </div>
+
+            <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={handleUncheckAll}
+                        className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200 flex items-center gap-2"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        Uncheck All
+                    </button>
+                    <span className="text-sm text-gray-500">
+                        {checkedCount > 0 ? `${checkedCount} item${checkedCount > 1 ? 's' : ''} selected` : 'No items selected'}
+                    </span>
                 </div>
             </div>
 
