@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
-import { NAVIGATION_BRAND, NAVIGATION_ITEMS, NAVIGATION_TAGLINE } from './constants/navigation.constants';
 import type { NavigationItem } from './constants/navigation.constants';
+import { NAVIGATION_BRAND, NAVIGATION_ITEMS, NAVIGATION_TAGLINE } from './constants/navigation.constants';
 
 function BaseNavigation() {
     const location = useLocation();
@@ -22,8 +22,8 @@ function BaseNavigation() {
                                 <Link
                                     key={item.id}
                                     className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive(item)
-                                            ? 'bg-white text-gray-800 shadow-md'
-                                            : 'text-blue-100 hover:text-gray-900 hover:bg-white'
+                                        ? 'bg-white text-gray-800 shadow-md'
+                                        : 'text-blue-100 hover:text-gray-900 hover:bg-white'
                                         }`}
                                     to={item.path}
                                 >

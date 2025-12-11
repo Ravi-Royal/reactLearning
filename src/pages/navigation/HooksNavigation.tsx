@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
-import Breadcrumbs from "./Breadcrumbs";
 import { HOOKS_DATA } from "../../constants/hooksNavigation.constants";
+import Breadcrumbs from "./Breadcrumbs";
 
 function HooksNavigation() {
     const location = useLocation();
@@ -19,8 +19,8 @@ function HooksNavigation() {
                         key={hook.name}
                         to={hook.name.toLowerCase()}
                         className={`block bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition-all duration-200 ${location.pathname.includes(hook.name.toLowerCase())
-                                ? 'ring-2 ring-blue-500 border-blue-300'
-                                : 'hover:border-gray-300'
+                            ? 'ring-2 ring-blue-500 border-blue-300'
+                            : 'hover:border-gray-300'
                             }`}
                     >
                         <div className="flex items-center gap-3 mb-3">
