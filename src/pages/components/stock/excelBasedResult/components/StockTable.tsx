@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
+import { getSortIcon, handleSortStateChange, sortStockData, type SortDirection } from '../helpers/StockResult.helper';
 import type { PriceMap, StockColumnKeyType, StockData } from '../types/StockResult.types';
 import { pnlColumnKeys, StockColumnKey, stockColumns } from '../types/StockResult.types';
 import NearLowIndicator from './NearLowIndicator';
@@ -15,6 +16,23 @@ interface StockTableProps {
  * Component for rendering the stock data table
  */
 const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
+  const [sortColumn, setSortColumn] = useState<StockColumnKeyType | null>(null);
+  const [sortDirection, setSortDirection] = useState<SortDirection>(null);
+
+  const handleSort = (columnKey: StockColumnKeyType) => {
+    const newState = handleSortStateChange(columnKey, sortColumn, sortDirection);
+    setSortColumn(newState.sortColumn);
+    setSortDirection(newState.sortDirection);
+  };
+
+  const sortedData = useMemo(() => {
+    return sortStockData(stockData, sortColumn, sortDirection, priceMap);
+  }, [stockData, sortColumn, sortDirection, priceMap]);
+
+  const getSortIconElement = (columnKey: StockColumnKeyType) => {
+    return getSortIcon(columnKey, sortColumn, sortDirection);
+  };
+
   return (
     <div className="overflow-x-auto" style={{ maxHeight: '500px', overflowY: 'auto' }}>
       <table className="min-w-full border-collapse border border-gray-300">
@@ -23,16 +41,20 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
             {stockColumns.map((col: { key: StockColumnKeyType; label: string; align?: 'left' | 'right' }) => (
               <th
                 key={col.key}
-                className={`border border-gray-300 px-4 py-2${col.align === 'right' ? ' text-right' : ''} sticky top-0 bg-gray-100 z-20`}
+                className={`border border-gray-300 px-4 py-2${col.align === 'right' ? ' text-right' : ''} sticky top-0 bg-gray-100 z-20 cursor-pointer hover:bg-gray-200 select-none`}
                 style={{ top: 0 }}
+                onClick={() => handleSort(col.key)}
               >
-                {col.label}
+                <div className="flex items-center justify-between">
+                  <span>{col.label}</span>
+                  {getSortIconElement(col.key)}
+                </div>
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {stockData.map((row, index) => (
+          {sortedData.map((row, index) => (
             <tr key={index} className="hover:bg-gray-50">
               {stockColumns.map((col: { key: StockColumnKeyType; label: string; align?: 'left' | 'right' }) => {
                 // Color logic for P&L columns

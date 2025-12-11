@@ -1,7 +1,7 @@
 
 import * as XLSX from 'xlsx';
 import { YAHOO_FINANCE_CONFIG } from '../../../../../constants/apiConfig';
-import type { PriceFetchResult, StockData, StockPriceInfo, StoredStockData, YahooFinanceResponse } from '../types/StockResult.types';
+import type { PriceFetchResult, PriceMap, StockColumnKeyType, StockData, StockPriceInfo, StoredStockData, YahooFinanceResponse } from '../types/StockResult.types';
 import { StockColumnKey } from '../types/StockResult.types';
 
 /**
@@ -342,4 +342,118 @@ export async function updateStockPricesInJSON(storedData: StoredStockData): Prom
     console.log('Please save the downloaded stockData.json file to: src/privateDocument/stockData.json');
 
     return updatedData;
+}
+
+/**
+ * Sort direction type for table sorting
+ */
+export type SortDirection = 'asc' | 'desc' | null;
+
+/**
+ * Sort stock data based on column and direction
+ * @param stockData Array of stock data to sort
+ * @param sortColumn Column key to sort by
+ * @param sortDirection Sort direction ('asc', 'desc', or null)
+ * @param priceMap Price map for computed price columns
+ * @returns Sorted array of stock data
+ */
+export function sortStockData(
+    stockData: StockData[],
+    sortColumn: StockColumnKeyType | null,
+    sortDirection: SortDirection,
+    priceMap: PriceMap
+): StockData[] {
+    if (!sortColumn || !sortDirection) {
+        return stockData;
+    }
+
+    return [...stockData].sort((a, b) => {
+        let aValue = a[sortColumn as keyof StockData];
+        let bValue = b[sortColumn as keyof StockData];
+
+        // Handle special cases for computed columns
+        if (sortColumn === StockColumnKey.CurrentPrice ||
+            sortColumn === StockColumnKey.FiftyTwoWeekHigh ||
+            sortColumn === StockColumnKey.FiftyTwoWeekLow) {
+            const aSymbol = a[StockColumnKey.Symbol] as string;
+            const bSymbol = b[StockColumnKey.Symbol] as string;
+            const aPriceData = priceMap[aSymbol];
+            const bPriceData = priceMap[bSymbol];
+
+            if (sortColumn === StockColumnKey.CurrentPrice) {
+                aValue = aPriceData?.price ?? a[StockColumnKey.CurrentPrice];
+                bValue = bPriceData?.price ?? b[StockColumnKey.CurrentPrice];
+            } else if (sortColumn === StockColumnKey.FiftyTwoWeekHigh) {
+                aValue = aPriceData?.fiftyTwoWeekHigh;
+                bValue = bPriceData?.fiftyTwoWeekHigh;
+            } else if (sortColumn === StockColumnKey.FiftyTwoWeekLow) {
+                aValue = aPriceData?.fiftyTwoWeekLow;
+                bValue = bPriceData?.fiftyTwoWeekLow;
+            }
+        }
+
+        // Handle null/undefined values
+        if (aValue == null && bValue == null) return 0;
+        if (aValue == null) return sortDirection === 'asc' ? 1 : -1;
+        if (bValue == null) return sortDirection === 'asc' ? -1 : 1;
+
+        // Numeric comparison
+        if (typeof aValue === 'number' && typeof bValue === 'number') {
+            return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+        }
+
+        // String comparison
+        const aStr = String(aValue).toLowerCase();
+        const bStr = String(bValue).toLowerCase();
+
+        if (sortDirection === 'asc') {
+            return aStr < bStr ? -1 : aStr > bStr ? 1 : 0;
+        } else {
+            return aStr > bStr ? -1 : aStr < bStr ? 1 : 0;
+        }
+    });
+}
+
+/**
+ * Get the sort icon JSX element for a column
+ * @param columnKey Column key to get icon for
+ * @param currentSortColumn Currently sorted column
+ * @param sortDirection Current sort direction
+ * @returns JSX element for sort icon
+ */
+export function getSortIcon(
+    columnKey: StockColumnKeyType,
+    currentSortColumn: StockColumnKeyType | null,
+    sortDirection: SortDirection
+): React.ReactElement {
+    if (currentSortColumn !== columnKey) {
+        return <span className="ml-1 text-gray-400" >⇅</span>;
+    }
+    if (sortDirection === 'asc') {
+        return <span className="ml-1 text-blue-600" >↑</span>;
+    }
+    return <span className="ml-1 text-blue-600" >↓</span>;
+}
+
+/**
+ * Handle sort state changes for table sorting
+ * @param columnKey Column key that was clicked
+ * @param currentSortColumn Current sorted column
+ * @param currentSortDirection Current sort direction
+ * @returns New sort state { sortColumn, sortDirection }
+ */
+export function handleSortStateChange(
+    columnKey: StockColumnKeyType,
+    currentSortColumn: StockColumnKeyType | null,
+    currentSortDirection: SortDirection
+): { sortColumn: StockColumnKeyType | null; sortDirection: SortDirection } {
+    if (currentSortColumn === columnKey) {
+        // Cycle through: asc -> desc -> null
+        if (currentSortDirection === 'asc') {
+            return { sortColumn: columnKey, sortDirection: 'desc' };
+        } else if (currentSortDirection === 'desc') {
+            return { sortColumn: null, sortDirection: null };
+        }
+    }
+    return { sortColumn: columnKey, sortDirection: 'asc' };
 }
