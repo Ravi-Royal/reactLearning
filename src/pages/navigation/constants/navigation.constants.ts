@@ -2,7 +2,7 @@
 export const NAVIGATION_BRAND = {
     text: 'React Learning',
     to: '/',
-    className: 'text-white text-xl font-bold hover:text-blue-200 transition-colors'
+    className: 'text-gray-800 text-xl font-bold hover:text-blue-600 transition-colors'
 };
 
 export interface NavigationItem {
@@ -35,5 +35,5 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
 
 export const NAVIGATION_TAGLINE = {
     text: 'Learning React & TypeScript',
-    className: 'text-white text-sm hidden sm:inline'
+    className: 'text-gray-600 text-sm hidden sm:inline'
 };
