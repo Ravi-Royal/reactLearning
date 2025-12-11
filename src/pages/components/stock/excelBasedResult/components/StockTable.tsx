@@ -7,6 +7,14 @@ import PriceCell from './PriceCell';
 import RealizedPriceVsValueIndicator from './RealizedPriceVsValueIndicator';
 import UnrealizedPriceToCmpIndicator from './UnrealizedPriceToCmpIndicator';
 
+/**
+ * Array of stock symbols to ignore/exclude from calculations and display
+ * Add symbols here that should not be included in totals or table display
+ */
+const IGNORED_SYMBOLS = [
+  'SGBDE31III-GB'
+];
+
 interface StockTableProps {
   stockData: StockData[];
   priceMap: PriceMap;
@@ -25,9 +33,17 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
     setSortDirection(newState.sortDirection);
   };
 
+  // Filter out ignored symbols before any processing
+  const filteredData = useMemo(() => {
+    return stockData.filter(row => {
+      const symbol = row[StockColumnKey.Symbol] as string;
+      return !IGNORED_SYMBOLS.includes(symbol);
+    });
+  }, [stockData]);
+
   const sortedData = useMemo(() => {
-    return sortStockData(stockData, sortColumn, sortDirection, priceMap);
-  }, [stockData, sortColumn, sortDirection, priceMap]);
+    return sortStockData(filteredData, sortColumn, sortDirection, priceMap);
+  }, [filteredData, sortColumn, sortDirection, priceMap]);
 
   const columnTotals = useMemo(() => {
     return calculateColumnTotals(sortedData, priceMap);
