@@ -457,3 +457,67 @@ export function handleSortStateChange(
     }
     return { sortColumn: columnKey, sortDirection: 'asc' };
 }
+
+/**
+ * Calculate totals for numeric columns in stock data
+ * @param stockData Array of stock data
+ * @param priceMap Price map for computed columns
+ * @returns Object with column totals
+ */
+export function calculateColumnTotals(
+    stockData: StockData[],
+    priceMap: PriceMap
+): Record<string, number> {
+    const totals: Record<string, number> = {};
+
+    stockData.forEach((row) => {
+        // Handle numeric columns that should be totaled
+        const numericColumns = [
+            StockColumnKey.Quantity,
+            StockColumnKey.BuyValue,
+            StockColumnKey.SellValue,
+            StockColumnKey.RealizedPL,
+            StockColumnKey.UnrealizedPL,
+            StockColumnKey.OpenQuantity,
+            StockColumnKey.CustomRealisedStockValue,
+            StockColumnKey.CustomUnrealisedStockValue,
+        ];
+
+        numericColumns.forEach((columnKey) => {
+            const value = row[columnKey as keyof StockData];
+            if (typeof value === 'number') {
+                totals[columnKey] = (totals[columnKey] || 0) + value;
+            }
+        });
+
+        // Handle computed price columns
+        const symbol = row[StockColumnKey.Symbol] as string;
+        const priceData = priceMap[symbol];
+
+        if (priceData?.price != null) {
+            totals[StockColumnKey.CurrentPrice] = (totals[StockColumnKey.CurrentPrice] || 0) + priceData.price;
+        }
+        if (priceData?.fiftyTwoWeekHigh != null) {
+            totals[StockColumnKey.FiftyTwoWeekHigh] = (totals[StockColumnKey.FiftyTwoWeekHigh] || 0) + priceData.fiftyTwoWeekHigh;
+        }
+        if (priceData?.fiftyTwoWeekLow != null) {
+            totals[StockColumnKey.FiftyTwoWeekLow] = (totals[StockColumnKey.FiftyTwoWeekLow] || 0) + priceData.fiftyTwoWeekLow;
+        }
+
+        // Handle per-stock values
+        const quantity = row[StockColumnKey.Quantity] as number;
+        if (quantity && typeof quantity === 'number') {
+            const buyValuePerStock = row[StockColumnKey.BuyValuePerStock] as number;
+            const sellValuePerStock = row[StockColumnKey.SellValuePerStock] as number;
+
+            if (buyValuePerStock && typeof buyValuePerStock === 'number') {
+                totals[StockColumnKey.BuyValuePerStock] = (totals[StockColumnKey.BuyValuePerStock] || 0) + (buyValuePerStock * quantity);
+            }
+            if (sellValuePerStock && typeof sellValuePerStock === 'number') {
+                totals[StockColumnKey.SellValuePerStock] = (totals[StockColumnKey.SellValuePerStock] || 0) + (sellValuePerStock * quantity);
+            }
+        }
+    });
+
+    return totals;
+}

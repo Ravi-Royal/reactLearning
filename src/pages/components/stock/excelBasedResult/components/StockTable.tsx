@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { getSortIcon, handleSortStateChange, sortStockData, type SortDirection } from '../helpers/StockResult.helper';
+import { calculateColumnTotals, getSortIcon, handleSortStateChange, sortStockData, type SortDirection } from '../helpers/StockResult.helper';
 import type { PriceMap, StockColumnKeyType, StockData } from '../types/StockResult.types';
 import { pnlColumnKeys, StockColumnKey, stockColumns } from '../types/StockResult.types';
 import NearLowIndicator from './NearLowIndicator';
@@ -29,13 +29,17 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
     return sortStockData(stockData, sortColumn, sortDirection, priceMap);
   }, [stockData, sortColumn, sortDirection, priceMap]);
 
+  const columnTotals = useMemo(() => {
+    return calculateColumnTotals(sortedData, priceMap);
+  }, [sortedData, priceMap]);
+
   const getSortIconElement = (columnKey: StockColumnKeyType) => {
     return getSortIcon(columnKey, sortColumn, sortDirection);
   };
 
   return (
     <div className="overflow-x-auto" style={{ maxHeight: '500px', overflowY: 'auto' }}>
-      <table className="min-w-full border-collapse border border-gray-300">
+      <table className="min-w-full border-collapse border border-gray-300 relative">
         <thead className="bg-gray-100">
           <tr>
             {stockColumns.map((col: { key: StockColumnKeyType; label: string; align?: 'left' | 'right' }) => (
@@ -165,6 +169,47 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
             </tr>
           ))}
         </tbody>
+        <tfoot className="bg-gray-200 font-semibold sticky bottom-0 z-10">
+          <tr>
+            {stockColumns.map((col: { key: StockColumnKeyType; label: string; align?: 'left' | 'right' }) => {
+              const total = columnTotals[col.key];
+
+              if (col.key === StockColumnKey.Symbol) {
+                return (
+                  <td
+                    key={`${col.key}-total`}
+                    className="border border-gray-300 px-4 py-2 bg-gray-200 font-bold"
+                  >
+                    TOTAL
+                  </td>
+                );
+              }
+
+              if (total != null && !isNaN(total)) {
+                return (
+                  <td
+                    key={`${col.key}-total`}
+                    className={`border border-gray-300 px-4 py-2 bg-gray-200 font-bold${col.align === 'right' ? ' text-right' : ''}`}
+                  >
+                    {typeof total === 'number' ? total.toLocaleString('en-IN', {
+                      maximumFractionDigits: 2,
+                      minimumFractionDigits: 0
+                    }) : total}
+                  </td>
+                );
+              }
+
+              return (
+                <td
+                  key={`${col.key}-total`}
+                  className={`border border-gray-300 px-4 py-2 bg-gray-200${col.align === 'right' ? ' text-right' : ''}`}
+                >
+                  -
+                </td>
+              );
+            })}
+          </tr>
+        </tfoot>
       </table>
     </div>
   );
