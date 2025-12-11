@@ -469,9 +469,11 @@ export function calculateColumnTotals(
     priceMap: PriceMap
 ): Record<string, number> {
     const totals: Record<string, number> = {};
+    let totalBuyValue = 0;
+    let totalCurrentValueOfOpenPositions = 0;
 
     stockData.forEach((row) => {
-        // Handle numeric columns that should be totaled
+        // Handle numeric columns that should be totaled (excluding price-related columns)
         const numericColumns = [
             StockColumnKey.Quantity,
             StockColumnKey.BuyValue,
@@ -479,8 +481,6 @@ export function calculateColumnTotals(
             StockColumnKey.RealizedPL,
             StockColumnKey.UnrealizedPL,
             StockColumnKey.OpenQuantity,
-            StockColumnKey.CustomRealisedStockValue,
-            StockColumnKey.CustomUnrealisedStockValue,
         ];
 
         numericColumns.forEach((columnKey) => {
@@ -490,18 +490,19 @@ export function calculateColumnTotals(
             }
         });
 
-        // Handle computed price columns
+        // Accumulate buy value for percentage calculations
+        const buyValue = row[StockColumnKey.BuyValue] as number;
+        if (typeof buyValue === 'number') {
+            totalBuyValue += buyValue;
+        }
+
+        // Calculate current value of open positions for unrealized P&L percentage
+        const openQuantity = row[StockColumnKey.OpenQuantity] as number;
         const symbol = row[StockColumnKey.Symbol] as string;
         const priceData = priceMap[symbol];
 
-        if (priceData?.price != null) {
-            totals[StockColumnKey.CurrentPrice] = (totals[StockColumnKey.CurrentPrice] || 0) + priceData.price;
-        }
-        if (priceData?.fiftyTwoWeekHigh != null) {
-            totals[StockColumnKey.FiftyTwoWeekHigh] = (totals[StockColumnKey.FiftyTwoWeekHigh] || 0) + priceData.fiftyTwoWeekHigh;
-        }
-        if (priceData?.fiftyTwoWeekLow != null) {
-            totals[StockColumnKey.FiftyTwoWeekLow] = (totals[StockColumnKey.FiftyTwoWeekLow] || 0) + priceData.fiftyTwoWeekLow;
+        if (openQuantity && typeof openQuantity === 'number' && priceData?.price != null) {
+            totalCurrentValueOfOpenPositions += (priceData.price * openQuantity);
         }
 
         // Handle per-stock values
@@ -518,6 +519,15 @@ export function calculateColumnTotals(
             }
         }
     });
+
+    // Calculate percentage values
+    if (totalBuyValue > 0 && totals[StockColumnKey.RealizedPL]) {
+        totals[StockColumnKey.RealizedPLPct] = (totals[StockColumnKey.RealizedPL] / totalBuyValue) * 100;
+    }
+
+    if (totalCurrentValueOfOpenPositions > 0 && totals[StockColumnKey.UnrealizedPL]) {
+        totals[StockColumnKey.UnrealizedPLPct] = (totals[StockColumnKey.UnrealizedPL] / totalCurrentValueOfOpenPositions) * 100;
+    }
 
     return totals;
 }

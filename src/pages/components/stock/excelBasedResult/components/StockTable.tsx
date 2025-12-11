@@ -190,6 +190,26 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
             {stockColumns.map((col: { key: StockColumnKeyType; label: string; align?: 'left' | 'right' }) => {
               const total = columnTotals[col.key];
 
+              // Skip totals for price-related columns that don't make sense to sum
+              const skipTotalColumns: StockColumnKeyType[] = [
+                StockColumnKey.FiftyTwoWeekHigh,
+                StockColumnKey.FiftyTwoWeekLow,
+                StockColumnKey.CurrentPrice,
+                StockColumnKey.CustomRealisedStockValue,
+                StockColumnKey.CustomUnrealisedStockValue,
+              ];
+
+              if (skipTotalColumns.includes(col.key)) {
+                return (
+                  <td
+                    key={`${col.key}-total`}
+                    className={`border border-gray-300 px-4 py-2 bg-gray-200${col.align === 'right' ? ' text-right' : ''}`}
+                  >
+                    -
+                  </td>
+                );
+              }
+
               if (col.key === StockColumnKey.Symbol) {
                 return (
                   <td
@@ -197,6 +217,29 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                     className="border border-gray-300 px-4 py-2 bg-gray-200 font-bold"
                   >
                     TOTAL
+                  </td>
+                );
+              }
+
+              // Handle percentage columns specially
+              if (col.key === StockColumnKey.RealizedPLPct || col.key === StockColumnKey.UnrealizedPLPct) {
+                if (total != null && !isNaN(total)) {
+                  const color = total >= 0 ? 'text-green-600' : 'text-red-600';
+                  return (
+                    <td
+                      key={`${col.key}-total`}
+                      className={`border border-gray-300 px-4 py-2 bg-gray-200 font-bold text-right ${color}`}
+                    >
+                      {total.toFixed(2)}%
+                    </td>
+                  );
+                }
+                return (
+                  <td
+                    key={`${col.key}-total`}
+                    className="border border-gray-300 px-4 py-2 bg-gray-200 text-right"
+                  >
+                    -
                   </td>
                 );
               }
