@@ -1,17 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
 import Breadcrumbs from "./Breadcrumbs";
+import { HOOKS_DATA } from "../../constants/hooksNavigation.constants";
 
 function HooksNavigation() {
     const location = useLocation();
-
-    const hooks = [
-        { name: 'useState', description: 'Manage component state', icon: '📦' },
-        { name: 'useEffect', description: 'Handle side effects', icon: '⚡' },
-        { name: 'useRef', description: 'Access DOM elements', icon: '🎯' },
-        { name: 'useReducer', description: 'Complex state logic', icon: '🔄' },
-        { name: 'useContext', description: 'Share state globally', icon: '🌐' },
-        { name: 'useCallback', description: 'Memoize functions', icon: '📝' },
-    ];
 
     return (
         <div className="p-6">
@@ -22,7 +14,7 @@ function HooksNavigation() {
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {hooks.map((hook) => (
+                {HOOKS_DATA.map((hook) => (
                     <Link
                         key={hook.name}
                         to={hook.name.toLowerCase()}
