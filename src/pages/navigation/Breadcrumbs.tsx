@@ -15,13 +15,21 @@ function Breadcrumbs() {
             { label: 'Home', path: '/' }
         ];
 
-        if (pathnames.includes('stock')) {
-            breadcrumbs.push({ label: 'Stock Analysis', path: '/stock' });
+        if (pathnames.includes('investment')) {
+            breadcrumbs.push({ label: 'Investment Analysis', path: '/investment' });
 
-            if (pathnames.includes('analysis')) {
-                breadcrumbs.push({ label: 'P&L Analysis', path: '/stock/analysis' });
-            } else if (pathnames.includes('favorites')) {
-                breadcrumbs.push({ label: 'My Favorites', path: '/stock/favorites' });
+            if (pathnames.includes('stock')) {
+                breadcrumbs.push({ label: 'Stock Analysis', path: '/investment/stock' });
+
+                if (pathnames.includes('analysis')) {
+                    breadcrumbs.push({ label: 'P&L Analysis', path: '/investment/stock/analysis' });
+                } else if (pathnames.includes('favorites')) {
+                    breadcrumbs.push({ label: 'My Favorites', path: '/investment/stock/favorites' });
+                } else if (pathnames.includes('checklist')) {
+                    breadcrumbs.push({ label: 'Stock Checklist', path: '/investment/stock/checklist' });
+                }
+            } else if (pathnames.includes('bonds')) {
+                breadcrumbs.push({ label: 'Bonds & Fixed Income', path: '/investment/bonds' });
             }
         } else if (pathnames.includes('hooks')) {
             breadcrumbs.push({ label: 'React Hooks', path: '/hooks' });

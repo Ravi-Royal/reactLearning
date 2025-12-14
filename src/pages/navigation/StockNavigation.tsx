@@ -1,11 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
 import { STOCK_NAVIGATION_ITEMS, STOCK_QUICK_STATS } from "../../constants/stockNavigation.constants";
+import Breadcrumbs from "./Breadcrumbs";
 
 function StockNavigation() {
     const location = useLocation();
 
     return (
         <div className="p-6">
+            <Breadcrumbs />
             <div className="mb-6">
                 <Link
                     to="/investment"

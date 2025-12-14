@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Breadcrumbs from '../../navigation/Breadcrumbs';
 import type { MyStockItem } from './stockChecklist.constants';
 import { CHECKLIST_CATEGORIES, MY_STOCK_LIST } from './stockChecklist.constants';
 
@@ -53,6 +54,7 @@ function StockCheckList() {
 
     return (
         <div className="p-6">
+            <Breadcrumbs />
             <div className="mb-6">
                 <h1 className="text-2xl font-bold text-gray-800 mb-2">Stock Investment Checklist</h1>
                 <p className="text-gray-600 mb-4">Use this checklist to evaluate potential stock investments systematically.</p>
