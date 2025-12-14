@@ -52,6 +52,12 @@ function StockCheckList() {
     const checkedCount = checklistItems.filter(item => item.checked).length;
     const totalCount = checklistItems.length;
 
+    const aiItems = checklistItems.filter(item => item.category === CHECKLIST_CATEGORIES.AI);
+    const personalItems = checklistItems.filter(item => item.category === CHECKLIST_CATEGORIES.PERSONAL);
+
+    const aiCheckedCount = aiItems.filter(item => item.checked).length;
+    const personalCheckedCount = personalItems.filter(item => item.checked).length;
+
     return (
         <div className="p-6">
             <Breadcrumbs />
@@ -91,15 +97,31 @@ function StockCheckList() {
                             </div>
                         </div>
                     )}
-                    <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-blue-800">Progress:</span>
-                        <span className="text-sm font-bold text-blue-600">{checkedCount}/{totalCount} criteria met</span>
-                    </div>
-                    <div className="w-full bg-blue-200 rounded-full h-2 mt-2">
-                        <div
-                            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                            style={{ width: `${(checkedCount / totalCount) * 100}%` }}
-                        ></div>
+                    <div className="space-y-3">
+                        <div>
+                            <div className="flex items-center justify-between mb-1">
+                                <span className="text-sm font-medium text-blue-800">AI Criteria:</span>
+                                <span className="text-sm font-bold text-blue-600">{aiCheckedCount}/{aiItems.length} met</span>
+                            </div>
+                            <div className="w-full bg-blue-200 rounded-full h-2">
+                                <div
+                                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                                    style={{ width: `${aiItems.length > 0 ? (aiCheckedCount / aiItems.length) * 100 : 0}%` }}
+                                ></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div className="flex items-center justify-between mb-1">
+                                <span className="text-sm font-medium text-purple-800">Personal Criteria:</span>
+                                <span className="text-sm font-bold text-purple-600">{personalCheckedCount}/{personalItems.length} met</span>
+                            </div>
+                            <div className="w-full bg-purple-200 rounded-full h-2">
+                                <div
+                                    className="bg-purple-600 h-2 rounded-full transition-all duration-300"
+                                    style={{ width: `${personalItems.length > 0 ? (personalCheckedCount / personalItems.length) * 100 : 0}%` }}
+                                ></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
