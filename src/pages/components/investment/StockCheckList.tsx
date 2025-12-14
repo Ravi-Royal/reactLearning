@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import type { MyStockItem } from './StockCheckList.constants';
-import { CHECKLIST_CATEGORIES, MY_STOCK_LIST } from './StockCheckList.constants';
+import type { MyStockItem } from './stockChecklist.constants';
+import { CHECKLIST_CATEGORIES, MY_STOCK_LIST } from './stockChecklist.constants';
 
 function StockCheckList() {
     const [checklistItems, setChecklistItems] = useState([

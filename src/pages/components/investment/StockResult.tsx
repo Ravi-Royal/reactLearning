@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import Breadcrumbs from '../../../navigation/Breadcrumbs';
-import StockControls from './components/StockControls';
-import StockMetadata from './components/StockMetadata';
-import StockTable from './components/StockTable';
-import { formatNormalizedStockData, loadStockDataFromJSON, parseStockExcel, saveStockDataToJSON, updateStockPricesInJSON } from './helpers/StockResult.helper';
-import type { PriceMap, StockData } from './types/StockResult.types';
+import Breadcrumbs from '../../navigation/Breadcrumbs';
+import StockControls from './excelBasedResult/components/StockControls';
+import StockMetadata from './excelBasedResult/components/StockMetadata';
+import StockTable from './excelBasedResult/components/StockTable';
+import { formatNormalizedStockData, loadStockDataFromJSON, parseStockExcel, saveStockDataToJSON, updateStockPricesInJSON } from './excelBasedResult/helpers/StockResult.helper';
+import type { PriceMap, StockData } from './excelBasedResult/types/StockResult.types';
 
 /**
  * Main Stock Result component - orchestrates data loading and state management

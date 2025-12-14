@@ -1,17 +1,19 @@
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router-dom";
 import AboutPage from "../About";
 import HomePage from "../Home";
+import Bonds from "../components/bonds/Bonds";
 import UseCallbackHook from "../components/hookRef/UseCallbackHook";
 import UseContextHook from "../components/hookRef/UseContextHook";
 import UseEffectHook from "../components/hookRef/UseEffectHook";
 import UseReducerHook from "../components/hookRef/UseReducerHook";
 import UseRefHook from "../components/hookRef/UseRefHook";
 import UseStateHook from "../components/hookRef/UseStateHook";
-import MyFavList from "../components/stock/MyFavList";
-import StockResult from "../components/stock/excelBasedResult/StockResult";
-import StockCheckList from "../components/stock/stockChecklist/StockCheckList";
+import MyFavStocks from "../components/investment/MyFavStocks";
+import StockCheckList from "../components/investment/StockCheckList";
+import StockResult from "../components/investment/StockResult";
 import BaseNavigation from "../navigation/BaseNavigation";
 import HooksNavigation from "../navigation/HooksNavigation";
+import InvestmentNavigation from "../navigation/InvestmentNavigation";
 import StockNavigation from "../navigation/StockNavigation";
 
 function Routing() {
@@ -30,11 +32,15 @@ function Routing() {
                 <Route path="useContext" element={<UseContextHook />} />
                 <Route path="useCallback" element={<UseCallbackHook />} />
             </Route>
-            <Route path="/stock" element={<Outlet />}>
-                <Route index element={<StockNavigation />} />
-                <Route path="analysis" element={<StockResult />} />
-                <Route path="favorites" element={<MyFavList />} />
-                <Route path="checklist" element={<StockCheckList />} />
+            <Route path="/investment" element={<Outlet />}>
+                <Route index element={<InvestmentNavigation />} />
+                <Route path="stock" element={<Outlet />}>
+                    <Route index element={<StockNavigation />} />
+                    <Route path="analysis" element={<StockResult />} />
+                    <Route path="favorites" element={<MyFavStocks />} />
+                    <Route path="checklist" element={<StockCheckList />} />
+                </Route>
+                <Route path="bonds" element={<Bonds />} />
             </Route>
             <Route path="*" element={<Navigate to="/home" replace />} />
 

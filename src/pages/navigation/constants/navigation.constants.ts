@@ -26,10 +26,10 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
         isActiveCheck: (pathname: string) => pathname === '/hooks'
     },
     {
-        id: 'stock',
-        label: 'Stock Analysis',
-        path: '/stock',
-        isActiveCheck: (pathname: string) => pathname.startsWith('/stock')
+        id: 'investment',
+        label: 'Investment Analysis',
+        path: '/investment',
+        isActiveCheck: (pathname: string) => pathname.startsWith('/investment')
     }
 ];
 
