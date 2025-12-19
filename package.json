@@ -6,7 +6,7 @@
   "homepage": "https://ravi-royal.github.io/reactLearning",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build --base /reactLearning/",
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build:gh-pages",
