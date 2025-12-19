@@ -1,17 +1,17 @@
 
-import { useReducer } from "react";
+import { useReducer } from 'react';
 
-type Action = { type: 'increment' | 'decrement', payload: number };
+type ReducerAction = { type: 'increment' | 'decrement'; payload: number };
 
-const reducer = (state: number, action: Action) => {
+const reducer = (state: number, action: ReducerAction): number => {
     switch (action.type) {
         case 'increment': return state + action.payload;
         case 'decrement': return state - action.payload;
         default: return state;
     }
-}
+};
 
-function UseReducerHook() {
+function UseReducerHook(): React.ReactElement {
     const [count, dispatch] = useReducer(reducer, 0);
 
     return (

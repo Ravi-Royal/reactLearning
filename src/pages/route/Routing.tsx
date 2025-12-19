@@ -25,13 +25,13 @@ const StockResult = lazy(() => import('../components/investment/stock/analysis/z
 const StockCheckList = lazy(() => import('../components/investment/stock/checklist/StockCheckList'));
 const MyFavStocks = lazy(() => import('../components/investment/stock/favorites/MyFavStocks'));
 
-const RouteFallback = () => (
+const RouteFallback = (): React.ReactElement => (
     <div className="p-6">
         <div className="text-gray-600">Loading…</div>
     </div>
 );
 
-function Routing() {
+function Routing(): React.ReactElement {
     return (
         <BrowserRouter>
             <BaseNavigation />

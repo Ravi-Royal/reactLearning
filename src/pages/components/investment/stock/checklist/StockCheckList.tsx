@@ -109,11 +109,11 @@ function StockCheckList() {
                                         </div>
                                     )}
                                 </div>
-                                <span className={`px-2 py-1 text-xs rounded-full font-medium ${selectedStock.catagery === 'Good Stock' ? 'bg-green-600 text-white' :
-                                    selectedStock.catagery === 'Check Stock' ? 'bg-yellow-600 text-white' :
+                                <span className={`px-2 py-1 text-xs rounded-full font-medium ${selectedStock.category === 'Good Stock' ? 'bg-green-600 text-white' :
+                                    selectedStock.category === 'Check Stock' ? 'bg-yellow-600 text-white' :
                                         'bg-red-600 text-white'
                                     }`}>
-                                    {selectedStock.catagery}
+                                    {selectedStock.category}
                                 </span>
                             </div>
                         </div>
@@ -325,11 +325,11 @@ function StockCheckList() {
                                     >
                                         <div className="flex items-center gap-3">
                                             <span className="font-medium text-gray-800">{stock.name}</span>
-                                            <span className={`px-2 py-1 text-xs rounded-full font-medium ${stock.catagery === 'Good Stock' ? 'bg-green-100 text-green-700' :
-                                                stock.catagery === 'Check Stock' ? 'bg-yellow-100 text-yellow-700' :
+                                            <span className={`px-2 py-1 text-xs rounded-full font-medium ${stock.category === 'Good Stock' ? 'bg-green-100 text-green-700' :
+                                                stock.category === 'Check Stock' ? 'bg-yellow-100 text-yellow-700' :
                                                     'bg-red-100 text-red-700'
                                                 }`}>
-                                                {stock.catagery}
+                                                {stock.category}
                                             </span>
                                         </div>
                                         <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

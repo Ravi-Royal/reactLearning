@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-function UseStateHook() {
-    const [count, setCount] = useState(0);
+function UseStateHook(): React.ReactElement {
+    const [count, setCount] = useState<number>(0);
 
-    const handleClick = () => {
+    const handleClick = (): void => {
         setCount(count + 1);
     };
 

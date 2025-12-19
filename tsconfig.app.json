@@ -21,6 +21,14 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
+    /* Path aliases */
+    "baseUrl": ".",
+    "paths": {
+      "@constants/*": ["src/constants/*"],
+      "@pages/*": ["src/pages/*"],
+      "@components/*": ["src/pages/components/*"],
+      "@assets/*": ["src/assets/*"]
+    },
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
