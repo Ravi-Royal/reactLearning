@@ -1,0 +1,1 @@
+import{a as e,t}from"./index-BagyG680.js";var n=e(),r=t();function i(){let e=(0,n.c)(1),t;return e[0]===Symbol.for(`react.memo_cache_sentinel`)?(t=(0,r.jsxs)(`div`,{children:[(0,r.jsx)(`h1`,{children:`About Us`}),(0,r.jsx)(`p`,{children:`This page contains information about our application and team.`})]}),e[0]=t):t=e[0],t}var a=i;export{a as default};
