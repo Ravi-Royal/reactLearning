@@ -33,7 +33,7 @@ const RouteFallback = (): React.ReactElement => (
 
 function Routing(): React.ReactElement {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/reactLearning">
       <BaseNavigation />
       <Suspense fallback={<RouteFallback />}>
         <Routes>
