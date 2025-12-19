@@ -76,11 +76,51 @@ function BondCheckList() {
   const aiCheckedCount = aiItems.filter(item => item.checked).length;
   const personalCheckedCount = personalItems.filter(item => item.checked).length;
 
+  const handleCopyChecklist = (category: string) => {
+    const items = checklistItems.filter(item => item.category === category);
+    const text = `Bond Investment Checklist - ${category}\n\n` +
+      items.map(item => `${item.checked ? '✓' : '☐'} ${item.label}`).join('\n') +
+      `\n\nTotal: ${items.filter(i => i.checked).length}/${items.length} completed`;
+
+    navigator.clipboard.writeText(text).then(() => {
+      console.warn('Checklist copied to clipboard!');
+    }).catch(err => {
+      console.error('Failed to copy:', err);
+    });
+  };
+
+  const handleCopyAll = () => {
+    const text = 'Bond Investment Checklist\n\n' +
+      `Personal Criteria (${personalCheckedCount}/${personalItems.length}):\n` +
+      personalItems.map(item => `${item.checked ? '✓' : '☐'} ${item.label}`).join('\n') +
+      `\n\nAI Criteria (${aiCheckedCount}/${aiItems.length}):\n` +
+      aiItems.map(item => `${item.checked ? '✓' : '☐'} ${item.label}`).join('\n') +
+      `\n\nTotal: ${checkedCount}/${totalCount} completed`;
+
+    navigator.clipboard.writeText(text).then(() => {
+      console.warn('All checklist items copied to clipboard!');
+    }).catch(err => {
+      console.error('Failed to copy:', err);
+    });
+  };
+
   return (
     <div className="p-6">
       <Breadcrumbs />
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">Bond Investment Checklist</h1>
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="text-2xl font-bold text-gray-800">Bond Investment Checklist</h1>
+          <button
+            onClick={handleCopyAll}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+            title="Copy all checklist items"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            Copy All
+          </button>
+        </div>
         <p className="text-gray-600 mb-4">Use this checklist to evaluate potential bond investments systematically.</p>
 
         <div className="flex flex-wrap gap-4 mb-4 text-xs">
@@ -170,9 +210,21 @@ function BondCheckList() {
         <div className="grid md:grid-cols-2 gap-6">
           {/* Personal Criteria Section */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-purple-800 border-b border-purple-200 pb-2">
-              Personal Criteria ({personalCheckedCount}/{personalItems.length})
-            </h3>
+            <div className="flex items-center justify-between border-b border-purple-200 pb-2">
+              <h3 className="text-lg font-semibold text-purple-800">
+                Personal Criteria ({personalCheckedCount}/{personalItems.length})
+              </h3>
+              <button
+                onClick={() => handleCopyChecklist(CHECKLIST_CATEGORIES.PERSONAL)}
+                className="flex items-center gap-1 px-2 py-1 text-xs bg-purple-100 hover:bg-purple-200 text-purple-700 rounded transition-colors"
+                title="Copy Personal criteria"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                Copy
+              </button>
+            </div>
             <div className="max-h-80 overflow-y-auto space-y-3">
               {personalItems.map((item) => (
                 <div
@@ -210,9 +262,21 @@ function BondCheckList() {
 
           {/* AI Criteria Section */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-blue-800 border-b border-blue-200 pb-2">
-              AI Criteria ({aiCheckedCount}/{aiItems.length})
-            </h3>
+            <div className="flex items-center justify-between border-b border-blue-200 pb-2">
+              <h3 className="text-lg font-semibold text-blue-800">
+                AI Criteria ({aiCheckedCount}/{aiItems.length})
+              </h3>
+              <button
+                onClick={() => handleCopyChecklist(CHECKLIST_CATEGORIES.AI)}
+                className="flex items-center gap-1 px-2 py-1 text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 rounded transition-colors"
+                title="Copy AI criteria"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                Copy
+              </button>
+            </div>
             <div className="max-h-80 overflow-y-auto space-y-3">
               {aiItems.map((item) => (
                 <div
