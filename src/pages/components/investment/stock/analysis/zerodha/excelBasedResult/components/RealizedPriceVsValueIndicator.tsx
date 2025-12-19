@@ -13,10 +13,10 @@ interface RealizedPriceVsValueIndicatorProps {
  * - otherwise: neutral
  */
 const RealizedPriceVsValueIndicator: React.FC<RealizedPriceVsValueIndicatorProps> = ({ price, buyPerStock, sellPerStock }) => {
-  if (price == null) return <span className="text-gray-400">N/A</span>;
+  if (price === null || price === undefined) { return <span className="text-gray-400">N/A</span>; }
 
   // Prioritize buy check (darker green)
-  if (buyPerStock != null && price < buyPerStock) {
+  if (buyPerStock !== null && buyPerStock !== undefined && price < buyPerStock) {
     const pct = ((buyPerStock - price) / buyPerStock) * 100;
     return (
       <span className="inline-flex items-center px-2 py-1 rounded text-sm font-medium bg-green-800 text-white" title={`Price ${price} is ${pct.toFixed(1)}% below Buy Value Per Stock (${buyPerStock})`}>
@@ -25,7 +25,7 @@ const RealizedPriceVsValueIndicator: React.FC<RealizedPriceVsValueIndicatorProps
     );
   }
 
-  if (sellPerStock != null && price < sellPerStock) {
+  if (sellPerStock !== null && sellPerStock !== undefined && price < sellPerStock) {
     const pct = ((sellPerStock - price) / sellPerStock) * 100;
     return (
       <span className="inline-flex items-center px-2 py-1 rounded text-sm font-medium bg-green-200 text-green-900" title={`Price ${price} is ${pct.toFixed(1)}% below Sell Value Per Stock (${sellPerStock})`}>

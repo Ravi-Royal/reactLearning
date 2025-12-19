@@ -12,7 +12,7 @@ interface StockControlsProps {
 const StockControls: React.FC<StockControlsProps> = ({
   onUpdatePrices,
   onRefreshData,
-  updatingPrices
+  updatingPrices,
 }) => {
   return (
     <div className="flex gap-2">

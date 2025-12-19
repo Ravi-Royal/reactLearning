@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import Breadcrumbs from '../../../../navigation/Breadcrumbs';
-import type { MyBondItem } from './bondChecklist.constants';
-import { CHECKLIST_CATEGORIES, MY_BOND_LIST } from './bondChecklist.constants';
+import { CHECKLIST_CATEGORIES, MY_BOND_LIST, type MyBondItem } from './bondChecklist.constants';
 
 function BondCheckList() {
     const [checklistItems, setChecklistItems] = useState([
@@ -14,7 +13,7 @@ function BondCheckList() {
         { id: 'tax', label: 'Tax efficiency', checked: false, category: CHECKLIST_CATEGORIES.AI },
         { id: 'personalRisk', label: 'Matches my risk tolerance', checked: false, category: CHECKLIST_CATEGORIES.AI },
         { id: 'personalDuration', label: 'Fits my investment timeline', checked: false, category: CHECKLIST_CATEGORIES.AI },
-        { id: 'personalIncome', label: 'Provides desired income stream', checked: false, category: CHECKLIST_CATEGORIES.AI }
+        { id: 'personalIncome', label: 'Provides desired income stream', checked: false, category: CHECKLIST_CATEGORIES.AI },
     ]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,14 +22,14 @@ function BondCheckList() {
     const handleCheckChange = (id: string) => {
         setChecklistItems(items =>
             items.map(item =>
-                item.id === id ? { ...item, checked: !item.checked } : item
-            )
+                item.id === id ? { ...item, checked: !item.checked } : item,
+            ),
         );
     };
 
     const handleUncheckAll = () => {
         setChecklistItems(items =>
-            items.map(item => ({ ...item, checked: false }))
+            items.map(item => ({ ...item, checked: false })),
         );
     };
 
@@ -39,8 +38,8 @@ function BondCheckList() {
             items.map(item =>
                 item.category === CHECKLIST_CATEGORIES.AI
                     ? { ...item, checked: false }
-                    : item
-            )
+                    : item,
+            ),
         );
     };
 
@@ -49,8 +48,8 @@ function BondCheckList() {
             items.map(item =>
                 item.category === CHECKLIST_CATEGORIES.PERSONAL
                     ? { ...item, checked: false }
-                    : item
-            )
+                    : item,
+            ),
         );
     };
 

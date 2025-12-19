@@ -24,10 +24,18 @@
     /* Path aliases */
     "baseUrl": ".",
     "paths": {
-      "@constants/*": ["src/constants/*"],
-      "@pages/*": ["src/pages/*"],
-      "@components/*": ["src/pages/components/*"],
-      "@assets/*": ["src/assets/*"]
+      "@constants/*": [
+        "src/constants/*"
+      ],
+      "@pages/*": [
+        "src/pages/*"
+      ],
+      "@components/*": [
+        "src/pages/components/*"
+      ],
+      "@assets/*": [
+        "src/assets/*"
+      ]
     },
     /* Linting */
     "strict": true,

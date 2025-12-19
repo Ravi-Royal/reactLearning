@@ -1,7 +1,6 @@
 
 import { YAHOO_FINANCE_CONFIG } from '../../../../../../../../constants/apiConfig';
-import type { PriceFetchResult, PriceMap, StockColumnKeyType, StockData, StockPriceInfo, StoredStockData, YahooFinanceResponse } from '../types/StockResult.types';
-import { StockColumnKey } from '../types/StockResult.types';
+import { StockColumnKey, type PriceFetchResult, type PriceMap, type StockColumnKeyType, type StockData, type StockPriceInfo, type StoredStockData, type YahooFinanceResponse } from '../types/StockResult.types';
 
 /**
  * Parse an Excel ArrayBuffer and return normalized stock data.
@@ -26,7 +25,7 @@ export async function parseStockExcel(arrayBuffer: ArrayBuffer): Promise<StockDa
 
     // Find the row that contains "Symbol" as the first column (header row)
     const headerRowIndex = allData.findIndex(
-        (row) => Array.isArray(row) && row.length > 0 && String(row[0]).trim() === 'Symbol'
+        (row) => Array.isArray(row) && row.length > 0 && String(row[0]).trim() === 'Symbol',
     );
     if (headerRowIndex === -1) {
         throw new Error('Could not find header row with "Symbol" column');
@@ -83,9 +82,9 @@ export function formatNormalizedStockData(data: StockData[]): StockData[] {
         if (stockRealizedProfit > 0) {
             const stockprofitPerStock = stockRealizedProfit / numberOfStocksQuantity;
             const stockBuyingPrice = buyValuePerStock - stockprofitPerStock;
-            customRealisedStockValue = +stockBuyingPrice.toFixed(2);
+            customRealisedStockValue = Number(stockBuyingPrice.toFixed(2));
         } else {
-            customRealisedStockValue = +sellValuePerStock.toFixed(2);
+            customRealisedStockValue = Number(sellValuePerStock.toFixed(2));
         }
 
         // Calculate custom unrealized stock value
@@ -94,12 +93,12 @@ export function formatNormalizedStockData(data: StockData[]): StockData[] {
         const stockUnRealizedProfitPerStock = unrealizedPL / openQuantity;
         const buyUnRealizedValuePerStock = (Number(row[StockColumnKey.OpenValue]) || 0) / openQuantity;
         const stockUnRealizedBuyingPrice = buyUnRealizedValuePerStock + stockUnRealizedProfitPerStock;
-        const customUnrealisedStockValue = +stockUnRealizedBuyingPrice.toFixed(2);
+        const customUnrealisedStockValue = Number(stockUnRealizedBuyingPrice.toFixed(2));
 
         return {
             ...row,
-            [StockColumnKey.BuyValuePerStock]: +buyValuePerStock.toFixed(2),
-            [StockColumnKey.SellValuePerStock]: +sellValuePerStock.toFixed(2),
+            [StockColumnKey.BuyValuePerStock]: Number(buyValuePerStock.toFixed(2)),
+            [StockColumnKey.SellValuePerStock]: Number(sellValuePerStock.toFixed(2)),
             [StockColumnKey.CustomRealisedStockValue]: customRealisedStockValue,
             [StockColumnKey.CustomUnrealisedStockValue]: customUnrealisedStockValue,
         };
@@ -155,13 +154,13 @@ function createEmptyPriceInfo(): StockPriceInfo {
  */
 export async function fetchStockPrices(symbols: string[]): Promise<Record<string, StockPriceInfo>> {
     const uniqueSymbols = Array.from(new Set(symbols.filter(Boolean)));
-    if (uniqueSymbols.length === 0) return {};
+    if (uniqueSymbols.length === 0) { return {}; }
 
     const priceMap: Record<string, StockPriceInfo> = {};
 
     // First, try primary exchange for all symbols in parallel
     const primaryResults = await fetchPricesFromAPI(uniqueSymbols, (symbol) =>
-        yahooFinance(symbol, YAHOO_FINANCE_CONFIG.exchanges.nse)
+        yahooFinance(symbol, YAHOO_FINANCE_CONFIG.exchanges.nse),
     );
 
     // Build initial price map from primary results
@@ -174,15 +173,15 @@ export async function fetchStockPrices(symbols: string[]): Promise<Record<string
         .filter(({ price }) => price === null)
         .map(({ symbol }) => symbol);
 
-    console.log('Symbols with null prices from primary exchange:', failedSymbols);
+    console.warn('Symbols with null prices from primary exchange:', failedSymbols);
 
     // If there are failed symbols, try fallback exchange in parallel
     if (failedSymbols.length > 0) {
         const fallbackResults = await fetchPricesFromAPI(failedSymbols, (symbol) =>
-            yahooFinance(symbol, YAHOO_FINANCE_CONFIG.exchanges.bse)
+            yahooFinance(symbol, YAHOO_FINANCE_CONFIG.exchanges.bse),
         );
 
-        console.log('Fallback exchange results:', fallbackResults);
+        console.warn('Fallback exchange results:', fallbackResults);
 
         // Update the price map with fallback results (only if primary was null)
         fallbackResults.forEach(({ symbol, ...priceInfo }) => {
@@ -203,7 +202,7 @@ export async function fetchStockPrices(symbols: string[]): Promise<Record<string
  */
 async function fetchPricesFromAPI(
     symbols: string[],
-    apiFunction: (symbol: string) => Promise<StockPriceInfo>
+    apiFunction: (symbol: string) => Promise<StockPriceInfo>,
 ): Promise<PriceFetchResult[]> {
     const promises = symbols.map(async (symbol) => {
         try {
@@ -231,11 +230,11 @@ export async function loadStockDataFromJSON(): Promise<StoredStockData | null> {
     try {
         const response = await fetch('/src/privateDocument/stockData.json');
         if (!response.ok) {
-            console.log('No stored data file found (stockData.json)');
+            console.warn('No stored data file found (stockData.json)');
             return null;
         }
         const data = await response.json() as StoredStockData;
-        console.log(`Loaded ${data.stocks.length} stocks from stockData.json`);
+        console.warn(`Loaded ${data.stocks.length} stocks from stockData.json`);
         return data;
     } catch (error) {
         console.warn('Error loading JSON data from file:', error);
@@ -255,7 +254,7 @@ export async function saveStockDataToJSON(data: StockData[], sourceFile: string,
 
     // Fetch prices from Yahoo API if requested
     if (fetchPrices) {
-        console.log('Fetching prices from Yahoo Finance API...');
+        console.warn('Fetching prices from Yahoo Finance API...');
         const symbols = data.map(stock => stock.Symbol);
         const priceMap = await fetchStockPrices(symbols);
 
@@ -267,7 +266,7 @@ export async function saveStockDataToJSON(data: StockData[], sourceFile: string,
             [StockColumnKey.FiftyTwoWeekLow]: priceMap[stock.Symbol]?.fiftyTwoWeekLow ?? null,
         }));
 
-        console.log('Prices fetched and added to stock data');
+        console.warn('Prices fetched and added to stock data');
     }
 
     const storedData: StoredStockData = {
@@ -294,8 +293,8 @@ export async function saveStockDataToJSON(data: StockData[], sourceFile: string,
     // Clean up
     URL.revokeObjectURL(url);
 
-    console.log(`Stock data prepared for download: ${stocksWithPrices.length} records`);
-    console.log('Please save the downloaded stockData.json file to: src/privateDocument/stockData.json');
+    console.warn(`Stock data prepared for download: ${stocksWithPrices.length} records`);
+    console.warn('Please save the downloaded stockData.json file to: src/privateDocument/stockData.json');
 }
 
 /**
@@ -338,8 +337,8 @@ export async function updateStockPricesInJSON(storedData: StoredStockData): Prom
     // Clean up
     URL.revokeObjectURL(url);
 
-    console.log('Updated stock data prepared for download');
-    console.log('Please save the downloaded stockData.json file to: src/privateDocument/stockData.json');
+    console.warn('Updated stock data prepared for download');
+    console.warn('Please save the downloaded stockData.json file to: src/privateDocument/stockData.json');
 
     return updatedData;
 }
@@ -361,7 +360,7 @@ export function sortStockData(
     stockData: StockData[],
     sortColumn: StockColumnKeyType | null,
     sortDirection: SortDirection,
-    priceMap: PriceMap
+    priceMap: PriceMap,
 ): StockData[] {
     if (!sortColumn || !sortDirection) {
         return stockData;
@@ -393,9 +392,9 @@ export function sortStockData(
         }
 
         // Handle null/undefined values
-        if (aValue == null && bValue == null) return 0;
-        if (aValue == null) return sortDirection === 'asc' ? 1 : -1;
-        if (bValue == null) return sortDirection === 'asc' ? -1 : 1;
+        if ((aValue === null || aValue === undefined) && (bValue === null || bValue === undefined)) { return 0; }
+        if (aValue === null || aValue === undefined) { return sortDirection === 'asc' ? 1 : -1; }
+        if (bValue === null || bValue === undefined) { return sortDirection === 'asc' ? -1 : 1; }
 
         // Numeric comparison
         if (typeof aValue === 'number' && typeof bValue === 'number') {
@@ -424,7 +423,7 @@ export function sortStockData(
 export function getSortIcon(
     columnKey: StockColumnKeyType,
     currentSortColumn: StockColumnKeyType | null,
-    sortDirection: SortDirection
+    sortDirection: SortDirection,
 ): React.ReactElement {
     if (currentSortColumn !== columnKey) {
         return <span className="ml-1 text-gray-400" >⇅</span>;
@@ -445,7 +444,7 @@ export function getSortIcon(
 export function handleSortStateChange(
     columnKey: StockColumnKeyType,
     currentSortColumn: StockColumnKeyType | null,
-    currentSortDirection: SortDirection
+    currentSortDirection: SortDirection,
 ): { sortColumn: StockColumnKeyType | null; sortDirection: SortDirection } {
     if (currentSortColumn === columnKey) {
         // Cycle through: asc -> desc -> null
@@ -466,7 +465,7 @@ export function handleSortStateChange(
  */
 export function calculateColumnTotals(
     stockData: StockData[],
-    priceMap: PriceMap
+    priceMap: PriceMap,
 ): Record<string, number> {
     const totals: Record<string, number> = {};
     let totalBuyValue = 0;
@@ -501,7 +500,7 @@ export function calculateColumnTotals(
         const symbol = row[StockColumnKey.Symbol] as string;
         const priceData = priceMap[symbol];
 
-        if (openQuantity && typeof openQuantity === 'number' && priceData?.price != null) {
+        if (openQuantity && typeof openQuantity === 'number' && priceData?.price !== null && priceData?.price !== undefined) {
             totalCurrentValueOfOpenPositions += (priceData.price * openQuantity);
         }
 

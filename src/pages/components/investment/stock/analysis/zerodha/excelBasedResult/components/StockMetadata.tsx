@@ -12,7 +12,7 @@ interface StockMetadataProps {
 const StockMetadata: React.FC<StockMetadataProps> = ({
   totalRecords,
   lastUpdated,
-  lastPriceUpdate
+  lastPriceUpdate,
 }) => {
   return (
     <div className="mb-4 space-y-1">

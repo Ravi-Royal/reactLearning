@@ -17,9 +17,9 @@ export interface StockApiConfig {
  * Yahoo Finance API configuration
  */
 export const YAHOO_FINANCE_CONFIG: StockApiConfig = {
-    baseUrl: '/yahooFinance/v8/finance/chart',
-    exchanges: {
-        nse: 'NS',    // National Stock Exchange
-        bse: 'BO',    // Bombay Stock Exchange
-    },
+  baseUrl: '/yahooFinance/v8/finance/chart',
+  exchanges: {
+    nse: 'NS',    // National Stock Exchange
+    bse: 'BO',    // Bombay Stock Exchange
+  },
 } as const;

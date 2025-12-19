@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { calculateColumnTotals, getSortIcon, handleSortStateChange, sortStockData, type SortDirection } from '../helpers/StockResult.helper';
-import type { PriceMap, StockColumnKeyType, StockData } from '../types/StockResult.types';
-import { pnlColumnKeys, StockColumnKey, stockColumns } from '../types/StockResult.types';
+import { pnlColumnKeys, StockColumnKey, stockColumns, type PriceMap, type StockColumnKeyType, type StockData } from '../types/StockResult.types';
 import NearLowIndicator from './NearLowIndicator';
 import PriceCell from './PriceCell';
 import RealizedPriceVsValueIndicator from './RealizedPriceVsValueIndicator';
@@ -12,7 +11,7 @@ import UnrealizedPriceToCmpIndicator from './UnrealizedPriceToCmpIndicator';
  * Add symbols here that should not be included in totals or table display
  */
 const IGNORED_SYMBOLS = [
-  'SGBDE31III-GB'
+  'SGBDE31III-GB',
 ];
 
 interface StockTableProps {
@@ -223,7 +222,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
 
               // Handle percentage columns specially
               if (col.key === StockColumnKey.RealizedPLPct || col.key === StockColumnKey.UnrealizedPLPct) {
-                if (total != null && !isNaN(total)) {
+                if (total !== null && total !== undefined && !isNaN(total)) {
                   const color = total >= 0 ? 'text-green-600' : 'text-red-600';
                   return (
                     <td
@@ -244,7 +243,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                 );
               }
 
-              if (total != null && !isNaN(total)) {
+              if (total !== null && total !== undefined && !isNaN(total)) {
                 return (
                   <td
                     key={`${col.key}-total`}
@@ -252,7 +251,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                   >
                     {typeof total === 'number' ? total.toLocaleString('en-IN', {
                       maximumFractionDigits: 2,
-                      minimumFractionDigits: 0
+                      minimumFractionDigits: 0,
                     }) : total}
                   </td>
                 );

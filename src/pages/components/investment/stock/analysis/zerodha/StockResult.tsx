@@ -95,7 +95,7 @@ const StockResult: React.FC = () => {
 
     applyLoadedStocks(enriched, prices);
     setNeedsSourceSelection(false);
-    console.log(`Loaded data from: ${sourceFileName}`);
+    console.warn(`Loaded data from: ${sourceFileName}`);
   };
 
   const loadFromPrivateDocument = async () => {
@@ -118,7 +118,7 @@ const StockResult: React.FC = () => {
 
   const handleUploadChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
-    if (!file) return;
+    if (!file) { return; }
     setUploadedFile(file);
     setExcelSource('upload');
 
@@ -140,7 +140,7 @@ const StockResult: React.FC = () => {
       setError(null);
 
       if (excelSource === 'private') {
-        console.log('Refreshing data from privateDocument Excel and fetching fresh prices...');
+        console.warn('Refreshing data from privateDocument Excel and fetching fresh prices...');
         const response = await fetch('/src/privateDocument/pnl-WAR042.xlsx');
         if (!response.ok) {
           throw new Error(`Failed to load Excel file: ${response.status} ${response.statusText}`);
@@ -154,14 +154,14 @@ const StockResult: React.FC = () => {
         if (!uploadedFile) {
           throw new Error('No uploaded Excel file found. Please upload the file again.');
         }
-        console.log('Refreshing data from uploaded Excel and fetching fresh prices...');
+        console.warn('Refreshing data from uploaded Excel and fetching fresh prices...');
         const arrayBuffer = await uploadedFile.arrayBuffer();
         await loadFromArrayBuffer(arrayBuffer, uploadedFile.name);
         return;
       }
 
       // If we loaded from JSON, we don't have access to the original Excel source.
-      console.log('Refreshing from JSON source is not supported. Use Update Prices instead.');
+      console.warn('Refreshing from JSON source is not supported. Use Update Prices instead.');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
       setError(errorMessage);
@@ -172,7 +172,7 @@ const StockResult: React.FC = () => {
   };
 
   const updatePrices = async () => {
-    if (stockData.length === 0) return;
+    if (stockData.length === 0) { return; }
 
     try {
       setUpdatingPrices(true);
@@ -202,7 +202,7 @@ const StockResult: React.FC = () => {
       });
       setPriceMap(updatedPriceMap);
 
-      console.log('Prices updated successfully');
+      console.warn('Prices updated successfully');
     } catch (err) {
       console.error('Error updating prices:', err);
       // Don't show error to user, just log it

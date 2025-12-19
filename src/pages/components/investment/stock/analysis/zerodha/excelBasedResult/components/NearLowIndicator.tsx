@@ -1,5 +1,5 @@
+import { getPriceRange, PERCENTAGE_THRESHOLDS, PRICE_RANGE_COLORS } from '@constants/thresholds.constants';
 import React from 'react';
-import { PERCENTAGE_THRESHOLDS, getPriceRange, PRICE_RANGE_COLORS } from '@constants/thresholds.constants';
 
 interface NearLowIndicatorProps {
   price: number | null | undefined;
@@ -15,7 +15,7 @@ interface NearLowIndicatorProps {
  * - >30%  : no highlight
  */
 const NearLowIndicator: React.FC<NearLowIndicatorProps> = ({ price, low }): React.ReactElement => {
-  if (price == null || low == null || low === 0) {
+  if (price === null || price === undefined || low === null || low === undefined || low === 0) {
     return <span className="text-gray-400">N/A</span>;
   }
 

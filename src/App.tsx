@@ -1,5 +1,5 @@
-import './App.css'
-import Routing from './pages/route/Routing'
+import './App.css';
+import Routing from './pages/route/Routing';
 
 function App() {
 
@@ -8,7 +8,7 @@ function App() {
       <Routing>
       </Routing>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

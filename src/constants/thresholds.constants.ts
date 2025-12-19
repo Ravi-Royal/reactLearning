@@ -62,9 +62,9 @@ export const PRICE_RANGE_COLORS = {
  * Helper to get price range from percentage
  */
 export const getPriceRange = (percentage: number): keyof typeof PRICE_RANGES => {
-  if (percentage <= PERCENTAGE_THRESHOLDS.price.VERY_CLOSE) return 'VERY_CLOSE_TO_LOW';
-  if (percentage <= PERCENTAGE_THRESHOLDS.price.CLOSE) return 'CLOSE_TO_LOW';
-  if (percentage <= PERCENTAGE_THRESHOLDS.price.MODERATE) return 'MODERATELY_CLOSE';
-  if (percentage <= PERCENTAGE_THRESHOLDS.price.FAR) return 'FAR_FROM_LOW';
+  if (percentage <= PERCENTAGE_THRESHOLDS.price.VERY_CLOSE) {return 'VERY_CLOSE_TO_LOW';}
+  if (percentage <= PERCENTAGE_THRESHOLDS.price.CLOSE) {return 'CLOSE_TO_LOW';}
+  if (percentage <= PERCENTAGE_THRESHOLDS.price.MODERATE) {return 'MODERATELY_CLOSE';}
+  if (percentage <= PERCENTAGE_THRESHOLDS.price.FAR) {return 'FAR_FROM_LOW';}
   return 'VERY_FAR';
 };
