@@ -23,7 +23,7 @@ function BaseNavigation() {
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive(item)
                     ? 'text-blue-600'
                     : 'text-black hover:text-gray-700 hover:bg-gray-300'
-                    }`}
+                  }`}
                   to={item.path}
                 >
                   {item.label}
