@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Breadcrumbs from '../../../../navigation/Breadcrumbs';
+import { copyAllChecklistItems, copyChecklistCategory, CopyAllIcon, CopyIcon } from '../../helpers/checklistCopy.helper';
 import { CHECKLIST_CATEGORIES, MY_STOCK_LIST, type MyStockItem } from './stockChecklist.constants';
 
 function StockCheckList() {
@@ -78,11 +79,37 @@ function StockCheckList() {
   const aiCheckedCount = aiItems.filter(item => item.checked).length;
   const personalCheckedCount = personalItems.filter(item => item.checked).length;
 
+  const handleCopyChecklist = (category: string) => {
+    copyChecklistCategory('Stock Investment Checklist', category, checklistItems);
+  };
+
+  const handleCopyAll = () => {
+    copyAllChecklistItems(
+      'Stock Investment Checklist',
+      [
+        { name: 'Personal Criteria', items: personalItems, checkedCount: personalCheckedCount },
+        { name: 'AI Criteria', items: aiItems, checkedCount: aiCheckedCount },
+      ],
+      checkedCount,
+      totalCount,
+    );
+  };
+
   return (
     <div className="p-6">
       <Breadcrumbs />
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 mb-2">Stock Investment Checklist</h1>
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="text-2xl font-bold text-gray-800">Stock Investment Checklist</h1>
+          <button
+            onClick={handleCopyAll}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+            title="Copy all checklist items"
+          >
+            <CopyAllIcon />
+            Copy All
+          </button>
+        </div>
         <p className="text-gray-600 mb-4">Use this checklist to evaluate potential stock investments systematically.</p>
 
         <div className="flex flex-wrap gap-4 mb-4 text-xs">
@@ -194,9 +221,19 @@ function StockCheckList() {
         <div className="grid md:grid-cols-2 gap-6">
           {/* Personal Criteria Section */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-purple-800 border-b border-purple-200 pb-2">
-                            Personal Criteria ({personalCheckedCount}/{personalItems.length})
-            </h3>
+            <div className="flex items-center justify-between border-b border-purple-200 pb-2">
+              <h3 className="text-lg font-semibold text-purple-800">
+                Personal Criteria ({personalCheckedCount}/{personalItems.length})
+              </h3>
+              <button
+                onClick={() => handleCopyChecklist(CHECKLIST_CATEGORIES.PERSONAL)}
+                className="flex items-center gap-1 px-2 py-1 text-xs bg-purple-100 hover:bg-purple-200 text-purple-700 rounded transition-colors"
+                title="Copy Personal criteria"
+              >
+                <CopyIcon />
+                Copy
+              </button>
+            </div>
             <div className="max-h-80 overflow-y-auto space-y-3">
               {personalItems.map((item) => (
                 <div
@@ -234,9 +271,19 @@ function StockCheckList() {
 
           {/* AI Criteria Section */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-blue-800 border-b border-blue-200 pb-2">
-                            AI Criteria ({aiCheckedCount}/{aiItems.length})
-            </h3>
+            <div className="flex items-center justify-between border-b border-blue-200 pb-2">
+              <h3 className="text-lg font-semibold text-blue-800">
+                AI Criteria ({aiCheckedCount}/{aiItems.length})
+              </h3>
+              <button
+                onClick={() => handleCopyChecklist(CHECKLIST_CATEGORIES.AI)}
+                className="flex items-center gap-1 px-2 py-1 text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 rounded transition-colors"
+                title="Copy AI criteria"
+              >
+                <CopyIcon />
+                Copy
+              </button>
+            </div>
             <div className="max-h-80 overflow-y-auto space-y-3">
               {aiItems.map((item) => (
                 <div

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Breadcrumbs from '../../../../navigation/Breadcrumbs';
 import ProgressBar from '../../../ProgressBar';
+import { copyAllChecklistItems, copyChecklistCategory, CopyAllIcon, CopyIcon } from '../../helpers/checklistCopy.helper';
 import { CHECKLIST_CATEGORIES } from './beforeStartingBondChecklist.constants';
 
 function BeforeStartingBondCheckList() {
@@ -71,34 +72,21 @@ function BeforeStartingBondCheckList() {
   const mineCheckedCount = mineItems.filter(item => item.checked).length;
 
   const handleCopyChecklist = (category: string) => {
-    const items = checklistItems.filter(item => item.category === category);
-    const text = `Before Starting Bond Checklist - ${category}\n\n` +
-      items.map(item => `${item.checked ? '✓' : '☐'} ${item.label}`).join('\n') +
-      `\n\nTotal: ${items.filter(i => i.checked).length}/${items.length} completed`;
-
-    navigator.clipboard.writeText(text).then(() => {
-      console.warn('Checklist copied to clipboard!');
-    }).catch(err => {
-      console.error('Failed to copy:', err);
-    });
+    copyChecklistCategory('Before Starting Bond Checklist', category, checklistItems);
   };
 
   const handleCopyAll = () => {
     const totalChecked = checklistItems.filter(item => item.checked).length;
-    const text = 'Before Starting Bond Checklist\n\n' +
-      `Mine (${mineCheckedCount}/${mineItems.length}):\n` +
-      mineItems.map(item => `${item.checked ? '✓' : '☐'} ${item.label}`).join('\n') +
-      `\n\nEducation (${educationCheckedCount}/${educationItems.length}):\n` +
-      educationItems.map(item => `${item.checked ? '✓' : '☐'} ${item.label}`).join('\n') +
-      `\n\nPreparation (${preparationCheckedCount}/${preparationItems.length}):\n` +
-      preparationItems.map(item => `${item.checked ? '✓' : '☐'} ${item.label}`).join('\n') +
-      `\n\nTotal: ${totalChecked}/${checklistItems.length} completed`;
-
-    navigator.clipboard.writeText(text).then(() => {
-      console.warn('All checklist items copied to clipboard!');
-    }).catch(err => {
-      console.error('Failed to copy:', err);
-    });
+    copyAllChecklistItems(
+      'Before Starting Bond Checklist',
+      [
+        { name: 'Mine', items: mineItems, checkedCount: mineCheckedCount },
+        { name: 'Education', items: educationItems, checkedCount: educationCheckedCount },
+        { name: 'Preparation', items: preparationItems, checkedCount: preparationCheckedCount },
+      ],
+      totalChecked,
+      checklistItems.length,
+    );
   };
 
   return (
@@ -111,9 +99,7 @@ function BeforeStartingBondCheckList() {
           className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
           title="Copy all checklist items"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-          </svg>
+          <CopyAllIcon />
           Copy All
         </button>
       </div>
@@ -179,9 +165,7 @@ function BeforeStartingBondCheckList() {
               className="flex items-center gap-1 px-2 py-1 text-xs bg-pink-100 hover:bg-pink-200 text-pink-700 rounded transition-colors"
               title="Copy Mine criteria"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>
+              <CopyIcon />
               Copy
             </button>
           </div>
@@ -214,9 +198,7 @@ function BeforeStartingBondCheckList() {
                   className="flex items-center gap-1 px-2 py-1 text-xs bg-orange-100 hover:bg-orange-200 text-orange-700 rounded transition-colors"
                   title="Copy Education criteria"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                  </svg>
+                  <CopyIcon />
                   Copy
                 </button>
               </div>
@@ -246,9 +228,7 @@ function BeforeStartingBondCheckList() {
                   className="flex items-center gap-1 px-2 py-1 text-xs bg-purple-100 hover:bg-purple-200 text-purple-700 rounded transition-colors"
                   title="Copy Preparation criteria"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                  </svg>
+                  <CopyIcon />
                   Copy
                 </button>
               </div>
