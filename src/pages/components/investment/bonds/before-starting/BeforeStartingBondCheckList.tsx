@@ -126,59 +126,71 @@ function BeforeStartingBondCheckList() {
         </button>
       </div>
 
-      <div className="space-y-4">
-        <div>
-          <h2 className="text-lg font-semibold text-gray-700 mb-2">Education</h2>
-          {checklistItems
-            .filter(item => item.category === CHECKLIST_CATEGORIES.EDUCATION)
-            .map(item => (
-              <div key={item.id} className="flex items-center">
-                <input
-                  type="checkbox"
-                  id={item.id}
-                  checked={item.checked}
-                  onChange={() => handleCheckChange(item.id)}
-                  className="mr-2"
-                />
-                <label htmlFor={item.id} className="text-gray-700">{item.label}</label>
-              </div>
-            ))}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left Section: Mine */}
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <h2 className="text-lg font-semibold text-gray-700 mb-4">Mine</h2>
+          <div className="max-h-80 overflow-y-auto space-y-3">
+            {checklistItems
+              .filter(item => item.category === CHECKLIST_CATEGORIES.MINE)
+              .map(item => (
+                <div key={item.id} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id={item.id}
+                    checked={item.checked}
+                    onChange={() => handleCheckChange(item.id)}
+                    className="mr-3"
+                  />
+                  <label htmlFor={item.id} className="text-gray-700">{item.label}</label>
+                </div>
+              ))}
+          </div>
         </div>
 
-        <div>
-          <h2 className="text-lg font-semibold text-gray-700 mb-2">Preparation</h2>
-          {checklistItems
-            .filter(item => item.category === CHECKLIST_CATEGORIES.PREPARATION)
-            .map(item => (
-              <div key={item.id} className="flex items-center">
-                <input
-                  type="checkbox"
-                  id={item.id}
-                  checked={item.checked}
-                  onChange={() => handleCheckChange(item.id)}
-                  className="mr-2"
-                />
-                <label htmlFor={item.id} className="text-gray-700">{item.label}</label>
+        {/* Right Section: Education & Preparation */}
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div className="max-h-80 overflow-y-auto space-y-6">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-700 mb-4">Education</h2>
+              <div className="space-y-3">
+                {checklistItems
+                  .filter(item => item.category === CHECKLIST_CATEGORIES.EDUCATION)
+                  .map(item => (
+                    <div key={item.id} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id={item.id}
+                        checked={item.checked}
+                        onChange={() => handleCheckChange(item.id)}
+                        className="mr-3"
+                      />
+                      <label htmlFor={item.id} className="text-gray-700">{item.label}</label>
+                    </div>
+                  ))}
               </div>
-            ))}
-        </div>
+            </div>
 
-        <div>
-          <h2 className="text-lg font-semibold text-gray-700 mb-2">Mine</h2>
-          {checklistItems
-            .filter(item => item.category === CHECKLIST_CATEGORIES.MINE)
-            .map(item => (
-              <div key={item.id} className="flex items-center">
-                <input
-                  type="checkbox"
-                  id={item.id}
-                  checked={item.checked}
-                  onChange={() => handleCheckChange(item.id)}
-                  className="mr-2"
-                />
-                <label htmlFor={item.id} className="text-gray-700">{item.label}</label>
+            <div>
+              <h2 className="text-lg font-semibold text-gray-700 mb-4">Preparation</h2>
+              <div className="space-y-3">
+                {checklistItems
+                  .filter(item => item.category === CHECKLIST_CATEGORIES.PREPARATION)
+                  .map(item => (
+                    <div key={item.id} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        id={item.id}
+                        checked={item.checked}
+                        onChange={() => handleCheckChange(item.id)}
+                        className="mr-3"
+                      />
+                      <label htmlFor={item.id} className="text-gray-700">{item.label}</label>
+                    </div>
+                  ))}
               </div>
-            ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
