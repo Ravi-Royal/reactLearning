@@ -6,12 +6,12 @@
   "homepage": "https://ravi-royal.github.io/reactLearning",
   "scripts": {
     "dev": "vite",
-    "build": "vite build --base /reactLearning/",
+    "build": "vite build --mode production --base /reactLearning/",
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build:gh-pages",
     "deploy": "gh-pages -d dist",
-    "build:gh-pages": "vite build --base /reactLearning/"
+    "build:gh-pages": "vite build --mode production --base /reactLearning/"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.17",

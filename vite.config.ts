@@ -5,7 +5,7 @@ import { defineConfig } from 'vite';
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/reactLearning/',
+  base: '/',
   resolve: {
     alias: {
       '@constants': path.resolve(__dirname, './src/constants'),

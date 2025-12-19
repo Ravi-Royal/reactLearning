@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Breadcrumbs from '../../../../navigation/Breadcrumbs';
-import { CHECKLIST_CATEGORIES } from './beforeStartingBondChecklist.constants';
 import ProgressBar from '../../../ProgressBar';
+import { CHECKLIST_CATEGORIES } from './beforeStartingBondChecklist.constants';
 
 function BeforeStartingBondCheckList() {
   const [checklistItems, setChecklistItems] = useState([
@@ -62,18 +62,44 @@ function BeforeStartingBondCheckList() {
     );
   };
 
-  const checkedCount = checklistItems.filter(item => item.checked).length;
-  const totalCount = checklistItems.length;
+  const educationItems = checklistItems.filter(item => item.category === CHECKLIST_CATEGORIES.EDUCATION);
+  const preparationItems = checklistItems.filter(item => item.category === CHECKLIST_CATEGORIES.PREPARATION);
+  const mineItems = checklistItems.filter(item => item.category === CHECKLIST_CATEGORIES.MINE);
+
+  const educationCheckedCount = educationItems.filter(item => item.checked).length;
+  const preparationCheckedCount = preparationItems.filter(item => item.checked).length;
+  const mineCheckedCount = mineItems.filter(item => item.checked).length;
 
   return (
     <div className="p-6">
       <Breadcrumbs />
       <h1 className="text-2xl font-bold text-gray-800 mb-4">Before Starting Bond Checklist</h1>
-      <p className="text-gray-600 mb-2">
-        Complete this checklist before starting your bond investment journey.
-      </p>
+      <p className="text-gray-600 mb-4">Complete this checklist before starting your bond investment journey.</p>
+
+      <div className="flex flex-wrap gap-4 mb-4 text-xs">
+        <div className="flex items-center gap-2">
+          <span className="px-2 py-1 bg-orange-100 text-orange-700 rounded-full">({CHECKLIST_CATEGORIES.EDUCATION})</span>
+          <span className="text-gray-600">Education criteria</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full">({CHECKLIST_CATEGORIES.PREPARATION})</span>
+          <span className="text-gray-600">Preparation criteria</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="px-2 py-1 bg-pink-100 text-pink-700 rounded-full">({CHECKLIST_CATEGORIES.MINE})</span>
+          <span className="text-gray-600">Mine criteria</span>
+        </div>
+      </div>
+
+      <div className="p-4 bg-blue-50 rounded-lg mb-6">
+        <div className="space-y-3">
+          <ProgressBar label="Education" completed={educationCheckedCount} total={educationItems.length} colorClass="bg-orange-600" />
+          <ProgressBar label="Preparation" completed={preparationCheckedCount} total={preparationItems.length} colorClass="bg-purple-600" />
+          <ProgressBar label="Mine" completed={mineCheckedCount} total={mineItems.length} colorClass="bg-pink-600" />
+        </div>
+      </div>
+
       <div className="mb-6">
-        <ProgressBar label="Progress" completed={checkedCount} total={totalCount} colorClass="bg-blue-500" />
         <button
           onClick={handleUncheckAll}
           className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors mr-2"
