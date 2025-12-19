@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Breadcrumbs from '../../../../navigation/Breadcrumbs';
 import { CHECKLIST_CATEGORIES, MY_BOND_LIST, type MyBondItem } from './bondChecklist.constants';
+import ProgressBar from '../../ProgressBar';
 
 function BondCheckList() {
   const [checklistItems, setChecklistItems] = useState([
@@ -101,7 +102,7 @@ function BondCheckList() {
                   <span className="text-sm font-medium text-green-800">Evaluating: {selectedBond.name}</span>
                   {selectedBond.symbol && (
                     <div className="text-xs text-green-600 mt-1">
-                                            Symbol: {selectedBond.symbol}
+                      Symbol: {selectedBond.symbol}
                     </div>
                   )}
                 </div>
@@ -115,30 +116,8 @@ function BondCheckList() {
             </div>
           )}
           <div className="space-y-3">
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-sm font-medium text-blue-800">AI Criteria:</span>
-                <span className="text-sm font-bold text-blue-600">{aiCheckedCount}/{aiItems.length} met</span>
-              </div>
-              <div className="w-full bg-blue-200 rounded-full h-2">
-                <div
-                  className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${aiItems.length > 0 ? (aiCheckedCount / aiItems.length) * 100 : 0}%` }}
-                ></div>
-              </div>
-            </div>
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-sm font-medium text-purple-800">Personal Criteria:</span>
-                <span className="text-sm font-bold text-purple-600">{personalCheckedCount}/{personalItems.length} met</span>
-              </div>
-              <div className="w-full bg-purple-200 rounded-full h-2">
-                <div
-                  className="bg-purple-600 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${personalItems.length > 0 ? (personalCheckedCount / personalItems.length) * 100 : 0}%` }}
-                ></div>
-              </div>
-            </div>
+            <ProgressBar label="AI Criteria" completed={aiCheckedCount} total={aiItems.length} colorClass="bg-blue-600" />
+            <ProgressBar label="Personal Criteria" completed={personalCheckedCount} total={personalItems.length} colorClass="bg-purple-600" />
           </div>
         </div>
 

@@ -1,8 +1,8 @@
 import { Link, useLocation } from 'react-router-dom';
 
 interface BreadcrumbItem {
-    label: string;
-    path: string;
+  label: string;
+  path: string;
 }
 
 function Breadcrumbs() {
@@ -34,6 +34,12 @@ function Breadcrumbs() {
         }
       } else if (pathnames.includes('bonds')) {
         breadcrumbs.push({ label: 'Bonds & Fixed Income', path: '/investment/bonds' });
+        // Add child breadcrumb for before-starting
+        if (pathnames.includes('before-starting')) {
+          breadcrumbs.push({ label: 'Before Starting Checklist', path: '/investment/bonds/before-starting' });
+        } else if (pathnames.includes('checklist')) {
+          breadcrumbs.push({ label: 'Bond Investment Checklist', path: '/investment/bonds/checklist' });
+        }
       }
     } else if (pathnames.includes('hooks')) {
       breadcrumbs.push({ label: 'React Hooks', path: '/hooks' });

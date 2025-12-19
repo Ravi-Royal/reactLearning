@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Breadcrumbs from '../../../../navigation/Breadcrumbs';
 import { CHECKLIST_CATEGORIES } from './beforeStartingBondChecklist.constants';
+import ProgressBar from '../../../ProgressBar';
 
 function BeforeStartingBondCheckList() {
   const [checklistItems, setChecklistItems] = useState([
@@ -68,34 +69,34 @@ function BeforeStartingBondCheckList() {
     <div className="p-6">
       <Breadcrumbs />
       <h1 className="text-2xl font-bold text-gray-800 mb-4">Before Starting Bond Checklist</h1>
-      <p className="text-gray-600 mb-6">
-                Complete this checklist before starting your bond investment journey. Progress: {checkedCount}/{totalCount}
+      <p className="text-gray-600 mb-2">
+        Complete this checklist before starting your bond investment journey.
       </p>
-
       <div className="mb-6">
+        <ProgressBar label="Progress" completed={checkedCount} total={totalCount} colorClass="bg-blue-500" />
         <button
           onClick={handleUncheckAll}
           className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors mr-2"
         >
-                    Uncheck All
+          Uncheck All
         </button>
         <button
           onClick={handleUncheckEducation}
           className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors mr-2"
         >
-                    Uncheck Education
+          Uncheck Education
         </button>
         <button
           onClick={handleUncheckPreparation}
           className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors mr-2"
         >
-                    Uncheck Preparation
+          Uncheck Preparation
         </button>
         <button
           onClick={handleUncheckMine}
           className="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors"
         >
-                    Uncheck Mine
+          Uncheck Mine
         </button>
       </div>
 
