@@ -1,5 +1,4 @@
 
-import * as XLSX from 'xlsx';
 import { YAHOO_FINANCE_CONFIG } from '../../../../../../../../constants/apiConfig';
 import type { PriceFetchResult, PriceMap, StockColumnKeyType, StockData, StockPriceInfo, StoredStockData, YahooFinanceResponse } from '../types/StockResult.types';
 import { StockColumnKey } from '../types/StockResult.types';
@@ -10,6 +9,7 @@ import { StockColumnKey } from '../types/StockResult.types';
  * @returns Array of StockData
  */
 export async function parseStockExcel(arrayBuffer: ArrayBuffer): Promise<StockData[]> {
+    const XLSX = await import('xlsx');
     const workbook = XLSX.read(arrayBuffer, { type: 'array' });
     const equitySheet = workbook.Sheets['Equity'];
     if (!equitySheet) {

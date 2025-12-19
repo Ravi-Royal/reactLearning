@@ -3,7 +3,7 @@ import Breadcrumbs from '../../../../../navigation/Breadcrumbs';
 import StockControls from './excelBasedResult/components/StockControls';
 import StockMetadata from './excelBasedResult/components/StockMetadata';
 import StockTable from './excelBasedResult/components/StockTable';
-import { formatNormalizedStockData, loadStockDataFromJSON, parseStockExcel, saveStockDataToJSON, updateStockPricesInJSON } from './excelBasedResult/helpers/StockResult.helper';
+import { fetchStockPrices, formatNormalizedStockData, loadStockDataFromJSON, parseStockExcel, updateStockPricesInJSON } from './excelBasedResult/helpers/StockResult.helper';
 import type { PriceMap, StockData } from './excelBasedResult/types/StockResult.types';
 
 /**
@@ -17,6 +17,9 @@ const StockResult: React.FC = () => {
   const [updatingPrices, setUpdatingPrices] = useState<boolean>(false);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const [lastPriceUpdate, setLastPriceUpdate] = useState<string | null>(null);
+  const [needsSourceSelection, setNeedsSourceSelection] = useState<boolean>(false);
+  const [excelSource, setExcelSource] = useState<'upload' | 'private' | 'json' | null>(null);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
   useEffect(() => {
     loadData();
@@ -26,39 +29,16 @@ const StockResult: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
+      setNeedsSourceSelection(false);
 
       // First, try to load from JSON storage
-      let storedData = await loadStockDataFromJSON();
-
-      if (!storedData) {
-        // If no JSON data exists, load from Excel, fetch prices, and save to JSON
-        console.log('No stored data found, loading from Excel and fetching prices...');
-        const response = await fetch('/src/privateDocument/pnl-WAR042.xlsx');
-        if (!response.ok) {
-          throw new Error(`Failed to load Excel file: ${response.status} ${response.statusText}`);
-        }
-
-        const arrayBuffer = await response.arrayBuffer();
-        const normalized = await parseStockExcel(arrayBuffer);
-        console.log('Parsed Stock Data:', normalized);
-        const finalNormalized = formatNormalizedStockData(normalized);
-        console.log('Formatted Stock Data:', finalNormalized);
-
-        // Save to JSON storage with prices fetched from Yahoo API
-        console.log('Fetching prices from Yahoo Finance API (this may take 10-15 seconds)...');
-        await saveStockDataToJSON(finalNormalized, 'pnl-WAR042.xlsx', true);
-
-        // Load the newly saved data with prices
-        storedData = await loadStockDataFromJSON();
-        console.log('First load complete: Excel parsed, prices fetched, data saved to JSON');
-      }
-
+      const storedData = await loadStockDataFromJSON();
       if (storedData) {
+        setExcelSource('json');
         setStockData(storedData.stocks);
         setLastUpdated(storedData.metadata.lastUpdated);
         setLastPriceUpdate(storedData.metadata.lastPriceUpdate);
 
-        // If we have stored prices, use them
         const storedPriceMap: PriceMap = {};
         storedData.stocks.forEach(stock => {
           if (stock['Current Price'] !== undefined ||
@@ -72,11 +52,83 @@ const StockResult: React.FC = () => {
           }
         });
         setPriceMap(storedPriceMap);
+        return;
       }
+
+      // No stored JSON -> ask user to choose Excel source.
+      setExcelSource(null);
+      setNeedsSourceSelection(true);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
       setError(errorMessage);
       console.error('Error loading data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const applyLoadedStocks = (stocks: StockData[], prices: PriceMap) => {
+    setStockData(stocks);
+    setPriceMap(prices);
+    const now = new Date().toISOString();
+    setLastUpdated(now);
+    setLastPriceUpdate(now);
+  };
+
+  const loadFromArrayBuffer = async (arrayBuffer: ArrayBuffer, sourceFileName: string) => {
+    setLoading(true);
+    setError(null);
+
+    const normalized = await parseStockExcel(arrayBuffer);
+    const finalNormalized = formatNormalizedStockData(normalized);
+
+    // Fetch prices once and enrich data for display
+    const symbols = finalNormalized.map((s) => s.Symbol);
+    const prices = await fetchStockPrices(symbols);
+
+    const enriched: StockData[] = finalNormalized.map((stock) => ({
+      ...stock,
+      'Current Price': prices[stock.Symbol]?.price ?? null,
+      '52W High': prices[stock.Symbol]?.fiftyTwoWeekHigh ?? null,
+      '52W Low': prices[stock.Symbol]?.fiftyTwoWeekLow ?? null,
+    }));
+
+    applyLoadedStocks(enriched, prices);
+    setNeedsSourceSelection(false);
+    console.log(`Loaded data from: ${sourceFileName}`);
+  };
+
+  const loadFromPrivateDocument = async () => {
+    try {
+      setExcelSource('private');
+      const response = await fetch('/src/privateDocument/pnl-WAR042.xlsx');
+      if (!response.ok) {
+        throw new Error(`Failed to load Excel file: ${response.status} ${response.statusText}`);
+      }
+      const arrayBuffer = await response.arrayBuffer();
+      await loadFromArrayBuffer(arrayBuffer, 'pnl-WAR042.xlsx');
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      setError(errorMessage);
+      console.error('Error loading private Excel:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUploadChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    if (!file) return;
+    setUploadedFile(file);
+    setExcelSource('upload');
+
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      await loadFromArrayBuffer(arrayBuffer, file.name);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      setError(errorMessage);
+      console.error('Error loading uploaded Excel:', err);
     } finally {
       setLoading(false);
     }
@@ -87,44 +139,29 @@ const StockResult: React.FC = () => {
       setLoading(true);
       setError(null);
 
-      // Force reload from Excel and fetch fresh prices
-      console.log('Refreshing data from Excel and fetching fresh prices...');
-      const response = await fetch('/src/privateDocument/pnl-WAR042.xlsx');
-      if (!response.ok) {
-        throw new Error(`Failed to load Excel file: ${response.status} ${response.statusText}`);
+      if (excelSource === 'private') {
+        console.log('Refreshing data from privateDocument Excel and fetching fresh prices...');
+        const response = await fetch('/src/privateDocument/pnl-WAR042.xlsx');
+        if (!response.ok) {
+          throw new Error(`Failed to load Excel file: ${response.status} ${response.statusText}`);
+        }
+        const arrayBuffer = await response.arrayBuffer();
+        await loadFromArrayBuffer(arrayBuffer, 'pnl-WAR042.xlsx');
+        return;
       }
 
-      const arrayBuffer = await response.arrayBuffer();
-      const normalized = await parseStockExcel(arrayBuffer);
-      const finalNormalized = formatNormalizedStockData(normalized);
-
-      // Save to JSON storage with fresh prices from Yahoo API
-      console.log('Fetching latest prices from Yahoo Finance API...');
-      await saveStockDataToJSON(finalNormalized, 'pnl-WAR042.xlsx', true);
-
-      // Load the updated data
-      const storedData = await loadStockDataFromJSON();
-      if (storedData) {
-        setStockData(storedData.stocks);
-        setLastUpdated(storedData.metadata.lastUpdated);
-        setLastPriceUpdate(storedData.metadata.lastPriceUpdate);
-
-        // Update price map
-        const updatedPriceMap: PriceMap = {};
-        storedData.stocks.forEach(stock => {
-          if (stock['Current Price'] !== undefined ||
-            stock['52W High'] !== undefined ||
-            stock['52W Low'] !== undefined) {
-            updatedPriceMap[stock.Symbol] = {
-              price: stock['Current Price'] ?? null,
-              fiftyTwoWeekHigh: stock['52W High'] ?? null,
-              fiftyTwoWeekLow: stock['52W Low'] ?? null,
-            };
-          }
-        });
-        setPriceMap(updatedPriceMap);
-        console.log('Data refresh complete with latest prices');
+      if (excelSource === 'upload') {
+        if (!uploadedFile) {
+          throw new Error('No uploaded Excel file found. Please upload the file again.');
+        }
+        console.log('Refreshing data from uploaded Excel and fetching fresh prices...');
+        const arrayBuffer = await uploadedFile.arrayBuffer();
+        await loadFromArrayBuffer(arrayBuffer, uploadedFile.name);
+        return;
       }
+
+      // If we loaded from JSON, we don't have access to the original Excel source.
+      console.log('Refreshing from JSON source is not supported. Use Update Prices instead.');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
       setError(errorMessage);
@@ -176,6 +213,46 @@ const StockResult: React.FC = () => {
 
   if (loading) {
     return <div className="p-4">Loading Excel data...</div>;
+  }
+
+  if (needsSourceSelection) {
+    return (
+      <div className="p-4">
+        <Breadcrumbs />
+        <div className="mb-4">
+          <h1 className="text-2xl font-bold">Stock P&L Data</h1>
+          <p className="text-gray-600 mt-1">Choose how you want to load your Zerodha P&L Excel.</p>
+        </div>
+
+        {error && <div className="text-red-600 mb-4">Error: {error}</div>}
+
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="bg-white rounded-lg shadow-md p-4 border border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-800">Upload Excel</h2>
+            <p className="text-sm text-gray-600 mt-1">Upload your Zerodha P&L Excel (.xlsx).</p>
+            <div className="mt-3">
+              <input
+                type="file"
+                accept=".xlsx,.xls"
+                onChange={handleUploadChange}
+                className="block w-full text-sm text-gray-700"
+              />
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-md p-4 border border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-800">Load from Private Document</h2>
+            <p className="text-sm text-gray-600 mt-1">Loads <span className="font-mono">pnl-WAR042.xlsx</span> from <span className="font-mono">src/privateDocument</span>.</p>
+            <button
+              onClick={loadFromPrivateDocument}
+              className="mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Load from Private Document
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
