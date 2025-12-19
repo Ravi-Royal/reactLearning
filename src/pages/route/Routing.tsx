@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router-dom
 import AboutPage from "../About";
 import HomePage from "../Home";
 import Bonds from "../components/bonds/Bonds";
+import BeforeStartingBondCheckList from "../components/bonds/beforeStartingBondChecklist/BeforeStartingBondCheckList";
 import BondCheckList from "../components/bonds/bondChecklist/BondCheckList";
 import UseCallbackHook from "../components/hookRef/UseCallbackHook";
 import UseContextHook from "../components/hookRef/UseContextHook";
@@ -43,6 +44,7 @@ function Routing() {
                 </Route>
                 <Route path="bonds" element={<Outlet />}>
                     <Route index element={<Bonds />} />
+                    <Route path="before-starting" element={<BeforeStartingBondCheckList />} />
                     <Route path="checklist" element={<BondCheckList />} />
                 </Route>
             </Route>
