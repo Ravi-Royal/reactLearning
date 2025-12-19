@@ -3,6 +3,8 @@ export const CHECKLIST_CATEGORIES = {
   EDUCATION: 'Education',
   PREPARATION: 'Preparation',
   MINE: 'mine',
+  PERSONAL: 'Personal',
+  AI: 'AI',
 } as const;
 
 export type ChecklistCategory = typeof CHECKLIST_CATEGORIES[keyof typeof CHECKLIST_CATEGORIES];
@@ -14,9 +16,9 @@ export const BOND_LIST_CATEGORIES = {
 } as const;
 
 export interface MyBondItem {
-    name: string;
-    category: string;
-    symbol?: string;
+  name: string;
+  category: string;
+  symbol?: string;
 }
 
 export const MY_BOND_LIST: MyBondItem[] = [
