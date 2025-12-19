@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Breadcrumbs from '../../../navigation/Breadcrumbs';
+import Breadcrumbs from '../../../../navigation/Breadcrumbs';
 import { CHECKLIST_CATEGORIES } from './beforeStartingBondChecklist.constants';
 
 function BeforeStartingBondCheckList() {

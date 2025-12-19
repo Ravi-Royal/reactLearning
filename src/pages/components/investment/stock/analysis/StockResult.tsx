@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Breadcrumbs from '../../navigation/Breadcrumbs';
+import Breadcrumbs from '../../../../navigation/Breadcrumbs';
 import StockControls from './excelBasedResult/components/StockControls';
 import StockMetadata from './excelBasedResult/components/StockMetadata';
 import StockTable from './excelBasedResult/components/StockTable';

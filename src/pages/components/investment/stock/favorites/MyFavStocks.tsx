@@ -1,5 +1,5 @@
 import React from 'react';
-import Breadcrumbs from '../../navigation/Breadcrumbs';
+import Breadcrumbs from '../../../../navigation/Breadcrumbs';
 
 const MyFavList: React.FC = () => {
   // Simple placeholder — show instructions and a small empty table placeholder.

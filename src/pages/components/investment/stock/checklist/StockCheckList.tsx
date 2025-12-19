@@ -1,24 +1,27 @@
 import { useState } from 'react';
-import Breadcrumbs from '../../../navigation/Breadcrumbs';
-import type { MyBondItem } from './bondChecklist.constants';
-import { CHECKLIST_CATEGORIES, MY_BOND_LIST } from './bondChecklist.constants';
+import Breadcrumbs from '../../../../navigation/Breadcrumbs';
+import type { MyStockItem } from './stockChecklist.constants';
+import { CHECKLIST_CATEGORIES, MY_STOCK_LIST } from './stockChecklist.constants';
 
-function BondCheckList() {
+function StockCheckList() {
     const [checklistItems, setChecklistItems] = useState([
-        { id: 'repaymentPriority', label: 'Repayment Priority - senior', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-        { id: 'creditRating', label: 'Investment grade credit rating', checked: false, category: CHECKLIST_CATEGORIES.AI },
-        { id: 'issuer', label: 'Reputable issuer', checked: false, category: CHECKLIST_CATEGORIES.AI },
-        { id: 'maturity', label: 'Suitable maturity period', checked: false, category: CHECKLIST_CATEGORIES.AI },
-        { id: 'coupon', label: 'Attractive coupon rate', checked: false, category: CHECKLIST_CATEGORIES.AI },
-        { id: 'liquidity', label: 'Good liquidity', checked: false, category: CHECKLIST_CATEGORIES.AI },
-        { id: 'tax', label: 'Tax efficiency', checked: false, category: CHECKLIST_CATEGORIES.AI },
-        { id: 'personalRisk', label: 'Matches my risk tolerance', checked: false, category: CHECKLIST_CATEGORIES.AI },
-        { id: 'personalDuration', label: 'Fits my investment timeline', checked: false, category: CHECKLIST_CATEGORIES.AI },
-        { id: 'personalIncome', label: 'Provides desired income stream', checked: false, category: CHECKLIST_CATEGORIES.AI }
+        { id: 'debt', label: 'Low debt-to-equity ratio (<1.0)', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
+        { id: 'yearOveryearDebt', label: 'Decreasing debt over the past 3 years', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
+        { id: 'yearOnyearSales', label: 'Increasing year-on-year sales', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
+        { id: 'netProfit', label: 'Positive net profit in last 5 years', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
+        { id: 'ROE', label: 'Return on Equity (ROE) > 20%', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
+        { id: 'netproitYearOnyear', label: 'Increasing net profit year-on-year', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
+        { id: 'revenue', label: 'Consistent revenue growth (>10% YoY)', checked: false, category: CHECKLIST_CATEGORIES.AI },
+        { id: 'profit', label: 'Strong profit margins (>15%)', checked: false, category: CHECKLIST_CATEGORIES.AI },
+        { id: 'pe', label: 'Reasonable P/E ratio (<25)', checked: false, category: CHECKLIST_CATEGORIES.AI },
+        { id: 'dividend', label: 'Consistent dividend payments', checked: false, category: CHECKLIST_CATEGORIES.AI },
+        { id: 'competition', label: 'Strong competitive advantage', checked: false, category: CHECKLIST_CATEGORIES.AI },
+        { id: 'management', label: 'Experienced management team', checked: false, category: CHECKLIST_CATEGORIES.AI },
+        { id: 'growth', label: 'Clear growth strategy', checked: false, category: CHECKLIST_CATEGORIES.AI }
     ]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedBond, setSelectedBond] = useState<MyBondItem | null>(null);
+    const [selectedStock, setSelectedStock] = useState<MyStockItem | null>(null);
 
     const handleCheckChange = (id: string) => {
         setChecklistItems(items =>
@@ -62,8 +65,8 @@ function BondCheckList() {
         setIsModalOpen(false);
     };
 
-    const handleSelectBond = (bond: MyBondItem) => {
-        setSelectedBond(bond);
+    const handleSelectStock = (stock: MyStockItem) => {
+        setSelectedStock(stock);
         setIsModalOpen(false);
     };
 
@@ -80,8 +83,8 @@ function BondCheckList() {
         <div className="p-6">
             <Breadcrumbs />
             <div className="mb-6">
-                <h1 className="text-2xl font-bold text-gray-800 mb-2">Bond Investment Checklist</h1>
-                <p className="text-gray-600 mb-4">Use this checklist to evaluate potential bond investments systematically.</p>
+                <h1 className="text-2xl font-bold text-gray-800 mb-2">Stock Investment Checklist</h1>
+                <p className="text-gray-600 mb-4">Use this checklist to evaluate potential stock investments systematically.</p>
 
                 <div className="flex flex-wrap gap-4 mb-4 text-xs">
                     <div className="flex items-center gap-2">
@@ -95,22 +98,22 @@ function BondCheckList() {
                 </div>
 
                 <div className="p-4 bg-blue-50 rounded-lg">
-                    {selectedBond && (
+                    {selectedStock && (
                         <div className="mb-4 p-4 bg-green-100 rounded-lg border border-green-200">
                             <div className="flex items-center justify-between mb-3">
                                 <div>
-                                    <span className="text-sm font-medium text-green-800">Evaluating: {selectedBond.name}</span>
-                                    {selectedBond.symbol && (
+                                    <span className="text-sm font-medium text-green-800">Evaluating: {selectedStock.name}</span>
+                                    {selectedStock.symbol && (
                                         <div className="text-xs text-green-600 mt-1">
-                                            Symbol: {selectedBond.symbol}
+                                            Symbol: {selectedStock.symbol}
                                         </div>
                                     )}
                                 </div>
-                                <span className={`px-2 py-1 text-xs rounded-full font-medium ${selectedBond.category === 'Good Bond' ? 'bg-green-600 text-white' :
-                                    selectedBond.category === 'Check Bond' ? 'bg-yellow-600 text-white' :
+                                <span className={`px-2 py-1 text-xs rounded-full font-medium ${selectedStock.catagery === 'Good Stock' ? 'bg-green-600 text-white' :
+                                    selectedStock.catagery === 'Check Stock' ? 'bg-yellow-600 text-white' :
                                         'bg-red-600 text-white'
                                     }`}>
-                                    {selectedBond.category}
+                                    {selectedStock.catagery}
                                 </span>
                             </div>
                         </div>
@@ -142,49 +145,49 @@ function BondCheckList() {
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-3 flex-wrap">
-                        <button
-                            onClick={handleOpenModal}
-                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 flex items-center gap-2"
-                        >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                            </svg>
-                            Select Bond
-                        </button>
-                        <button
-                            onClick={handleUncheckAll}
-                            className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200 flex items-center gap-2"
-                        >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                            Uncheck All
-                        </button>
-                        <button
-                            onClick={handleUncheckAI}
-                            className="px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 text-sm font-medium rounded-lg transition-colors duration-200 flex items-center gap-2"
-                        >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                            </svg>
-                            Uncheck AI
-                        </button>
-                        <button
-                            onClick={handleUncheckPersonal}
-                            className="px-4 py-2 bg-purple-100 hover:bg-purple-200 text-purple-700 text-sm font-medium rounded-lg transition-colors duration-200 flex items-center gap-2"
-                        >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                            Uncheck Personal
-                        </button>
-                        <span className="text-sm text-gray-500">
-                            {checkedCount > 0 ? `${checkedCount} item${checkedCount > 1 ? 's' : ''} selected` : 'No items selected'}
-                        </span>
-                    </div>
+            <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3 flex-wrap">
+                    <button
+                        onClick={handleOpenModal}
+                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 flex items-center gap-2"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        Select Stock
+                    </button>
+                    <button
+                        onClick={handleUncheckAll}
+                        className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200 flex items-center gap-2"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        Uncheck All
+                    </button>
+                    <button
+                        onClick={handleUncheckAI}
+                        className="px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 text-sm font-medium rounded-lg transition-colors duration-200 flex items-center gap-2"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                        Uncheck AI
+                    </button>
+                    <button
+                        onClick={handleUncheckPersonal}
+                        className="px-4 py-2 bg-purple-100 hover:bg-purple-200 text-purple-700 text-sm font-medium rounded-lg transition-colors duration-200 flex items-center gap-2"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        Uncheck Personal
+                    </button>
+                    <span className="text-sm text-gray-500">
+                        {checkedCount > 0 ? `${checkedCount} item${checkedCount > 1 ? 's' : ''} selected` : 'No items selected'}
+                    </span>
                 </div>
             </div>
 
@@ -276,7 +279,7 @@ function BondCheckList() {
                 <h3 className="font-semibold text-gray-800 mb-2">Investment Readiness</h3>
                 <div className="text-sm text-gray-600">
                     {checkedCount === totalCount && (
-                        <p className="text-green-600 font-medium">🎉 Excellent! This bond meets all key criteria for investment consideration.</p>
+                        <p className="text-green-600 font-medium">🎉 Excellent! This stock meets all key criteria for investment consideration.</p>
                     )}
                     {checkedCount >= totalCount * 0.75 && checkedCount < totalCount && (
                         <p className="text-blue-600 font-medium">👍 Good candidate. Meets most criteria - conduct further due diligence.</p>
@@ -290,7 +293,7 @@ function BondCheckList() {
                 </div>
             </div>
 
-            {/* Bond Selection Modal */}
+            {/* Stock Selection Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[85vh] overflow-hidden border border-gray-200">
@@ -298,7 +301,7 @@ function BondCheckList() {
                         <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <h2 className="text-2xl font-bold">Select Bond</h2>
+                                    <h2 className="text-2xl font-bold">Select Stock</h2>
                                 </div>
                                 <button
                                     onClick={handleCloseModal}
@@ -314,19 +317,19 @@ function BondCheckList() {
                         {/* Modal Content */}
                         <div className="p-8">
                             <div className="space-y-2 max-h-96 overflow-y-auto">
-                                {MY_BOND_LIST.map((bond: MyBondItem, index: number) => (
+                                {MY_STOCK_LIST.map((stock: MyStockItem, index: number) => (
                                     <div
                                         key={index}
-                                        onClick={() => handleSelectBond(bond)}
+                                        onClick={() => handleSelectStock(stock)}
                                         className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 cursor-pointer transition-all duration-200"
                                     >
                                         <div className="flex items-center gap-3">
-                                            <span className="font-medium text-gray-800">{bond.name}</span>
-                                            <span className={`px-2 py-1 text-xs rounded-full font-medium ${bond.category === 'Good Bond' ? 'bg-green-100 text-green-700' :
-                                                bond.category === 'Check Bond' ? 'bg-yellow-100 text-yellow-700' :
+                                            <span className="font-medium text-gray-800">{stock.name}</span>
+                                            <span className={`px-2 py-1 text-xs rounded-full font-medium ${stock.catagery === 'Good Stock' ? 'bg-green-100 text-green-700' :
+                                                stock.catagery === 'Check Stock' ? 'bg-yellow-100 text-yellow-700' :
                                                     'bg-red-100 text-red-700'
                                                 }`}>
-                                                {bond.category}
+                                                {stock.catagery}
                                             </span>
                                         </div>
                                         <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -355,4 +358,4 @@ function BondCheckList() {
     );
 }
 
-export default BondCheckList;
+export default StockCheckList;
