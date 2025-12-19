@@ -10,7 +10,8 @@ import UseStateHook from "../components/hookRef/UseStateHook";
 import Bonds from "../components/investment/bonds/Bonds";
 import BeforeStartingBondCheckList from "../components/investment/bonds/before-starting/BeforeStartingBondCheckList";
 import BondCheckList from "../components/investment/bonds/checklist/BondCheckList";
-import StockResult from "../components/investment/stock/analysis/StockResult";
+import StockAnalysis from "../components/investment/stock/analysis/Analysis";
+import StockResult from "../components/investment/stock/analysis/zerodha/StockResult";
 import StockCheckList from "../components/investment/stock/checklist/StockCheckList";
 import MyFavStocks from "../components/investment/stock/favorites/MyFavStocks";
 import BaseNavigation from "../navigation/BaseNavigation";
@@ -38,7 +39,10 @@ function Routing() {
                 <Route index element={<InvestmentNavigation />} />
                 <Route path="stock" element={<Outlet />}>
                     <Route index element={<StockNavigation />} />
-                    <Route path="analysis" element={<StockResult />} />
+                    <Route path="analysis" element={<Outlet />}>
+                        <Route index element={<StockAnalysis />} />
+                        <Route path="zerodha" element={<StockResult />} />
+                    </Route>
                     <Route path="favorites" element={<MyFavStocks />} />
                     <Route path="checklist" element={<StockCheckList />} />
                 </Route>

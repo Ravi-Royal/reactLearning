@@ -1,6 +1,6 @@
 
 import * as XLSX from 'xlsx';
-import { YAHOO_FINANCE_CONFIG } from '../../../../../../../constants/apiConfig';
+import { YAHOO_FINANCE_CONFIG } from '../../../../../../../../constants/apiConfig';
 import type { PriceFetchResult, PriceMap, StockColumnKeyType, StockData, StockPriceInfo, StoredStockData, YahooFinanceResponse } from '../types/StockResult.types';
 import { StockColumnKey } from '../types/StockResult.types';
 

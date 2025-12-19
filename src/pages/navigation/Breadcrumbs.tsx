@@ -23,6 +23,10 @@ function Breadcrumbs() {
 
                 if (pathnames.includes('analysis')) {
                     breadcrumbs.push({ label: 'P&L Analysis', path: '/investment/stock/analysis' });
+
+                    if (pathnames.includes('zerodha')) {
+                        breadcrumbs.push({ label: 'Zerodha', path: '/investment/stock/analysis/zerodha' });
+                    }
                 } else if (pathnames.includes('favorites')) {
                     breadcrumbs.push({ label: 'My Favorites', path: '/investment/stock/favorites' });
                 } else if (pathnames.includes('checklist')) {
