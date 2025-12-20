@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Breadcrumbs from '../../../../navigation/Breadcrumbs';
 import ProgressBar from '../../../ProgressBar';
-import { copyAllChecklistItems, copyChecklistCategory, CopyAllIcon, CopyIcon } from '../../helpers/checklistCopy.helper';
+import { copyAllChecklistItems, CopyAllIcon, copyChecklistCategory, CopyIcon } from '../../helpers/checklistCopy.helper';
 import { CHECKLIST_CATEGORIES } from './beforeStartingBondChecklist.constants';
 
 function BeforeStartingBondCheckList() {
