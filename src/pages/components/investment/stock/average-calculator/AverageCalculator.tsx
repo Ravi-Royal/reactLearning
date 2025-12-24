@@ -1,7 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Breadcrumbs from '../../../../navigation/Breadcrumbs';
-// import Breadcrumbs from '../../navigation/Breadcrumbs';
+
+interface CalculationResult {
+  newAvgPrice: number | null;
+  requiredQuantity: number | null;
+}
 
 function AverageCalculator() {
   const [calculationMode, setCalculationMode] = useState<'purchase' | 'target'>('purchase');
@@ -15,28 +19,24 @@ function AverageCalculator() {
   const [buyTotalPrice, setBuyTotalPrice] = useState<string>('');
   const [targetAvgPrice, setTargetAvgPrice] = useState<string>('');
   const [currentMarketPrice, setCurrentMarketPrice] = useState<string>('');
-  const [newAvgPrice, setNewAvgPrice] = useState<number | null>(null);
-  const [requiredBuyPrice, setRequiredBuyPrice] = useState<number | null>(null);
-  const [requiredQuantity, setRequiredQuantity] = useState<number | null>(null);
 
-  // Auto-calculate when all fields are filled
-  useEffect(() => {
+  // Calculate result using useMemo to avoid cascading renders
+  const calculationResult = useMemo<CalculationResult>(() => {
     const currQty = parseFloat(currentQuantity) || 0;
     const addQty = parseFloat(buyQuantity) || 0;
 
     let currPrice = 0;
-    let addPrice = 0;
 
     if (currentInputMode === 'price') {
       currPrice = parseFloat(currentAvgPrice) || 0;
     } else {
-      // Calculate from total price
       const currTotal = parseFloat(currentTotalPrice) || 0;
       currPrice = currQty > 0 ? currTotal / currQty : 0;
     }
 
     if (calculationMode === 'purchase') {
-      // Forward calculation: Calculate new average from purchase details
+      let addPrice = 0;
+
       if (buyInputMode === 'price') {
         addPrice = parseFloat(buyPrice) || 0;
       } else {
@@ -44,7 +44,6 @@ function AverageCalculator() {
         addPrice = addQty > 0 ? addTotal / addQty : 0;
       }
 
-      // Only calculate if all required fields have valid values
       const hasCurrentData = currentInputMode === 'price'
         ? currentQuantity && currentAvgPrice
         : currentQuantity && currentTotalPrice;
@@ -57,16 +56,11 @@ function AverageCalculator() {
         const totalCost = (currQty * currPrice) + (addQty * addPrice);
         const totalQuantity = currQty + addQty;
         const newAvg = totalQuantity > 0 ? totalCost / totalQuantity : 0;
-        setNewAvgPrice(newAvg);
-        setRequiredBuyPrice(null);
-        setRequiredQuantity(null);
+        return { newAvgPrice: newAvg, requiredQuantity: null };
       } else {
-        setNewAvgPrice(null);
-        setRequiredBuyPrice(null);
-        setRequiredQuantity(null);
+        return { newAvgPrice: null, requiredQuantity: null };
       }
     } else {
-      // Reverse calculation: Calculate required quantity from target average and market price
       const targetAvg = parseFloat(targetAvgPrice) || 0;
       const marketPrice = parseFloat(currentMarketPrice) || 0;
 
@@ -75,31 +69,21 @@ function AverageCalculator() {
         : currentQuantity && currentTotalPrice;
 
       if (hasCurrentData && targetAvgPrice && currentMarketPrice && currQty >= 0 && currPrice >= 0 && targetAvg > 0 && marketPrice > 0) {
-        // Formula: targetAvg = (currQty * currPrice + requiredQty * marketPrice) / (currQty + requiredQty)
-        // Solving for requiredQty: requiredQty = currQty * (currPrice - targetAvg) / (targetAvg - marketPrice)
         const denominator = targetAvg - marketPrice;
 
-        if (Math.abs(denominator) > 0.01) { // Avoid division by zero
+        if (Math.abs(denominator) > 0.01) {
           const requiredQty = currQty * (currPrice - targetAvg) / denominator;
 
           if (requiredQty > 0) {
-            setRequiredQuantity(requiredQty);
-            setRequiredBuyPrice(marketPrice);
-            setNewAvgPrice(targetAvg);
+            return { newAvgPrice: targetAvg, requiredQuantity: requiredQty };
           } else {
-            setRequiredQuantity(null);
-            setRequiredBuyPrice(null);
-            setNewAvgPrice(null);
+            return { newAvgPrice: null, requiredQuantity: null };
           }
         } else {
-          setRequiredQuantity(null);
-          setRequiredBuyPrice(null);
-          setNewAvgPrice(null);
+          return { newAvgPrice: null, requiredQuantity: null };
         }
       } else {
-        setRequiredQuantity(null);
-        setRequiredBuyPrice(null);
-        setNewAvgPrice(null);
+        return { newAvgPrice: null, requiredQuantity: null };
       }
     }
   }, [calculationMode, currentInputMode, buyInputMode, currentQuantity, currentAvgPrice, currentTotalPrice, buyQuantity, buyPrice, buyTotalPrice, targetAvgPrice, currentMarketPrice]);
@@ -181,22 +165,15 @@ function AverageCalculator() {
     setBuyTotalPrice('');
     setTargetAvgPrice('');
     setCurrentMarketPrice('');
-    setNewAvgPrice(null);
-    setRequiredBuyPrice(null);
-    setRequiredQuantity(null);
   };
 
   const toggleCalculationMode = () => {
     setCalculationMode(prevMode => prevMode === 'purchase' ? 'target' : 'purchase');
-    // Clear the fields when switching modes
     setBuyQuantity('');
     setBuyPrice('');
     setBuyTotalPrice('');
     setTargetAvgPrice('');
     setCurrentMarketPrice('');
-    setNewAvgPrice(null);
-    setRequiredBuyPrice(null);
-    setRequiredQuantity(null);
   };
 
   return (
@@ -220,11 +197,11 @@ function AverageCalculator() {
             <button
               onClick={toggleCurrentInputMode}
               className={`relative inline-flex items-center h-7 rounded-full w-28 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${currentInputMode === 'price' ? 'bg-blue-600' : 'bg-green-600'
-                }`}
+              }`}
             >
               <span
                 className={`inline-block w-14 h-6 transform rounded-full bg-white shadow-lg transition-transform ${currentInputMode === 'price' ? 'translate-x-0.5' : 'translate-x-[52px]'
-                  }`}
+                }`}
               />
               <span className="absolute left-2 text-xs font-medium text-white">Price</span>
               <span className="absolute right-2 text-xs font-medium text-white">Total</span>
@@ -290,11 +267,11 @@ function AverageCalculator() {
             <button
               onClick={toggleCalculationMode}
               className={`relative inline-flex items-center h-7 rounded-full w-32 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 ${calculationMode === 'purchase' ? 'bg-purple-600' : 'bg-indigo-600'
-                }`}
+              }`}
             >
               <span
                 className={`inline-block w-16 h-6 transform rounded-full bg-white shadow-lg transition-transform ${calculationMode === 'purchase' ? 'translate-x-0.5' : 'translate-x-[62px]'
-                  }`}
+                }`}
               />
               <span className="absolute left-1.5 text-[10px] font-medium text-white">Purchase</span>
               <span className="absolute right-2 text-[10px] font-medium text-white">Target</span>
@@ -308,11 +285,11 @@ function AverageCalculator() {
                 <button
                   onClick={toggleBuyInputMode}
                   className={`relative inline-flex items-center h-7 rounded-full w-28 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${buyInputMode === 'price' ? 'bg-blue-600' : 'bg-green-600'
-                    }`}
+                  }`}
                 >
                   <span
                     className={`inline-block w-14 h-6 transform rounded-full bg-white shadow-lg transition-transform ${buyInputMode === 'price' ? 'translate-x-0.5' : 'translate-x-[52px]'
-                      }`}
+                    }`}
                   />
                   <span className="absolute left-2 text-xs font-medium text-white">Price</span>
                   <span className="absolute right-2 text-xs font-medium text-white">Total</span>
@@ -408,25 +385,25 @@ function AverageCalculator() {
                 </div>
               </div>
 
-              {requiredQuantity !== null && (
+              {calculationResult.requiredQuantity !== null && (
                 <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-300 rounded-lg p-6 mb-8">
                   <h3 className="text-lg font-semibold text-gray-800 mb-4">Required Purchase Details</h3>
                   <div className="grid md:grid-cols-2 gap-4 text-center">
                     <div className="bg-white rounded-lg p-4 shadow-md">
                       <div className="text-sm text-purple-600 font-medium mb-1">Quantity to Buy</div>
                       <div className="text-3xl font-bold text-purple-600">
-                        {requiredQuantity.toFixed(0)} shares
+                        {calculationResult.requiredQuantity.toFixed(0)} shares
                       </div>
                     </div>
                     <div className="bg-white rounded-lg p-4 shadow-md">
                       <div className="text-sm text-indigo-600 font-medium mb-1">Total Investment</div>
                       <div className="text-2xl font-bold text-indigo-600">
-                        ₹{(requiredQuantity * (parseFloat(currentMarketPrice) || 0)).toFixed(2)}
+                        ₹{(calculationResult.requiredQuantity * (parseFloat(currentMarketPrice) || 0)).toFixed(2)}
                       </div>
                     </div>
                   </div>
                   <p className="text-xs text-gray-600 mt-4 text-center">
-                    Buy {requiredQuantity.toFixed(0)} shares at ₹{currentMarketPrice} per share to achieve your target average of ₹{targetAvgPrice}
+                    Buy {calculationResult.requiredQuantity.toFixed(0)} shares at ₹{currentMarketPrice} per share to achieve your target average of ₹{targetAvgPrice}
                   </p>
                 </div>
               )}
@@ -442,7 +419,7 @@ function AverageCalculator() {
             </button>
           </div>
 
-          {calculationMode === 'purchase' && newAvgPrice !== null && (
+          {calculationMode === 'purchase' && calculationResult.newAvgPrice !== null && (
             <div className="bg-gradient-to-r from-orange-50 to-orange-100 border-2 border-orange-300 rounded-lg p-6">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Result</h3>
               <div className="grid md:grid-cols-3 gap-4 text-center">
@@ -466,7 +443,7 @@ function AverageCalculator() {
                 <div className="bg-white rounded-lg p-4 shadow-md">
                   <div className="text-sm text-orange-600 font-medium mb-1">New Average Price</div>
                   <div className="text-3xl font-bold text-orange-600">
-                    ₹{newAvgPrice.toFixed(2)}
+                    ₹{calculationResult.newAvgPrice.toFixed(2)}
                   </div>
                 </div>
               </div>

@@ -8,6 +8,7 @@
     "dev": "vite",
     "build": "vite build --mode production --base /reactLearning/",
     "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "preview": "vite preview",
     "predeploy": "npm run build:gh-pages",
     "deploy": "gh-pages -d dist",

@@ -141,7 +141,7 @@ function StockCheckList() {
                 <span className={`px-2 py-1 text-xs rounded-full font-medium ${selectedStock.category === 'Good Stock' ? 'bg-green-600 text-white' :
                   selectedStock.category === 'Check Stock' ? 'bg-yellow-600 text-white' :
                     'bg-red-600 text-white'
-                  }`}>
+                }`}>
                   {selectedStock.category}
                 </span>
               </div>
@@ -244,7 +244,7 @@ function StockCheckList() {
                   className={`p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${item.checked
                     ? 'bg-green-50 border-green-200'
                     : 'bg-white border-gray-200 hover:border-gray-300'
-                    }`}
+                  }`}
                   onClick={() => handleCheckChange(item.id)}
                 >
                   <div className="flex items-center gap-3">
@@ -257,7 +257,7 @@ function StockCheckList() {
                     />
                     <label
                       className={`text-sm font-medium cursor-pointer flex-1 ${item.checked ? 'text-green-800' : 'text-gray-700'
-                        }`}
+                      }`}
                     >
                       {item.label}
                     </label>
@@ -294,7 +294,7 @@ function StockCheckList() {
                   className={`p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${item.checked
                     ? 'bg-green-50 border-green-200'
                     : 'bg-white border-gray-200 hover:border-gray-300'
-                    }`}
+                  }`}
                   onClick={() => handleCheckChange(item.id)}
                 >
                   <div className="flex items-center gap-3">
@@ -307,7 +307,7 @@ function StockCheckList() {
                     />
                     <label
                       className={`text-sm font-medium cursor-pointer flex-1 ${item.checked ? 'text-green-800' : 'text-gray-700'
-                        }`}
+                      }`}
                     >
                       {item.label}
                     </label>
@@ -377,7 +377,7 @@ function StockCheckList() {
                       <span className={`px-2 py-1 text-xs rounded-full font-medium ${stock.category === 'Good Stock' ? 'bg-green-100 text-green-700' :
                         stock.category === 'Check Stock' ? 'bg-yellow-100 text-yellow-700' :
                           'bg-red-100 text-red-700'
-                        }`}>
+                      }`}>
                         {stock.category}
                       </span>
                     </div>

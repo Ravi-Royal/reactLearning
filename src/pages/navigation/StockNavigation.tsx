@@ -36,7 +36,7 @@ function StockNavigation() {
               className={`inline-flex items-center px-4 py-2 rounded-lg font-medium transition-colors ${location.pathname.includes(`/${item.route}`)
                 ? item.buttonColors.active
                 : item.buttonColors.inactive
-                }`}
+              }`}
             >
               {item.buttonText}
               <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

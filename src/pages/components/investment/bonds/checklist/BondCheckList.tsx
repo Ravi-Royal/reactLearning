@@ -136,7 +136,7 @@ function BondCheckList() {
                 <span className={`px-2 py-1 text-xs rounded-full font-medium ${selectedBond.category === 'Good Bond' ? 'bg-green-600 text-white' :
                   selectedBond.category === 'Check Bond' ? 'bg-yellow-600 text-white' :
                     'bg-red-600 text-white'
-                  }`}>
+                }`}>
                   {selectedBond.category}
                 </span>
               </div>
@@ -217,7 +217,7 @@ function BondCheckList() {
                   className={`p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${item.checked
                     ? 'bg-green-50 border-green-200'
                     : 'bg-white border-gray-200 hover:border-gray-300'
-                    }`}
+                  }`}
                   onClick={() => handleCheckChange(item.id)}
                 >
                   <div className="flex items-center gap-3">
@@ -230,7 +230,7 @@ function BondCheckList() {
                     />
                     <label
                       className={`text-sm font-medium cursor-pointer flex-1 ${item.checked ? 'text-green-800' : 'text-gray-700'
-                        }`}
+                      }`}
                     >
                       {item.label}
                     </label>
@@ -267,7 +267,7 @@ function BondCheckList() {
                   className={`p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${item.checked
                     ? 'bg-green-50 border-green-200'
                     : 'bg-white border-gray-200 hover:border-gray-300'
-                    }`}
+                  }`}
                   onClick={() => handleCheckChange(item.id)}
                 >
                   <div className="flex items-center gap-3">
@@ -280,7 +280,7 @@ function BondCheckList() {
                     />
                     <label
                       className={`text-sm font-medium cursor-pointer flex-1 ${item.checked ? 'text-green-800' : 'text-gray-700'
-                        }`}
+                      }`}
                     >
                       {item.label}
                     </label>
@@ -350,7 +350,7 @@ function BondCheckList() {
                       <span className={`px-2 py-1 text-xs rounded-full font-medium ${bond.category === 'Good Bond' ? 'bg-green-100 text-green-700' :
                         bond.category === 'Check Bond' ? 'bg-yellow-100 text-yellow-700' :
                           'bg-red-100 text-red-700'
-                        }`}>
+                      }`}>
                         {bond.category}
                       </span>
                     </div>
