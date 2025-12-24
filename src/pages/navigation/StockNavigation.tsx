@@ -13,9 +13,9 @@ function StockNavigation() {
           to="/investment"
           className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 text-sm font-medium flex items-center gap-2 mb-4 px-3 py-2 rounded-md transition-colors"
         >
-                    ← Back to Investment Analysis
+                    ← Back to Investment
         </Link>
-        <h1 className="text-2xl font-bold text-gray-800">Stock Analysis Dashboard</h1>
+        <h1 className="text-2xl font-bold text-gray-800">Stock Dashboard</h1>
         <p className="text-gray-600 mt-1">Manage and analyze your stock portfolio</p>
       </div>
 

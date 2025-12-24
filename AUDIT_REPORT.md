@@ -19,7 +19,7 @@
  * - src/pages/navigation/       Navigation components
  * - src/pages/components/       Feature components
  *   ├── hookRef/               React Hooks learning
- *   └── investment/            Investment analysis
+ *   └── investment/            Investment
  *       ├── stock/             Stock features
  *       │ ├── analysis/        P&L analysis
  *       │ ├── favorites/       Favorite stocks

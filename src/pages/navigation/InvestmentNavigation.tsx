@@ -9,7 +9,7 @@ function InvestmentNavigation() {
     <div className="p-6">
       <Breadcrumbs />
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Investment Analysis Dashboard</h1>
+        <h1 className="text-2xl font-bold text-gray-800">Investment Dashboard</h1>
         <p className="text-gray-600 mt-1">Manage and analyze your investment portfolio</p>
       </div>
 

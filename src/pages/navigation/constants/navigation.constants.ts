@@ -27,7 +27,7 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
   },
   {
     id: 'investment',
-    label: 'Investment Analysis',
+    label: 'Investment',
     path: '/investment',
     isActiveCheck: (pathname: string) => pathname.startsWith('/investment'),
   },

@@ -16,10 +16,10 @@ function Breadcrumbs() {
     ];
 
     if (pathnames.includes('investment')) {
-      breadcrumbs.push({ label: 'Investment Analysis', path: '/investment' });
+      breadcrumbs.push({ label: 'Investment', path: '/investment' });
 
       if (pathnames.includes('stock')) {
-        breadcrumbs.push({ label: 'Stock Analysis', path: '/investment/stock' });
+        breadcrumbs.push({ label: 'Stock', path: '/investment/stock' });
 
         if (pathnames.includes('analysis')) {
           breadcrumbs.push({ label: 'P&L Analysis', path: '/investment/stock/analysis' });

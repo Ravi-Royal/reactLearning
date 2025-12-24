@@ -72,7 +72,7 @@
  *    │   │   ├── UseContextHook.tsx
  *    │   │   └── UseCallbackHook.tsx
  *    │   │
- *    │   └── investment/                  Investment analysis features
+ *    │   └── investment/                  Investment features
  *    │       ├── stock/
  *    │       │   ├── analysis/
  *    │       │   │   ├── Analysis.tsx     P&L analysis landing page
