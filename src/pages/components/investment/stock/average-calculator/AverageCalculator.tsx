@@ -4,6 +4,7 @@ import Breadcrumbs from '../../../../navigation/Breadcrumbs';
 // import Breadcrumbs from '../../navigation/Breadcrumbs';
 
 function AverageCalculator() {
+  const [calculationMode, setCalculationMode] = useState<'purchase' | 'target'>('purchase');
   const [currentInputMode, setCurrentInputMode] = useState<'price' | 'total'>('price');
   const [buyInputMode, setBuyInputMode] = useState<'price' | 'total'>('price');
   const [currentQuantity, setCurrentQuantity] = useState<string>('');
@@ -12,7 +13,11 @@ function AverageCalculator() {
   const [buyQuantity, setBuyQuantity] = useState<string>('');
   const [buyPrice, setBuyPrice] = useState<string>('');
   const [buyTotalPrice, setBuyTotalPrice] = useState<string>('');
+  const [targetAvgPrice, setTargetAvgPrice] = useState<string>('');
+  const [currentMarketPrice, setCurrentMarketPrice] = useState<string>('');
   const [newAvgPrice, setNewAvgPrice] = useState<number | null>(null);
+  const [requiredBuyPrice, setRequiredBuyPrice] = useState<number | null>(null);
+  const [requiredQuantity, setRequiredQuantity] = useState<number | null>(null);
 
   // Auto-calculate when all fields are filled
   useEffect(() => {
@@ -30,31 +35,74 @@ function AverageCalculator() {
       currPrice = currQty > 0 ? currTotal / currQty : 0;
     }
 
-    if (buyInputMode === 'price') {
-      addPrice = parseFloat(buyPrice) || 0;
+    if (calculationMode === 'purchase') {
+      // Forward calculation: Calculate new average from purchase details
+      if (buyInputMode === 'price') {
+        addPrice = parseFloat(buyPrice) || 0;
+      } else {
+        const addTotal = parseFloat(buyTotalPrice) || 0;
+        addPrice = addQty > 0 ? addTotal / addQty : 0;
+      }
+
+      // Only calculate if all required fields have valid values
+      const hasCurrentData = currentInputMode === 'price'
+        ? currentQuantity && currentAvgPrice
+        : currentQuantity && currentTotalPrice;
+
+      const hasBuyData = buyInputMode === 'price'
+        ? buyQuantity && buyPrice
+        : buyQuantity && buyTotalPrice;
+
+      if (hasCurrentData && hasBuyData && currQty >= 0 && currPrice >= 0 && addQty > 0 && addPrice > 0) {
+        const totalCost = (currQty * currPrice) + (addQty * addPrice);
+        const totalQuantity = currQty + addQty;
+        const newAvg = totalQuantity > 0 ? totalCost / totalQuantity : 0;
+        setNewAvgPrice(newAvg);
+        setRequiredBuyPrice(null);
+        setRequiredQuantity(null);
+      } else {
+        setNewAvgPrice(null);
+        setRequiredBuyPrice(null);
+        setRequiredQuantity(null);
+      }
     } else {
-      const addTotal = parseFloat(buyTotalPrice) || 0;
-      addPrice = addQty > 0 ? addTotal / addQty : 0;
+      // Reverse calculation: Calculate required quantity from target average and market price
+      const targetAvg = parseFloat(targetAvgPrice) || 0;
+      const marketPrice = parseFloat(currentMarketPrice) || 0;
+
+      const hasCurrentData = currentInputMode === 'price'
+        ? currentQuantity && currentAvgPrice
+        : currentQuantity && currentTotalPrice;
+
+      if (hasCurrentData && targetAvgPrice && currentMarketPrice && currQty >= 0 && currPrice >= 0 && targetAvg > 0 && marketPrice > 0) {
+        // Formula: targetAvg = (currQty * currPrice + requiredQty * marketPrice) / (currQty + requiredQty)
+        // Solving for requiredQty: requiredQty = currQty * (currPrice - targetAvg) / (targetAvg - marketPrice)
+        const denominator = targetAvg - marketPrice;
+
+        if (Math.abs(denominator) > 0.01) { // Avoid division by zero
+          const requiredQty = currQty * (currPrice - targetAvg) / denominator;
+
+          if (requiredQty > 0) {
+            setRequiredQuantity(requiredQty);
+            setRequiredBuyPrice(marketPrice);
+            setNewAvgPrice(targetAvg);
+          } else {
+            setRequiredQuantity(null);
+            setRequiredBuyPrice(null);
+            setNewAvgPrice(null);
+          }
+        } else {
+          setRequiredQuantity(null);
+          setRequiredBuyPrice(null);
+          setNewAvgPrice(null);
+        }
+      } else {
+        setRequiredQuantity(null);
+        setRequiredBuyPrice(null);
+        setNewAvgPrice(null);
+      }
     }
-
-    // Only calculate if all required fields have valid values
-    const hasCurrentData = currentInputMode === 'price'
-      ? currentQuantity && currentAvgPrice
-      : currentQuantity && currentTotalPrice;
-
-    const hasBuyData = buyInputMode === 'price'
-      ? buyQuantity && buyPrice
-      : buyQuantity && buyTotalPrice;
-
-    if (hasCurrentData && hasBuyData && currQty >= 0 && currPrice >= 0 && addQty > 0 && addPrice > 0) {
-      const totalCost = (currQty * currPrice) + (addQty * addPrice);
-      const totalQuantity = currQty + addQty;
-      const newAvg = totalQuantity > 0 ? totalCost / totalQuantity : 0;
-      setNewAvgPrice(newAvg);
-    } else {
-      setNewAvgPrice(null);
-    }
-  }, [currentInputMode, buyInputMode, currentQuantity, currentAvgPrice, currentTotalPrice, buyQuantity, buyPrice, buyTotalPrice]);
+  }, [calculationMode, currentInputMode, buyInputMode, currentQuantity, currentAvgPrice, currentTotalPrice, buyQuantity, buyPrice, buyTotalPrice, targetAvgPrice, currentMarketPrice]);
 
   const handleCurrentQuantityChange = (value: string) => {
     setCurrentQuantity(value);
@@ -131,7 +179,24 @@ function AverageCalculator() {
     setBuyQuantity('');
     setBuyPrice('');
     setBuyTotalPrice('');
+    setTargetAvgPrice('');
+    setCurrentMarketPrice('');
     setNewAvgPrice(null);
+    setRequiredBuyPrice(null);
+    setRequiredQuantity(null);
+  };
+
+  const toggleCalculationMode = () => {
+    setCalculationMode(prevMode => prevMode === 'purchase' ? 'target' : 'purchase');
+    // Clear the fields when switching modes
+    setBuyQuantity('');
+    setBuyPrice('');
+    setBuyTotalPrice('');
+    setTargetAvgPrice('');
+    setCurrentMarketPrice('');
+    setNewAvgPrice(null);
+    setRequiredBuyPrice(null);
+    setRequiredQuantity(null);
   };
 
   return (
@@ -218,73 +283,155 @@ function AverageCalculator() {
             )}
           </div>
 
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-800">New Purchase</h2>
+          <div className="flex items-center justify-between mb-6 border-t border-gray-200 pt-6">
+            <h2 className="text-xl font-semibold text-gray-800">
+              {calculationMode === 'purchase' ? 'New Purchase Details' : 'Target Average Price'}
+            </h2>
             <button
-              onClick={toggleBuyInputMode}
-              className={`relative inline-flex items-center h-7 rounded-full w-28 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${buyInputMode === 'price' ? 'bg-blue-600' : 'bg-green-600'
+              onClick={toggleCalculationMode}
+              className={`relative inline-flex items-center h-7 rounded-full w-32 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 ${calculationMode === 'purchase' ? 'bg-purple-600' : 'bg-indigo-600'
                 }`}
             >
               <span
-                className={`inline-block w-14 h-6 transform rounded-full bg-white shadow-lg transition-transform ${buyInputMode === 'price' ? 'translate-x-0.5' : 'translate-x-[52px]'
+                className={`inline-block w-16 h-6 transform rounded-full bg-white shadow-lg transition-transform ${calculationMode === 'purchase' ? 'translate-x-0.5' : 'translate-x-[62px]'
                   }`}
               />
-              <span className="absolute left-2 text-xs font-medium text-white">Price</span>
-              <span className="absolute right-2 text-xs font-medium text-white">Total</span>
+              <span className="absolute left-1.5 text-[10px] font-medium text-white">Purchase</span>
+              <span className="absolute right-2 text-[10px] font-medium text-white">Target</span>
             </button>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6 mb-8">
-            <div>
-              <label htmlFor="buyQuantity" className="block text-sm font-medium text-gray-700 mb-2">
-                Quantity to Buy
-              </label>
-              <input
-                type="number"
-                id="buyQuantity"
-                value={buyQuantity}
-                onChange={(e) => handleBuyQuantityChange(e.target.value)}
-                placeholder="e.g., 50"
-                min="0"
-                step="1"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-              />
-            </div>
+          {calculationMode === 'purchase' ? (
+            <>
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-sm text-gray-600">Enter your purchase details</p>
+                <button
+                  onClick={toggleBuyInputMode}
+                  className={`relative inline-flex items-center h-7 rounded-full w-28 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${buyInputMode === 'price' ? 'bg-blue-600' : 'bg-green-600'
+                    }`}
+                >
+                  <span
+                    className={`inline-block w-14 h-6 transform rounded-full bg-white shadow-lg transition-transform ${buyInputMode === 'price' ? 'translate-x-0.5' : 'translate-x-[52px]'
+                      }`}
+                  />
+                  <span className="absolute left-2 text-xs font-medium text-white">Price</span>
+                  <span className="absolute right-2 text-xs font-medium text-white">Total</span>
+                </button>
+              </div>
 
-            {buyInputMode === 'price' ? (
-              <div>
-                <label htmlFor="buyPrice" className="block text-sm font-medium text-gray-700 mb-2">
-                  Purchase Average Price (₹)
-                </label>
-                <input
-                  type="number"
-                  id="buyPrice"
-                  value={buyPrice}
-                  onChange={(e) => handleBuyPriceChange(e.target.value)}
-                  placeholder="e.g., 140.00"
-                  min="0"
-                  step="0.01"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                />
+              <div className="grid md:grid-cols-2 gap-6 mb-8">
+                <div>
+                  <label htmlFor="buyQuantity" className="block text-sm font-medium text-gray-700 mb-2">
+                    Quantity to Buy
+                  </label>
+                  <input
+                    type="number"
+                    id="buyQuantity"
+                    value={buyQuantity}
+                    onChange={(e) => handleBuyQuantityChange(e.target.value)}
+                    placeholder="e.g., 50"
+                    min="0"
+                    step="1"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  />
+                </div>
+
+                {buyInputMode === 'price' ? (
+                  <div>
+                    <label htmlFor="buyPrice" className="block text-sm font-medium text-gray-700 mb-2">
+                      Purchase Average Price (₹)
+                    </label>
+                    <input
+                      type="number"
+                      id="buyPrice"
+                      value={buyPrice}
+                      onChange={(e) => handleBuyPriceChange(e.target.value)}
+                      placeholder="e.g., 140.00"
+                      min="0"
+                      step="0.01"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    />
+                  </div>
+                ) : (
+                  <div>
+                    <label htmlFor="buyTotalPrice" className="block text-sm font-medium text-gray-700 mb-2">
+                      Total Amount to Invest (₹)
+                    </label>
+                    <input
+                      type="number"
+                      id="buyTotalPrice"
+                      value={buyTotalPrice}
+                      onChange={(e) => handleBuyTotalPriceChange(e.target.value)}
+                      placeholder="e.g., 7000.00"
+                      min="0"
+                      step="0.01"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    />
+                  </div>
+                )}
               </div>
-            ) : (
-              <div>
-                <label htmlFor="buyTotalPrice" className="block text-sm font-medium text-gray-700 mb-2">
-                  Total Amount to Invest (₹)
-                </label>
-                <input
-                  type="number"
-                  id="buyTotalPrice"
-                  value={buyTotalPrice}
-                  onChange={(e) => handleBuyTotalPriceChange(e.target.value)}
-                  placeholder="e.g., 7000.00"
-                  min="0"
-                  step="0.01"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                />
+            </>
+          ) : (
+            <>
+              <p className="text-sm text-gray-600 mb-4">Enter target average price and current market price to calculate quantity needed</p>
+              <div className="grid md:grid-cols-2 gap-6 mb-8">
+                <div>
+                  <label htmlFor="currentMarketPrice" className="block text-sm font-medium text-gray-700 mb-2">
+                    Current Market Price Per Share (₹)
+                  </label>
+                  <input
+                    type="number"
+                    id="currentMarketPrice"
+                    value={currentMarketPrice}
+                    onChange={(e) => setCurrentMarketPrice(e.target.value)}
+                    placeholder="e.g., 140.00"
+                    min="0"
+                    step="0.01"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="targetAvgPrice" className="block text-sm font-medium text-gray-700 mb-2">
+                    Target Average Price (₹)
+                  </label>
+                  <input
+                    type="number"
+                    id="targetAvgPrice"
+                    value={targetAvgPrice}
+                    onChange={(e) => setTargetAvgPrice(e.target.value)}
+                    placeholder="e.g., 145.00"
+                    min="0"
+                    step="0.01"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  />
+                </div>
               </div>
-            )}
-          </div>
+
+              {requiredQuantity !== null && (
+                <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-300 rounded-lg p-6 mb-8">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">Required Purchase Details</h3>
+                  <div className="grid md:grid-cols-2 gap-4 text-center">
+                    <div className="bg-white rounded-lg p-4 shadow-md">
+                      <div className="text-sm text-purple-600 font-medium mb-1">Quantity to Buy</div>
+                      <div className="text-3xl font-bold text-purple-600">
+                        {requiredQuantity.toFixed(0)} shares
+                      </div>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 shadow-md">
+                      <div className="text-sm text-indigo-600 font-medium mb-1">Total Investment</div>
+                      <div className="text-2xl font-bold text-indigo-600">
+                        ₹{(requiredQuantity * (parseFloat(currentMarketPrice) || 0)).toFixed(2)}
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-600 mt-4 text-center">
+                    Buy {requiredQuantity.toFixed(0)} shares at ₹{currentMarketPrice} per share to achieve your target average of ₹{targetAvgPrice}
+                  </p>
+                </div>
+              )}
+            </>
+          )}
 
           <div className="flex gap-4 mb-8">
             <button
@@ -295,7 +442,7 @@ function AverageCalculator() {
             </button>
           </div>
 
-          {newAvgPrice !== null && (
+          {calculationMode === 'purchase' && newAvgPrice !== null && (
             <div className="bg-gradient-to-r from-orange-50 to-orange-100 border-2 border-orange-300 rounded-lg p-6">
               <h3 className="text-lg font-semibold text-gray-800 mb-4">Result</h3>
               <div className="grid md:grid-cols-3 gap-4 text-center">
@@ -309,8 +456,10 @@ function AverageCalculator() {
                   <div className="text-sm text-gray-600 mb-1">Total Investment</div>
                   <div className="text-2xl font-bold text-gray-800">
                     ₹{(
-                      ((parseFloat(currentQuantity) || 0) * (parseFloat(currentAvgPrice) || 0)) +
-                      ((parseFloat(buyQuantity) || 0) * (parseFloat(buyPrice) || 0))
+                      ((parseFloat(currentQuantity) || 0) * (parseFloat(currentAvgPrice) || (parseFloat(currentTotalPrice) || 0) / (parseFloat(currentQuantity) || 1))) +
+                      (buyInputMode === 'price'
+                        ? ((parseFloat(buyQuantity) || 0) * (parseFloat(buyPrice) || 0))
+                        : (parseFloat(buyTotalPrice) || 0))
                     ).toFixed(2)}
                   </div>
                 </div>
