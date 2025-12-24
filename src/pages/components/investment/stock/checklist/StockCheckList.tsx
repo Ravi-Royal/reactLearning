@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Breadcrumbs from '../../../../navigation/Breadcrumbs';
-import { copyAllChecklistItems, CopyAllIcon, copyChecklistCategory, CopyIcon } from '../../helpers/checklistCopy.helper';
+import { copyAllChecklistItems, copyChecklistCategory } from '../../helpers/checklistCopy.helper';
+import { CopyAllIcon, CopyIcon } from '../../helpers/CopyIcons';
 import { CHECKLIST_CATEGORIES, MY_STOCK_LIST, type MyStockItem } from './stockChecklist.constants';
 
 function StockCheckList() {
