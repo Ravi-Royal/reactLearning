@@ -6,10 +6,10 @@ export const NAVIGATION_BRAND = {
 };
 
 export interface NavigationItem {
-    id: string;
-    label: string;
-    path: string;
-    isActiveCheck: (pathname: string) => boolean;
+  id: string;
+  label: string;
+  path: string;
+  isActiveCheck: (pathname: string) => boolean;
 }
 
 export const NAVIGATION_ITEMS: NavigationItem[] = [

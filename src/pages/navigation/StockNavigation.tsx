@@ -13,7 +13,7 @@ function StockNavigation() {
           to="/investment"
           className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 text-sm font-medium flex items-center gap-2 mb-4 px-3 py-2 rounded-md transition-colors"
         >
-                    ← Back to Investment
+          ← Back to Investment
         </Link>
         <h1 className="text-2xl font-bold text-gray-800">Stock Dashboard</h1>
         <p className="text-gray-600 mt-1">Manage and analyze your stock portfolio</p>
@@ -36,7 +36,7 @@ function StockNavigation() {
               className={`inline-flex items-center px-4 py-2 rounded-lg font-medium transition-colors ${location.pathname.includes(`/${item.route}`)
                 ? item.buttonColors.active
                 : item.buttonColors.inactive
-              }`}
+                }`}
             >
               {item.buttonText}
               <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
