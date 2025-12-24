@@ -47,12 +47,28 @@ export const STOCK_NAVIGATION_ITEMS = [
       inactive: 'bg-purple-50 text-purple-600 hover:bg-purple-100',
     },
   },
+  {
+    id: 'average-calculator',
+    title: 'Average Calculator',
+    description: 'Calculate the new average price when accumulating more shares of a stock.',
+    icon: {
+      path: 'M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z',
+      bgColor: 'bg-orange-100',
+      color: 'text-orange-600',
+    },
+    route: 'average-calculator',
+    buttonText: 'Open Calculator',
+    buttonColors: {
+      active: 'bg-orange-600 text-white',
+      inactive: 'bg-orange-50 text-orange-600 hover:bg-orange-100',
+    },
+  },
 ];
 
 export const STOCK_QUICK_STATS = [
   {
     id: 'tools',
-    value: '3',
+    value: '4',
     label: 'Analysis Tools',
     color: 'text-blue-600',
   },

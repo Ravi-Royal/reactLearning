@@ -24,6 +24,7 @@ const StockAnalysis = lazy(() => import('../components/investment/stock/analysis
 const StockResult = lazy(() => import('../components/investment/stock/analysis/zerodha/StockResult'));
 const StockCheckList = lazy(() => import('../components/investment/stock/checklist/StockCheckList'));
 const MyFavStocks = lazy(() => import('../components/investment/stock/favorites/MyFavStocks'));
+const AverageCalculator = lazy(() => import('../components/investment/stock/average-calculator/AverageCalculator'));
 
 const RouteFallback = (): React.ReactElement => (
   <div className="p-6">
@@ -59,6 +60,7 @@ function Routing(): React.ReactElement {
               </Route>
               <Route path="favorites" element={<MyFavStocks />} />
               <Route path="checklist" element={<StockCheckList />} />
+              <Route path="average-calculator" element={<AverageCalculator />} />
             </Route>
             <Route path="bonds" element={<Outlet />}>
               <Route index element={<Bonds />} />

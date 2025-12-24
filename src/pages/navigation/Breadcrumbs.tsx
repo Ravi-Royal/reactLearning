@@ -31,6 +31,8 @@ function Breadcrumbs() {
           breadcrumbs.push({ label: 'My Favorites', path: '/investment/stock/favorites' });
         } else if (pathnames.includes('checklist')) {
           breadcrumbs.push({ label: 'Stock Checklist', path: '/investment/stock/checklist' });
+        } else if (pathnames.includes('average-calculator')) {
+          breadcrumbs.push({ label: 'Average Calculator', path: '/investment/stock/average-calculator' });
         }
       } else if (pathnames.includes('bonds')) {
         breadcrumbs.push({ label: 'Bonds & Fixed Income', path: '/investment/bonds' });
