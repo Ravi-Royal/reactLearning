@@ -21,6 +21,19 @@ export default defineConfig({
         plugins: [['babel-plugin-react-compiler']],
       },
     }),
+    {
+      name: 'redirect-root',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          if (req.url === '/') {
+            res.writeHead(302, { Location: '/reactLearning' });
+            res.end();
+          } else {
+            next();
+          }
+        });
+      },
+    },
   ],
   server: {
     proxy: {
@@ -31,5 +44,6 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/yahooFinance/, ''),
       },
     },
+    open: '/reactLearning',
   },
 });
