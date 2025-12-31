@@ -212,8 +212,8 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                       key={`${col.key}-total`}
                       className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 z-20 relative shadow-[4px_0_8px_0_rgba(0,0,0,0.3)]' : ''}`}
                     >
-                        -
-                        {colIndex === 0 && <div className="absolute top-0 right-0 h-full w-[2px] bg-gray-300 z-40 pointer-events-none" />}
+                      -
+                      {colIndex === 0 && <div className="absolute top-0 right-0 h-full w-[2px] bg-gray-300 z-40 pointer-events-none" />}
                     </td>
                   );
                 }
@@ -224,8 +224,8 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                       key={`${col.key}-total`}
                       className="border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200 font-bold whitespace-nowrap sticky left-0 z-20 relative shadow-[4px_0_8px_0_rgba(0,0,0,0.3)]"
                     >
-                        TOTAL
-                        <div className="absolute top-0 right-0 h-full w-[2px] bg-gray-300 z-40 pointer-events-none" />
+                      TOTAL
+                      <div className="absolute top-0 right-0 h-full w-[2px] bg-gray-300 z-40 pointer-events-none" />
                     </td>
                   );
                 }
