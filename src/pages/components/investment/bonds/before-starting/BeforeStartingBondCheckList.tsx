@@ -106,18 +106,18 @@ function BeforeStartingBondCheckList() {
       </div>
       <p className="text-gray-600 mb-4">Complete this checklist before starting your bond investment journey.</p>
 
-      <div className="flex flex-wrap gap-4 mb-4 text-xs">
-        <div className="flex items-center gap-2">
-          <span className="px-2 py-1 bg-orange-100 text-orange-700 rounded-full">({CHECKLIST_CATEGORIES.EDUCATION})</span>
-          <span className="text-gray-600">Education criteria</span>
+      <div className="flex flex-wrap gap-2 sm:gap-3 mb-4 text-xs">
+        <div className="flex items-center gap-1 sm:gap-2">
+          <span className="px-1.5 py-0.5 sm:px-2 sm:py-1 bg-orange-100 text-orange-700 rounded-full text-[10px] sm:text-xs">({CHECKLIST_CATEGORIES.EDUCATION})</span>
+          <span className="text-gray-600 text-[10px] sm:text-xs">Education criteria</span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full">({CHECKLIST_CATEGORIES.PREPARATION})</span>
-          <span className="text-gray-600">Preparation criteria</span>
+        <div className="flex items-center gap-1 sm:gap-2">
+          <span className="px-1.5 py-0.5 sm:px-2 sm:py-1 bg-purple-100 text-purple-700 rounded-full text-[10px] sm:text-xs">({CHECKLIST_CATEGORIES.PREPARATION})</span>
+          <span className="text-gray-600 text-[10px] sm:text-xs">Preparation criteria</span>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="px-2 py-1 bg-pink-100 text-pink-700 rounded-full">({CHECKLIST_CATEGORIES.MINE})</span>
-          <span className="text-gray-600">Mine criteria</span>
+        <div className="flex items-center gap-1 sm:gap-2">
+          <span className="px-1.5 py-0.5 sm:px-2 sm:py-1 bg-pink-100 text-pink-700 rounded-full text-[10px] sm:text-xs">({CHECKLIST_CATEGORIES.MINE})</span>
+          <span className="text-gray-600 text-[10px] sm:text-xs">Mine criteria</span>
         </div>
       </div>
 
@@ -129,28 +129,28 @@ function BeforeStartingBondCheckList() {
         </div>
       </div>
 
-      <div className="mb-6">
+      <div className="mb-6 flex flex-wrap gap-2">
         <button
           onClick={handleUncheckAll}
-          className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors mr-2"
+          className="px-2 py-1 sm:px-3 sm:py-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-xs sm:text-sm"
         >
           Uncheck All
         </button>
         <button
           onClick={handleUncheckEducation}
-          className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors mr-2"
+          className="px-2 py-1 sm:px-3 sm:py-1.5 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors text-xs sm:text-sm"
         >
           Uncheck Education
         </button>
         <button
           onClick={handleUncheckPreparation}
-          className="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors mr-2"
+          className="px-2 py-1 sm:px-3 sm:py-1.5 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors text-xs sm:text-sm"
         >
           Uncheck Preparation
         </button>
         <button
           onClick={handleUncheckMine}
-          className="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors"
+          className="px-2 py-1 sm:px-3 sm:py-1.5 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors text-xs sm:text-sm"
         >
           Uncheck Mine
         </button>

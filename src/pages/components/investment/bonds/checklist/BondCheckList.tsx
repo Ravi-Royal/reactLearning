@@ -111,14 +111,14 @@ function BondCheckList() {
         </div>
         <p className="text-gray-600 mb-4">Use this checklist to evaluate potential bond investments systematically.</p>
 
-        <div className="flex flex-wrap gap-4 mb-4 text-xs">
-          <div className="flex items-center gap-2">
-            <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full">({CHECKLIST_CATEGORIES.AI})</span>
-            <span className="text-gray-600">AI-recommended criteria</span>
+        <div className="flex flex-wrap gap-2 sm:gap-3 mb-4 text-xs">
+          <div className="flex items-center gap-1 sm:gap-2">
+            <span className="px-1.5 py-0.5 sm:px-2 sm:py-1 bg-blue-100 text-blue-700 rounded-full text-[10px] sm:text-xs">({CHECKLIST_CATEGORIES.AI})</span>
+            <span className="text-gray-600 text-[10px] sm:text-xs">AI-recommended criteria</span>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full">({CHECKLIST_CATEGORIES.PERSONAL})</span>
-            <span className="text-gray-600">Personal investment criteria</span>
+          <div className="flex items-center gap-1 sm:gap-2">
+            <span className="px-1.5 py-0.5 sm:px-2 sm:py-1 bg-purple-100 text-purple-700 rounded-full text-[10px] sm:text-xs">({CHECKLIST_CATEGORIES.PERSONAL})</span>
+            <span className="text-gray-600 text-[10px] sm:text-xs">Personal investment criteria</span>
           </div>
         </div>
 
@@ -150,44 +150,44 @@ function BondCheckList() {
         </div>
 
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-2 flex-wrap">
             <button
               onClick={handleOpenModal}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 flex items-center gap-2"
+              className="px-2 py-1 sm:px-3 sm:py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-medium rounded-lg transition-colors duration-200 flex items-center gap-1 sm:gap-2"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
               Select Bond
             </button>
             <button
               onClick={handleUncheckAll}
-              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition-colors duration-200 flex items-center gap-2"
+              className="px-2 py-1 sm:px-3 sm:py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs sm:text-sm font-medium rounded-lg transition-colors duration-200 flex items-center gap-1 sm:gap-2"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
               Uncheck All
             </button>
             <button
               onClick={handleUncheckAI}
-              className="px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 text-sm font-medium rounded-lg transition-colors duration-200 flex items-center gap-2"
+              className="px-2 py-1 sm:px-3 sm:py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-700 text-xs sm:text-sm font-medium rounded-lg transition-colors duration-200 flex items-center gap-1 sm:gap-2"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
               Uncheck AI
             </button>
             <button
               onClick={handleUncheckPersonal}
-              className="px-4 py-2 bg-purple-100 hover:bg-purple-200 text-purple-700 text-sm font-medium rounded-lg transition-colors duration-200 flex items-center gap-2"
+              className="px-2 py-1 sm:px-3 sm:py-1.5 bg-purple-100 hover:bg-purple-200 text-purple-700 text-xs sm:text-sm font-medium rounded-lg transition-colors duration-200 flex items-center gap-1 sm:gap-2"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
               Uncheck Personal
             </button>
-            <span className="text-sm text-gray-500">
+            <span className="text-xs sm:text-sm text-gray-500">
               {checkedCount > 0 ? `${checkedCount} item${checkedCount > 1 ? 's' : ''} selected` : 'No items selected'}
             </span>
           </div>

@@ -194,18 +194,22 @@ function AverageCalculator() {
         <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 border border-gray-200">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-3">
             <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Current Holdings</h2>
-            <button
-              onClick={toggleCurrentInputMode}
-              className={`relative inline-flex items-center h-9 sm:h-8 rounded-full w-36 sm:w-32 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${currentInputMode === 'price' ? 'bg-blue-600' : 'bg-green-600'
-              }`}
-            >
-              <span
-                className={`inline-block w-[70px] sm:w-16 h-8 sm:h-7 transform rounded-full bg-white shadow-lg transition-transform ${currentInputMode === 'price' ? 'translate-x-0.5' : 'translate-x-[70px] sm:translate-x-[62px]'
-                }`}
-              />
-              <span className="absolute left-2.5 text-sm sm:text-xs font-medium text-white">Price</span>
-              <span className="absolute right-2.5 text-sm sm:text-xs font-medium text-white">Total</span>
-            </button>
+            <div className="inline-flex rounded-md border border-gray-300 overflow-hidden">
+              <button
+                type="button"
+                onClick={() => currentInputMode !== 'price' && toggleCurrentInputMode()}
+                className={`px-1.5 sm:px-3 py-0.5 sm:py-1.5 text-xs font-medium transition-colors ${currentInputMode === 'price' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+              >
+                Price
+              </button>
+              <button
+                type="button"
+                onClick={() => currentInputMode !== 'total' && toggleCurrentInputMode()}
+                className={`px-1.5 sm:px-3 py-0.5 sm:py-1.5 text-xs font-medium transition-colors border-l border-gray-300 ${currentInputMode === 'total' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+              >
+                Total
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
@@ -264,36 +268,44 @@ function AverageCalculator() {
             <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
               {calculationMode === 'purchase' ? 'New Purchase Details' : 'Target Average Price'}
             </h2>
-            <button
-              onClick={toggleCalculationMode}
-              className={`relative inline-flex items-center h-9 sm:h-8 rounded-full w-40 sm:w-36 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 ${calculationMode === 'purchase' ? 'bg-purple-600' : 'bg-indigo-600'
-              }`}
-            >
-              <span
-                className={`inline-block w-[78px] sm:w-[70px] h-8 sm:h-7 transform rounded-full bg-white shadow-lg transition-transform ${calculationMode === 'purchase' ? 'translate-x-0.5' : 'translate-x-[78px] sm:translate-x-[70px]'
-                }`}
-              />
-              <span className="absolute left-2 text-xs sm:text-[11px] font-medium text-white">Purchase</span>
-              <span className="absolute right-2.5 text-xs sm:text-[11px] font-medium text-white">Target</span>
-            </button>
+            <div className="inline-flex rounded-md border border-gray-300 overflow-hidden">
+              <button
+                type="button"
+                onClick={() => calculationMode !== 'purchase' && toggleCalculationMode()}
+                className={`px-1.5 sm:px-3 py-0.5 sm:py-1.5 text-xs font-medium transition-colors ${calculationMode === 'purchase' ? 'bg-purple-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+              >
+                Purchase
+              </button>
+              <button
+                type="button"
+                onClick={() => calculationMode !== 'target' && toggleCalculationMode()}
+                className={`px-1.5 sm:px-3 py-0.5 sm:py-1.5 text-xs font-medium transition-colors border-l border-gray-300 ${calculationMode === 'target' ? 'bg-purple-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+              >
+                Target
+              </button>
+            </div>
           </div>
 
           {calculationMode === 'purchase' ? (
             <>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-3">
                 <p className="text-xs sm:text-sm text-gray-600">Enter your purchase details</p>
-                <button
-                  onClick={toggleBuyInputMode}
-                  className={`relative inline-flex items-center h-9 sm:h-8 rounded-full w-36 sm:w-32 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${buyInputMode === 'price' ? 'bg-blue-600' : 'bg-green-600'
-                  }`}
-                >
-                  <span
-                    className={`inline-block w-[70px] sm:w-16 h-8 sm:h-7 transform rounded-full bg-white shadow-lg transition-transform ${buyInputMode === 'price' ? 'translate-x-0.5' : 'translate-x-[70px] sm:translate-x-[62px]'
-                    }`}
-                  />
-                  <span className="absolute left-2.5 text-sm sm:text-xs font-medium text-white">Price</span>
-                  <span className="absolute right-2.5 text-sm sm:text-xs font-medium text-white">Total</span>
-                </button>
+                <div className="inline-flex rounded-md border border-gray-300 overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => buyInputMode !== 'price' && toggleBuyInputMode()}
+                    className={`px-1.5 sm:px-3 py-0.5 sm:py-1.5 text-xs font-medium transition-colors ${buyInputMode === 'price' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                  >
+                    Price
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => buyInputMode !== 'total' && toggleBuyInputMode()}
+                    className={`px-1.5 sm:px-3 py-0.5 sm:py-1.5 text-xs font-medium transition-colors border-l border-gray-300 ${buyInputMode === 'total' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                  >
+                    Total
+                  </button>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
