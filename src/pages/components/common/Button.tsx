@@ -4,7 +4,7 @@ import { RESPONSIVE_PATTERNS, ANIMATIONS } from '../../../constants/responsive.c
 interface ButtonProps {
   onClick: () => void;
   children: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning';
+  variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning' | 'info';
   size?: 'xs' | 'sm' | 'md';
   disabled?: boolean;
   icon?: React.ReactNode;
@@ -26,7 +26,7 @@ export const Button: React.FC<ButtonProps> = ({
   className = '',
   type = 'button',
 }) => {
-  const baseClasses = `rounded-lg ${ANIMATIONS.transition} flex items-center justify-center font-medium disabled:opacity-50 disabled:cursor-not-allowed`;
+  const baseClasses = `rounded-lg ${ANIMATIONS.transition} flex items-center justify-center font-medium disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer`;
 
   const variantClasses = {
     primary: 'bg-blue-600 hover:bg-blue-700 text-white disabled:bg-gray-400',
@@ -34,6 +34,7 @@ export const Button: React.FC<ButtonProps> = ({
     danger: 'bg-red-500 hover:bg-red-600 text-white disabled:bg-gray-400',
     success: 'bg-green-500 hover:bg-green-600 text-white disabled:bg-gray-400',
     warning: 'bg-orange-500 hover:bg-orange-600 text-white disabled:bg-gray-400',
+    info: 'bg-cyan-500 hover:bg-cyan-600 text-white disabled:bg-gray-400',
   };
 
   const sizeClasses = RESPONSIVE_PATTERNS.button[size];
@@ -65,7 +66,7 @@ export const IconButton: React.FC<Omit<ButtonProps, 'children'> & { icon: React.
   className = '',
   type = 'button',
 }) => {
-  const baseClasses = `rounded-lg ${ANIMATIONS.transition} flex items-center justify-center`;
+  const baseClasses = `rounded-lg ${ANIMATIONS.transition} flex items-center justify-center cursor-pointer`;
 
   const variantClasses = {
     primary: 'bg-blue-600 hover:bg-blue-700 text-white',
@@ -73,6 +74,7 @@ export const IconButton: React.FC<Omit<ButtonProps, 'children'> & { icon: React.
     danger: 'bg-red-500 hover:bg-red-600 text-white',
     success: 'bg-green-500 hover:bg-green-600 text-white',
     warning: 'bg-orange-500 hover:bg-orange-600 text-white',
+    info: 'bg-cyan-500 hover:bg-cyan-600 text-white',
   };
 
   const sizeClasses = size === 'xs' ? 'p-1' : size === 'sm' ? 'p-2' : 'p-3';
