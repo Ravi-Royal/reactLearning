@@ -60,7 +60,7 @@ function BeforeStartingBondCheckList() {
   return (
     <div className={RESPONSIVE_PATTERNS.padding.page}>
       <Breadcrumbs />
-      
+
       <PageHeader
         title="Before Starting Bond Checklist"
         subtitle="Complete this checklist before starting your bond investment journey."

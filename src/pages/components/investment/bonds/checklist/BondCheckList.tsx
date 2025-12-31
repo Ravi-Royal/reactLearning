@@ -23,7 +23,6 @@ const INITIAL_CHECKLIST_ITEMS = [
 
 function BondCheckList() {
   const {
-    items: checklistItems,
     toggleItem,
     uncheckAll,
     uncheckCategory,
@@ -70,7 +69,7 @@ function BondCheckList() {
   return (
     <div className={RESPONSIVE_PATTERNS.padding.page}>
       <Breadcrumbs />
-      
+
       <PageHeader
         title="Bond Investment Checklist"
         subtitle="Use this checklist to evaluate potential bond investments systematically."
@@ -106,8 +105,8 @@ function BondCheckList() {
               </div>
               <span className={`px-2 py-1 text-xs rounded-full font-medium self-start sm:self-auto ${
                 selectedBond.category === 'Good Bond' ? 'bg-green-600 text-white' :
-                selectedBond.category === 'Check Bond' ? 'bg-yellow-600 text-white' :
-                'bg-red-600 text-white'
+                  selectedBond.category === 'Check Bond' ? 'bg-yellow-600 text-white' :
+                    'bg-red-600 text-white'
               }`}>
                 {selectedBond.category}
               </span>

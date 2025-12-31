@@ -58,28 +58,28 @@ function UseRefHook() {
           <p className="text-sm sm:text-base">Current Count: <span className="font-bold text-blue-600 text-lg sm:text-xl">{count}</span></p>
           <p className="text-sm sm:text-base">Previous Count: <span className="font-bold text-purple-600 text-lg sm:text-xl">{previousCount ? previousCount!.current : 'N/A'}</span></p>
         </div>
-        
+
         <div className="flex flex-wrap gap-2 sm:gap-3">
-          <button 
-            className="px-3 sm:px-4 py-2 bg-blue-500 text-white rounded text-xs sm:text-sm hover:bg-blue-700 transition-colors" 
+          <button
+            className="px-3 sm:px-4 py-2 bg-blue-500 text-white rounded text-xs sm:text-sm hover:bg-blue-700 transition-colors"
             onClick={() => setCount((prevCount) => prevCount + 1)}
           >
             Increment Count
           </button>
-          <button 
-            className="px-3 sm:px-4 py-2 bg-green-500 text-white rounded text-xs sm:text-sm hover:bg-green-700 transition-colors" 
+          <button
+            className="px-3 sm:px-4 py-2 bg-green-500 text-white rounded text-xs sm:text-sm hover:bg-green-700 transition-colors"
             onClick={() => setCount(0)}
           >
             Reset Count
           </button>
-          <button 
-            className="px-3 sm:px-4 py-2 bg-gray-500 text-white rounded text-xs sm:text-sm hover:bg-gray-700 transition-colors" 
+          <button
+            className="px-3 sm:px-4 py-2 bg-gray-500 text-white rounded text-xs sm:text-sm hover:bg-gray-700 transition-colors"
             onClick={() => console.warn('Current Count:', count, 'Previous Count:', previousCount.current)}
           >
             Console use Ref
           </button>
-          <button 
-            className="px-3 sm:px-4 py-2 bg-purple-500 text-white rounded text-xs sm:text-sm hover:bg-purple-700 transition-colors" 
+          <button
+            className="px-3 sm:px-4 py-2 bg-purple-500 text-white rounded text-xs sm:text-sm hover:bg-purple-700 transition-colors"
             onClick={() => setDummy((d) => d + 1)}
           >
             Force Re-render

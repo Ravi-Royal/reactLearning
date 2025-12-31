@@ -26,8 +26,8 @@ function UseEffectHook() {
       <div className="max-w-4xl mx-auto">
         <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-gray-800">useEffect Hook Page</h2>
 
-        <button 
-          className="px-4 sm:px-6 py-2 sm:py-3 bg-blue-500 text-white rounded text-sm sm:text-base hover:bg-blue-700 transition-colors" 
+        <button
+          className="px-4 sm:px-6 py-2 sm:py-3 bg-blue-500 text-white rounded text-sm sm:text-base hover:bg-blue-700 transition-colors"
           onClick={() => setTimerStarted((prevValue) => !prevValue)}
         >
           {timerStarted ? 'Stop Timer' : 'Start Timer'}
@@ -38,8 +38,8 @@ function UseEffectHook() {
           <span className="font-bold text-blue-600 text-lg sm:text-xl">{count}</span>
         </div>
 
-        <button 
-          className="mt-4 px-4 sm:px-6 py-2 sm:py-3 bg-green-500 text-white rounded text-sm sm:text-base hover:bg-green-700 transition-colors" 
+        <button
+          className="mt-4 px-4 sm:px-6 py-2 sm:py-3 bg-green-500 text-white rounded text-sm sm:text-base hover:bg-green-700 transition-colors"
           onClick={() => setCount(0)}
         >
           Reset Count
