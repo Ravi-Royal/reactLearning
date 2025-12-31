@@ -98,18 +98,18 @@ function BondCheckList() {
     <div className="p-2 sm:p-4 md:p-6 lg:p-8">
       <Breadcrumbs />
       <div className="mb-4 sm:mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="text-2xl font-bold text-gray-800">Bond Investment Checklist</h1>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-4 gap-3">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">Bond Investment Checklist</h1>
           <button
             onClick={handleCopyAll}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+            className="flex items-center justify-center sm:justify-start gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors text-sm"
             title="Copy all checklist items"
           >
             <CopyAllIcon />
             Copy All
           </button>
         </div>
-        <p className="text-gray-600 mb-4">Use this checklist to evaluate potential bond investments systematically.</p>
+        <p className="text-sm sm:text-base text-gray-600 mb-4">Use this checklist to evaluate potential bond investments systematically.</p>
 
         <div className="flex flex-wrap gap-2 sm:gap-3 mb-4 text-xs">
           <div className="flex items-center gap-1 sm:gap-2">
@@ -124,8 +124,8 @@ function BondCheckList() {
 
         <div className="p-4 bg-blue-50 rounded-lg">
           {selectedBond && (
-            <div className="mb-4 p-4 bg-green-100 rounded-lg border border-green-200">
-              <div className="flex items-center justify-between mb-3">
+            <div className="mb-4 p-3 sm:p-4 bg-green-100 rounded-lg border border-green-200">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 gap-2">
                 <div>
                   <span className="text-sm font-medium text-green-800">Evaluating: {selectedBond.name}</span>
                   {selectedBond.symbol && (
@@ -134,7 +134,7 @@ function BondCheckList() {
                     </div>
                   )}
                 </div>
-                <span className={`px-2 py-1 text-xs rounded-full font-medium ${selectedBond.category === 'Good Bond' ? 'bg-green-600 text-white' :
+                <span className={`px-2 py-1 text-xs rounded-full font-medium self-start sm:self-auto ${selectedBond.category === 'Good Bond' ? 'bg-green-600 text-white' :
                   selectedBond.category === 'Check Bond' ? 'bg-yellow-600 text-white' :
                     'bg-red-600 text-white'
                 }`}>
