@@ -59,21 +59,21 @@ function Breadcrumbs() {
   const breadcrumbs = getBreadcrumbs();
 
   return (
-    <nav className="flex mb-4" aria-label="Breadcrumb">
-      <ol className="inline-flex items-center space-x-1 md:space-x-3">
+    <nav className="flex mb-3 sm:mb-4 overflow-x-auto pb-2" aria-label="Breadcrumb">
+      <ol className="inline-flex items-center space-x-1 sm:space-x-2 md:space-x-3 flex-nowrap">
         {breadcrumbs.map((crumb, index) => (
-          <li key={crumb.path} className="inline-flex items-center">
+          <li key={crumb.path} className="inline-flex items-center flex-shrink-0">
             {index > 0 && (
-              <svg className="w-3 h-3 text-gray-400 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-2 h-2 sm:w-3 sm:h-3 text-gray-400 mx-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             )}
             {index === breadcrumbs.length - 1 ? (
-              <span className="text-sm font-semibold text-gray-800 bg-gray-100 px-2 py-1 rounded-md">{crumb.label}</span>
+              <span className="text-xs sm:text-sm font-semibold text-gray-800 bg-gray-100 px-2 py-1 rounded-md whitespace-nowrap">{crumb.label}</span>
             ) : (
               <Link
                 to={crumb.path}
-                className="text-sm font-medium text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 px-2 py-1 rounded-md transition-all duration-200"
+                className="text-xs sm:text-sm font-medium text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 px-2 py-1 rounded-md transition-all duration-200 whitespace-nowrap"
               >
                 {crumb.label}
               </Link>

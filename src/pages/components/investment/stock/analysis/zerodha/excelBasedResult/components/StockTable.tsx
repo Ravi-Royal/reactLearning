@@ -53,26 +53,28 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
   };
 
   return (
-    <div className="overflow-x-auto" style={{ maxHeight: '500px', overflowY: 'auto' }}>
-      <table className="min-w-full border-collapse border border-gray-300 relative">
-        <thead className="bg-gray-100">
-          <tr>
-            {stockColumns.map((col: { key: StockColumnKeyType; label: string; align?: 'left' | 'right' }) => (
-              <th
-                key={col.key}
-                className={`border border-gray-300 px-4 py-2${col.align === 'right' ? ' text-right' : ''} sticky top-0 bg-gray-100 z-20 cursor-pointer hover:bg-gray-200 select-none`}
-                style={{ top: 0 }}
-                onClick={() => handleSort(col.key)}
-              >
-                <div className="flex items-center justify-between">
-                  <span>{col.label}</span>
-                  {getSortIconElement(col.key)}
-                </div>
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
+    <div className="overflow-x-auto -mx-4 sm:mx-0" style={{ maxHeight: '500px', overflowY: 'auto' }}>
+      <div className="inline-block min-w-full align-middle">
+        <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+          <table className="min-w-full border-collapse border border-gray-300 relative text-xs sm:text-sm">
+            <thead className="bg-gray-100">
+              <tr>
+                {stockColumns.map((col: { key: StockColumnKeyType; label: string; align?: 'left' | 'right' }) => (
+                  <th
+                    key={col.key}
+                    className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} sticky top-0 bg-gray-100 z-20 cursor-pointer hover:bg-gray-200 select-none whitespace-nowrap`}
+                    style={{ top: 0 }}
+                    onClick={() => handleSort(col.key)}
+                  >
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="text-xs sm:text-sm">{col.label}</span>
+                      {getSortIconElement(col.key)}
+                    </div>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
           {sortedData.map((row, index) => (
             <tr key={index} className="hover:bg-gray-50">
               {stockColumns.map((col: { key: StockColumnKeyType; label: string; align?: 'left' | 'right' }) => {
@@ -83,7 +85,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                   return (
                     <td
                       key={col.key}
-                      className={`border border-gray-300 px-4 py-2${col.align === 'right' ? ' text-right' : ''} ${color}`}
+                      className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} ${color} whitespace-nowrap`}
                     >
                       {value}
                     </td>
@@ -99,7 +101,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                   return (
                     <td
                       key={col.key}
-                      className={`border border-gray-300 px-4 py-2${col.align === 'right' ? ' text-right' : ''}`}
+                      className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap`}
                       style={{ textAlign: col.align === 'right' ? 'right' : 'left' }}
                     >
                       <NearLowIndicator price={price} low={low} />
@@ -115,7 +117,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                   const sellPerStock = row[StockColumnKey.SellValuePerStock] ?? null;
 
                   return (
-                    <td key={col.key} className={`border border-gray-300 px-4 py-2${col.align === 'right' ? ' text-right' : ''}`}>
+                    <td key={col.key} className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap`}>
                       <RealizedPriceVsValueIndicator price={price as number | null} buyPerStock={buyPerStock as number | null} sellPerStock={sellPerStock as number | null} />
                     </td>
                   );
@@ -129,7 +131,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                   const openQuantity = row[StockColumnKey.OpenQuantity] ?? null;
 
                   return (
-                    <td key={col.key} className={`border border-gray-300 px-4 py-2${col.align === 'right' ? ' text-right' : ''}`}>
+                    <td key={col.key} className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap`}>
                       <UnrealizedPriceToCmpIndicator currentPrice={currentPrice as number | null} openValue={openValue as number | null} openQuantity={openQuantity as number | null} />
                     </td>
                   );
@@ -175,7 +177,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                 return (
                   <td
                     key={col.key}
-                    className={`border border-gray-300 px-4 py-2${col.align === 'right' ? ' text-right' : ''}`}
+                    className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap`}
                   >
                     {row[col.key as keyof StockData]}
                   </td>
@@ -202,7 +204,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                 return (
                   <td
                     key={`${col.key}-total`}
-                    className={`border border-gray-300 px-4 py-2 bg-gray-200${col.align === 'right' ? ' text-right' : ''}`}
+                    className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap`}
                   >
                     -
                   </td>
@@ -213,7 +215,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                 return (
                   <td
                     key={`${col.key}-total`}
-                    className="border border-gray-300 px-4 py-2 bg-gray-200 font-bold"
+                    className="border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200 font-bold whitespace-nowrap"
                   >
                     TOTAL
                   </td>
@@ -227,7 +229,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                   return (
                     <td
                       key={`${col.key}-total`}
-                      className={`border border-gray-300 px-4 py-2 bg-gray-200 font-bold text-right ${color}`}
+                      className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200 font-bold text-right ${color} whitespace-nowrap`}
                     >
                       {total.toFixed(2)}%
                     </td>
@@ -236,7 +238,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                 return (
                   <td
                     key={`${col.key}-total`}
-                    className="border border-gray-300 px-4 py-2 bg-gray-200 text-right"
+                    className="border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200 text-right whitespace-nowrap"
                   >
                     -
                   </td>
@@ -247,7 +249,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                 return (
                   <td
                     key={`${col.key}-total`}
-                    className={`border border-gray-300 px-4 py-2 bg-gray-200 font-bold${col.align === 'right' ? ' text-right' : ''}`}
+                    className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200 font-bold${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap`}
                   >
                     {typeof total === 'number' ? total.toLocaleString('en-IN', {
                       maximumFractionDigits: 2,
@@ -260,7 +262,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
               return (
                 <td
                   key={`${col.key}-total`}
-                  className={`border border-gray-300 px-4 py-2 bg-gray-200${col.align === 'right' ? ' text-right' : ''}`}
+                  className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap`}
                 >
                   -
                 </td>
@@ -269,6 +271,8 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
           </tr>
         </tfoot>
       </table>
+        </div>
+      </div>
     </div>
   );
 };

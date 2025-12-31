@@ -95,9 +95,9 @@ function BondCheckList() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-4 sm:p-6 md:p-8 lg:p-10">
       <Breadcrumbs />
-      <div className="mb-6">
+      <div className="mb-4 sm:mb-6">
         <div className="flex items-center justify-between mb-2">
           <h1 className="text-2xl font-bold text-gray-800">Bond Investment Checklist</h1>
           <button

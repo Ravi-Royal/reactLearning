@@ -212,40 +212,40 @@ const StockResult: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="p-4">Loading Excel data...</div>;
+    return <div className="p-4 sm:p-6">Loading Excel data...</div>;
   }
 
   if (needsSourceSelection) {
     return (
-      <div className="p-4">
+      <div className="p-4 sm:p-6 md:p-8">
         <Breadcrumbs />
-        <div className="mb-4">
-          <h1 className="text-2xl font-bold">Stock P&L Data</h1>
-          <p className="text-gray-600 mt-1">Choose how you want to load your Zerodha P&L Excel.</p>
+        <div className="mb-4 sm:mb-6">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">Stock P&L Data</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-1">Choose how you want to load your Zerodha P&L Excel.</p>
         </div>
 
-        {error && <div className="text-red-600 mb-4">Error: {error}</div>}
+        {error && <div className="text-red-600 mb-4 text-sm sm:text-base">Error: {error}</div>}
 
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-white rounded-lg shadow-md p-4 border border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-800">Upload Excel</h2>
-            <p className="text-sm text-gray-600 mt-1">Upload your Zerodha P&L Excel (.xlsx).</p>
+            <h2 className="text-base sm:text-lg font-semibold text-gray-800">Upload Excel</h2>
+            <p className="text-xs sm:text-sm text-gray-600 mt-1">Upload your Zerodha P&L Excel (.xlsx).</p>
             <div className="mt-3">
               <input
                 type="file"
                 accept=".xlsx,.xls"
                 onChange={handleUploadChange}
-                className="block w-full text-sm text-gray-700"
+                className="block w-full text-xs sm:text-sm text-gray-700"
               />
             </div>
           </div>
 
           <div className="bg-white rounded-lg shadow-md p-4 border border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-800">Load from Private Document</h2>
-            <p className="text-sm text-gray-600 mt-1">Loads <span className="font-mono">pnl-WAR042.xlsx</span> from <span className="font-mono">src/privateDocument</span>.</p>
+            <h2 className="text-base sm:text-lg font-semibold text-gray-800">Load from Private Document</h2>
+            <p className="text-xs sm:text-sm text-gray-600 mt-1">Loads <span className="font-mono text-xs">pnl-WAR042.xlsx</span> from <span className="font-mono text-xs">src/privateDocument</span>.</p>
             <button
               onClick={loadFromPrivateDocument}
-              className="mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              className="mt-3 px-3 sm:px-4 py-2 text-sm sm:text-base bg-blue-500 text-white rounded hover:bg-blue-600"
             >
               Load from Private Document
             </button>
@@ -257,11 +257,11 @@ const StockResult: React.FC = () => {
 
   if (error) {
     return (
-      <div className="p-4">
-        <div className="text-red-600 mb-4">Error: {error}</div>
+      <div className="p-4 sm:p-6">
+        <div className="text-red-600 mb-4 text-sm sm:text-base">Error: {error}</div>
         <button
           onClick={refreshData}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="px-3 sm:px-4 py-2 text-sm sm:text-base bg-blue-500 text-white rounded hover:bg-blue-600"
         >
           Retry
         </button>
@@ -270,10 +270,10 @@ const StockResult: React.FC = () => {
   }
 
   return (
-    <div className="p-4">
+    <div className="p-4 sm:p-6 md:p-8">
       <Breadcrumbs />
-      <div className="mb-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Stock P&L Data</h1>
+      <div className="mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">Stock P&L Data</h1>
         <StockControls
           onUpdatePrices={updatePrices}
           onRefreshData={refreshData}
@@ -290,7 +290,7 @@ const StockResult: React.FC = () => {
       {stockData.length > 0 ? (
         <StockTable stockData={stockData} priceMap={priceMap} />
       ) : (
-        <div className="text-gray-500">No data available</div>
+        <div className="text-gray-500 text-sm sm:text-base">No data available</div>
       )}
 
       {/* JSON Data Preview (for debugging/analysis) */}

@@ -91,13 +91,13 @@ function BeforeStartingBondCheckList() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-4 sm:p-6 md:p-8 lg:p-10">
       <Breadcrumbs />
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold text-gray-800">Before Starting Bond Checklist</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-3">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">Before Starting Bond Checklist</h1>
         <button
           onClick={handleCopyAll}
-          className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+          className="flex items-center justify-center sm:justify-start gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors text-sm"
           title="Copy all checklist items"
         >
           <CopyAllIcon />
