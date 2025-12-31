@@ -196,15 +196,15 @@ function AverageCalculator() {
             <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Current Holdings</h2>
             <button
               onClick={toggleCurrentInputMode}
-              className={`relative inline-flex items-center h-7 rounded-full w-28 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${currentInputMode === 'price' ? 'bg-blue-600' : 'bg-green-600'
+              className={`relative inline-flex items-center h-9 sm:h-8 rounded-full w-36 sm:w-32 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${currentInputMode === 'price' ? 'bg-blue-600' : 'bg-green-600'
               }`}
             >
               <span
-                className={`inline-block w-14 h-6 transform rounded-full bg-white shadow-lg transition-transform ${currentInputMode === 'price' ? 'translate-x-0.5' : 'translate-x-[52px]'
+                className={`inline-block w-[70px] sm:w-16 h-8 sm:h-7 transform rounded-full bg-white shadow-lg transition-transform ${currentInputMode === 'price' ? 'translate-x-0.5' : 'translate-x-[70px] sm:translate-x-[62px]'
                 }`}
               />
-              <span className="absolute left-2 text-xs font-medium text-white">Price</span>
-              <span className="absolute right-2 text-xs font-medium text-white">Total</span>
+              <span className="absolute left-2.5 text-sm sm:text-xs font-medium text-white">Price</span>
+              <span className="absolute right-2.5 text-sm sm:text-xs font-medium text-white">Total</span>
             </button>
           </div>
 
@@ -266,15 +266,15 @@ function AverageCalculator() {
             </h2>
             <button
               onClick={toggleCalculationMode}
-              className={`relative inline-flex items-center h-7 rounded-full w-32 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 ${calculationMode === 'purchase' ? 'bg-purple-600' : 'bg-indigo-600'
+              className={`relative inline-flex items-center h-9 sm:h-8 rounded-full w-40 sm:w-36 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 ${calculationMode === 'purchase' ? 'bg-purple-600' : 'bg-indigo-600'
               }`}
             >
               <span
-                className={`inline-block w-16 h-6 transform rounded-full bg-white shadow-lg transition-transform ${calculationMode === 'purchase' ? 'translate-x-0.5' : 'translate-x-[62px]'
+                className={`inline-block w-[78px] sm:w-[70px] h-8 sm:h-7 transform rounded-full bg-white shadow-lg transition-transform ${calculationMode === 'purchase' ? 'translate-x-0.5' : 'translate-x-[78px] sm:translate-x-[70px]'
                 }`}
               />
-              <span className="absolute left-1.5 text-[10px] font-medium text-white">Purchase</span>
-              <span className="absolute right-2 text-[10px] font-medium text-white">Target</span>
+              <span className="absolute left-2 text-xs sm:text-[11px] font-medium text-white">Purchase</span>
+              <span className="absolute right-2.5 text-xs sm:text-[11px] font-medium text-white">Target</span>
             </button>
           </div>
 
@@ -284,15 +284,15 @@ function AverageCalculator() {
                 <p className="text-xs sm:text-sm text-gray-600">Enter your purchase details</p>
                 <button
                   onClick={toggleBuyInputMode}
-                  className={`relative inline-flex items-center h-7 rounded-full w-28 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${buyInputMode === 'price' ? 'bg-blue-600' : 'bg-green-600'
+                  className={`relative inline-flex items-center h-9 sm:h-8 rounded-full w-36 sm:w-32 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${buyInputMode === 'price' ? 'bg-blue-600' : 'bg-green-600'
                   }`}
                 >
                   <span
-                    className={`inline-block w-14 h-6 transform rounded-full bg-white shadow-lg transition-transform ${buyInputMode === 'price' ? 'translate-x-0.5' : 'translate-x-[52px]'
+                    className={`inline-block w-[70px] sm:w-16 h-8 sm:h-7 transform rounded-full bg-white shadow-lg transition-transform ${buyInputMode === 'price' ? 'translate-x-0.5' : 'translate-x-[70px] sm:translate-x-[62px]'
                     }`}
                   />
-                  <span className="absolute left-2 text-xs font-medium text-white">Price</span>
-                  <span className="absolute right-2 text-xs font-medium text-white">Total</span>
+                  <span className="absolute left-2.5 text-sm sm:text-xs font-medium text-white">Price</span>
+                  <span className="absolute right-2.5 text-sm sm:text-xs font-medium text-white">Total</span>
                 </button>
               </div>
 
