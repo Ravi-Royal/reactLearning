@@ -6,18 +6,19 @@ interface PriceCellProps {
   priceKey: keyof PriceMap[string];
   priceMap: PriceMap;
   align?: 'left' | 'right';
+  isFirstColumn?: boolean;
 }
 
 /**
  * Component for rendering individual price cells with loading and null value handling
  */
-const PriceCell: React.FC<PriceCellProps> = ({ symbol, priceKey, priceMap, align }) => {
+const PriceCell: React.FC<PriceCellProps> = ({ symbol, priceKey, priceMap, align, isFirstColumn = false }) => {
   const priceData = priceMap[symbol];
   const value = priceData?.[priceKey];
 
   return (
     <td
-      className={`border border-gray-300 px-4 py-2${align === 'right' ? ' text-right' : ''}`}
+      className={`border border-gray-300 px-4 py-2${align === 'right' ? ' text-right' : ''} whitespace-nowrap${isFirstColumn ? ' sticky left-0 bg-white z-10' : ''}`}
     >
       {priceData !== undefined
         ? value ?? <span className="text-gray-400">N/A</span>

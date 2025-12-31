@@ -53,223 +53,224 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
   };
 
   return (
-    <div className="overflow-x-auto -mx-4 sm:mx-0">
-      <div className="inline-block min-w-full align-middle">
-        <div className="shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg" style={{ maxHeight: '500px', overflowY: 'auto' }}>
-          <table className="min-w-full border-collapse border border-gray-300 relative text-xs sm:text-sm">
-            <thead className="bg-gray-100">
-              <tr>
-                {stockColumns.map((col: { key: StockColumnKeyType; label: string; align?: 'left' | 'right' }) => (
-                  <th
-                    key={col.key}
-                    className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} sticky top-0 bg-gray-100 z-20 cursor-pointer hover:bg-gray-200 select-none whitespace-nowrap`}
-                    onClick={() => handleSort(col.key)}
-                  >
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="text-xs sm:text-sm">{col.label}</span>
-                      {getSortIconElement(col.key)}
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {sortedData.map((row, index) => (
-                <tr key={index} className="hover:bg-gray-50">
-                  {stockColumns.map((col: { key: StockColumnKeyType; label: string; align?: 'left' | 'right' }) => {
-                    // Color logic for P&L columns
-                    if (pnlColumnKeys.includes(col.key)) {
-                      const value = row[col.key as keyof StockData];
-                      const color = Number(value) >= 0 ? 'text-green-600' : 'text-red-600';
-                      return (
-                        <td
-                          key={col.key}
-                          className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} ${color} whitespace-nowrap`}
-                        >
-                          {value}
-                        </td>
-                      );
-                    }
-                    // New column: Near 52W Low indicator
-                    if (col.key === StockColumnKey.NearFiftyTwoWeekLow) {
-                      const priceData = priceMap[row[StockColumnKey.Symbol] as string];
-                      const price = priceData?.price ?? null;
-                      const low = priceData?.fiftyTwoWeekLow ?? null;
-
-                      return (
-                        <td
-                          key={col.key}
-                          className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap`}
-                          style={{ textAlign: col.align === 'right' ? 'right' : 'left' }}
-                        >
-                          <NearLowIndicator price={price} low={low} />
-                        </td>
-                      );
-                    }
-
-                    if (col.key === StockColumnKey.RealizedPriceVsValue) {
-                      // Compare current price with buy/sell per stock
-                      const priceData = priceMap[row[StockColumnKey.Symbol] as string];
-                      const price = priceData?.price ?? row[StockColumnKey.CurrentPrice] ?? null;
-                      const buyPerStock = row[StockColumnKey.BuyValuePerStock] ?? null;
-                      const sellPerStock = row[StockColumnKey.SellValuePerStock] ?? null;
-
-                      return (
-                        <td key={col.key} className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap`}>
-                          <RealizedPriceVsValueIndicator price={price as number | null} buyPerStock={buyPerStock as number | null} sellPerStock={sellPerStock as number | null} />
-                        </td>
-                      );
-                    }
-
-                    if (col.key === StockColumnKey.UnrealizedPriceToCmp) {
-                      // Compare current price with average open price (Open Value / Open Quantity)
-                      const priceData = priceMap[row[StockColumnKey.Symbol] as string];
-                      const currentPrice = priceData?.price ?? row[StockColumnKey.CurrentPrice] ?? null;
-                      const openValue = row[StockColumnKey.OpenValue] ?? null;
-                      const openQuantity = row[StockColumnKey.OpenQuantity] ?? null;
-
-                      return (
-                        <td key={col.key} className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap`}>
-                          <UnrealizedPriceToCmpIndicator currentPrice={currentPrice as number | null} openValue={openValue as number | null} openQuantity={openQuantity as number | null} />
-                        </td>
-                      );
-                    }
-
-                    // Special handling for price-related columns using PriceCell component
-                    if (col.key === StockColumnKey.CurrentPrice) {
-                      return (
-                        <PriceCell
-                          key={col.key}
-                          symbol={row[StockColumnKey.Symbol] as string}
-                          priceKey="price"
-                          priceMap={priceMap}
-                          align={col.align}
-                        />
-                      );
-                    }
-
-                    if (col.key === StockColumnKey.FiftyTwoWeekHigh) {
-                      return (
-                        <PriceCell
-                          key={col.key}
-                          symbol={row[StockColumnKey.Symbol] as string}
-                          priceKey="fiftyTwoWeekHigh"
-                          priceMap={priceMap}
-                          align={col.align}
-                        />
-                      );
-                    }
-
-                    if (col.key === StockColumnKey.FiftyTwoWeekLow) {
-                      return (
-                        <PriceCell
-                          key={col.key}
-                          symbol={row[StockColumnKey.Symbol] as string}
-                          priceKey="fiftyTwoWeekLow"
-                          priceMap={priceMap}
-                          align={col.align}
-                        />
-                      );
-                    }
+    <div className="-mx-4 sm:mx-0">
+      <div className="shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg overflow-auto" style={{ maxHeight: '500px', maxWidth: '100%' }}>
+        <table className="min-w-full border-collapse border border-gray-300 relative text-xs sm:text-sm">
+          <thead className="bg-gray-100">
+            <tr>
+              {stockColumns.map((col: { key: StockColumnKeyType; label: string; align?: 'left' | 'right' }, index: number) => (
+                <th
+                  key={col.key}
+                  className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} sticky top-0 bg-gray-100 cursor-pointer hover:bg-gray-200 select-none whitespace-nowrap${index === 0 ? ' left-0 z-30' : ' z-20'}`}
+                  onClick={() => handleSort(col.key)}
+                >
+                  <div className="flex items-center justify-between gap-1">
+                    <span className="text-xs sm:text-sm">{col.label}</span>
+                    {getSortIconElement(col.key)}
+                  </div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {sortedData.map((row, index) => (
+              <tr key={index} className="hover:bg-gray-50">
+                {stockColumns.map((col: { key: StockColumnKeyType; label: string; align?: 'left' | 'right' }, colIndex: number) => {
+                  // Color logic for P&L columns
+                  if (pnlColumnKeys.includes(col.key)) {
+                    const value = row[col.key as keyof StockData];
+                    const color = Number(value) >= 0 ? 'text-green-600' : 'text-red-600';
+                    return (
+                      <td
+                        key={col.key}
+                        className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} ${color} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 bg-white z-10' : ''}`}
+                      >
+                        {value}
+                      </td>
+                    );
+                  }
+                  // New column: Near 52W Low indicator
+                  if (col.key === StockColumnKey.NearFiftyTwoWeekLow) {
+                    const priceData = priceMap[row[StockColumnKey.Symbol] as string];
+                    const price = priceData?.price ?? null;
+                    const low = priceData?.fiftyTwoWeekLow ?? null;
 
                     return (
                       <td
                         key={col.key}
-                        className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap`}
+                        className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 bg-white z-10' : ''}`}
+                        style={{ textAlign: col.align === 'right' ? 'right' : 'left' }}
                       >
-                        {row[col.key as keyof StockData]}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-            </tbody>
-            <tfoot className="bg-gray-200 font-semibold sticky bottom-0 z-10">
-              <tr>
-                {stockColumns.map((col: { key: StockColumnKeyType; label: string; align?: 'left' | 'right' }) => {
-                  const total = columnTotals[col.key];
-
-                  // Skip totals for price-related columns that don't make sense to sum
-                  const skipTotalColumns: StockColumnKeyType[] = [
-                    StockColumnKey.FiftyTwoWeekHigh,
-                    StockColumnKey.FiftyTwoWeekLow,
-                    StockColumnKey.CurrentPrice,
-                    StockColumnKey.CustomRealisedStockValue,
-                    StockColumnKey.CustomUnrealisedStockValue,
-                  ];
-
-                  if (skipTotalColumns.includes(col.key)) {
-                    return (
-                      <td
-                        key={`${col.key}-total`}
-                        className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap`}
-                      >
-                        -
+                        <NearLowIndicator price={price} low={low} />
                       </td>
                     );
                   }
 
-                  if (col.key === StockColumnKey.Symbol) {
+                  if (col.key === StockColumnKey.RealizedPriceVsValue) {
+                    // Compare current price with buy/sell per stock
+                    const priceData = priceMap[row[StockColumnKey.Symbol] as string];
+                    const price = priceData?.price ?? row[StockColumnKey.CurrentPrice] ?? null;
+                    const buyPerStock = row[StockColumnKey.BuyValuePerStock] ?? null;
+                    const sellPerStock = row[StockColumnKey.SellValuePerStock] ?? null;
+
                     return (
-                      <td
-                        key={`${col.key}-total`}
-                        className="border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200 font-bold whitespace-nowrap"
-                      >
-                        TOTAL
+                      <td key={col.key} className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 bg-white z-10' : ''}`}>
+                        <RealizedPriceVsValueIndicator price={price as number | null} buyPerStock={buyPerStock as number | null} sellPerStock={sellPerStock as number | null} />
                       </td>
                     );
                   }
 
-                  // Handle percentage columns specially
-                  if (col.key === StockColumnKey.RealizedPLPct || col.key === StockColumnKey.UnrealizedPLPct) {
-                    if (total !== null && total !== undefined && !isNaN(total)) {
-                      const color = total >= 0 ? 'text-green-600' : 'text-red-600';
-                      return (
-                        <td
-                          key={`${col.key}-total`}
-                          className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200 font-bold text-right ${color} whitespace-nowrap`}
-                        >
-                          {total.toFixed(2)}%
-                        </td>
-                      );
-                    }
+                  if (col.key === StockColumnKey.UnrealizedPriceToCmp) {
+                    // Compare current price with average open price (Open Value / Open Quantity)
+                    const priceData = priceMap[row[StockColumnKey.Symbol] as string];
+                    const currentPrice = priceData?.price ?? row[StockColumnKey.CurrentPrice] ?? null;
+                    const openValue = row[StockColumnKey.OpenValue] ?? null;
+                    const openQuantity = row[StockColumnKey.OpenQuantity] ?? null;
+
                     return (
-                      <td
-                        key={`${col.key}-total`}
-                        className="border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200 text-right whitespace-nowrap"
-                      >
-                        -
+                      <td key={col.key} className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 bg-white z-10' : ''}`}>
+                        <UnrealizedPriceToCmpIndicator currentPrice={currentPrice as number | null} openValue={openValue as number | null} openQuantity={openQuantity as number | null} />
                       </td>
                     );
                   }
 
-                  if (total !== null && total !== undefined && !isNaN(total)) {
+                  // Special handling for price-related columns using PriceCell component
+                  if (col.key === StockColumnKey.CurrentPrice) {
                     return (
-                      <td
-                        key={`${col.key}-total`}
-                        className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200 font-bold${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap`}
-                      >
-                        {typeof total === 'number' ? total.toLocaleString('en-IN', {
-                          maximumFractionDigits: 2,
-                          minimumFractionDigits: 0,
-                        }) : total}
-                      </td>
+                      <PriceCell
+                        key={col.key}
+                        symbol={row[StockColumnKey.Symbol] as string}
+                        priceKey="price"
+                        priceMap={priceMap}
+                        align={col.align}
+                        isFirstColumn={colIndex === 0}
+                      />
+                    );
+                  }
+
+                  if (col.key === StockColumnKey.FiftyTwoWeekHigh) {
+                    return (
+                      <PriceCell
+                        key={col.key}
+                        symbol={row[StockColumnKey.Symbol] as string}
+                        priceKey="fiftyTwoWeekHigh"
+                        priceMap={priceMap}
+                        align={col.align}
+                        isFirstColumn={colIndex === 0}
+                      />
+                    );
+                  }
+
+                  if (col.key === StockColumnKey.FiftyTwoWeekLow) {
+                    return (
+                      <PriceCell
+                        key={col.key}
+                        symbol={row[StockColumnKey.Symbol] as string}
+                        priceKey="fiftyTwoWeekLow"
+                        priceMap={priceMap}
+                        align={col.align}
+                        isFirstColumn={colIndex === 0}
+                      />
                     );
                   }
 
                   return (
                     <td
-                      key={`${col.key}-total`}
-                      className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap`}
+                      key={col.key}
+                      className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 bg-white z-10' : ''}`}
                     >
-                      -
+                      {row[col.key as keyof StockData]}
                     </td>
                   );
                 })}
               </tr>
-            </tfoot>
-          </table>
-        </div>
+            ))}
+          </tbody>
+          <tfoot className="bg-gray-200 font-semibold sticky bottom-0 z-10">
+            <tr>
+              {stockColumns.map((col: { key: StockColumnKeyType; label: string; align?: 'left' | 'right' }, colIndex: number) => {
+                const total = columnTotals[col.key];
+
+                // Skip totals for price-related columns that don't make sense to sum
+                const skipTotalColumns: StockColumnKeyType[] = [
+                  StockColumnKey.FiftyTwoWeekHigh,
+                  StockColumnKey.FiftyTwoWeekLow,
+                  StockColumnKey.CurrentPrice,
+                  StockColumnKey.CustomRealisedStockValue,
+                  StockColumnKey.CustomUnrealisedStockValue,
+                ];
+
+                if (skipTotalColumns.includes(col.key)) {
+                  return (
+                    <td
+                      key={`${col.key}-total`}
+                      className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 z-20' : ''}`}
+                    >
+                        -
+                    </td>
+                  );
+                }
+
+                if (col.key === StockColumnKey.Symbol) {
+                  return (
+                    <td
+                      key={`${col.key}-total`}
+                      className="border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200 font-bold whitespace-nowrap sticky left-0 z-20"
+                    >
+                        TOTAL
+                    </td>
+                  );
+                }
+
+                // Handle percentage columns specially
+                if (col.key === StockColumnKey.RealizedPLPct || col.key === StockColumnKey.UnrealizedPLPct) {
+                  if (total !== null && total !== undefined && !isNaN(total)) {
+                    const color = total >= 0 ? 'text-green-600' : 'text-red-600';
+                    return (
+                      <td
+                        key={`${col.key}-total`}
+                        className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200 font-bold text-right ${color} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 z-20' : ''}`}
+                      >
+                        {total.toFixed(2)}%
+                      </td>
+                    );
+                  }
+                  return (
+                    <td
+                      key={`${col.key}-total`}
+                      className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200 text-right whitespace-nowrap${colIndex === 0 ? ' sticky left-0 z-20' : ''}`}
+                    >
+                        -
+                    </td>
+                  );
+                }
+
+                if (total !== null && total !== undefined && !isNaN(total)) {
+                  return (
+                    <td
+                      key={`${col.key}-total`}
+                      className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200 font-bold${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 z-20' : ''}`}
+                    >
+                      {typeof total === 'number' ? total.toLocaleString('en-IN', {
+                        maximumFractionDigits: 2,
+                        minimumFractionDigits: 0,
+                      }) : total}
+                    </td>
+                  );
+                }
+
+                return (
+                  <td
+                    key={`${col.key}-total`}
+                    className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 z-20' : ''}`}
+                  >
+                      -
+                  </td>
+                );
+              })}
+            </tr>
+          </tfoot>
+        </table>
       </div>
     </div>
   );
