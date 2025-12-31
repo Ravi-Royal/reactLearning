@@ -18,7 +18,7 @@ const PriceCell: React.FC<PriceCellProps> = ({ symbol, priceKey, priceMap, align
 
   return (
     <td
-      className={`border border-gray-300 px-4 py-2${align === 'right' ? ' text-right' : ''} whitespace-nowrap${isFirstColumn ? ' sticky left-0 bg-white z-10' : ''}`}
+      className={`border border-gray-300 px-4 py-2${align === 'right' ? ' text-right' : ''} whitespace-nowrap${isFirstColumn ? ' sticky left-0 bg-white z-10 shadow-[4px_0_8px_0_rgba(0,0,0,0.3)]' : ''}`}
     >
       {priceData !== undefined
         ? value ?? <span className="text-gray-400">N/A</span>

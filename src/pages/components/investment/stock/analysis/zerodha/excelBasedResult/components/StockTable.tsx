@@ -61,7 +61,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
               {stockColumns.map((col: { key: StockColumnKeyType; label: string; align?: 'left' | 'right' }, index: number) => (
                 <th
                   key={col.key}
-                  className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} sticky top-0 bg-gray-100 cursor-pointer hover:bg-gray-200 select-none whitespace-nowrap${index === 0 ? ' left-0 z-30' : ' z-20'}`}
+                  className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} sticky top-0 bg-gray-100 cursor-pointer hover:bg-gray-200 select-none whitespace-nowrap${index === 0 ? ' left-0 z-30 shadow-[4px_0_8px_0_rgba(0,0,0,0.3)]' : ' z-20'}`}
                   onClick={() => handleSort(col.key)}
                 >
                   <div className="flex items-center justify-between gap-1">
@@ -83,7 +83,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                     return (
                       <td
                         key={col.key}
-                        className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} ${color} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 bg-white z-10' : ''}`}
+                        className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} ${color} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 bg-white z-10 shadow-[4px_0_8px_0_rgba(0,0,0,0.3)]' : ''}`}
                       >
                         {value}
                       </td>
@@ -98,7 +98,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                     return (
                       <td
                         key={col.key}
-                        className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 bg-white z-10' : ''}`}
+                        className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 bg-white z-10 shadow-[4px_0_8px_0_rgba(0,0,0,0.3)]' : ''}`}
                         style={{ textAlign: col.align === 'right' ? 'right' : 'left' }}
                       >
                         <NearLowIndicator price={price} low={low} />
@@ -114,7 +114,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                     const sellPerStock = row[StockColumnKey.SellValuePerStock] ?? null;
 
                     return (
-                      <td key={col.key} className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 bg-white z-10' : ''}`}>
+                      <td key={col.key} className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 bg-white z-10 shadow-[4px_0_8px_0_rgba(0,0,0,0.3)]' : ''}`}>
                         <RealizedPriceVsValueIndicator price={price as number | null} buyPerStock={buyPerStock as number | null} sellPerStock={sellPerStock as number | null} />
                       </td>
                     );
@@ -128,7 +128,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                     const openQuantity = row[StockColumnKey.OpenQuantity] ?? null;
 
                     return (
-                      <td key={col.key} className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 bg-white z-10' : ''}`}>
+                      <td key={col.key} className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 bg-white z-10 shadow-[4px_0_8px_0_rgba(0,0,0,0.3)]' : ''}`}>
                         <UnrealizedPriceToCmpIndicator currentPrice={currentPrice as number | null} openValue={openValue as number | null} openQuantity={openQuantity as number | null} />
                       </td>
                     );
@@ -177,7 +177,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                   return (
                     <td
                       key={col.key}
-                      className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 bg-white z-10' : ''}`}
+                      className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 bg-white z-10 shadow-[4px_0_8px_0_rgba(0,0,0,0.3)]' : ''}`}
                     >
                       {row[col.key as keyof StockData]}
                     </td>
@@ -204,7 +204,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                   return (
                     <td
                       key={`${col.key}-total`}
-                      className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 z-20' : ''}`}
+                      className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 z-20 shadow-[4px_0_8px_0_rgba(0,0,0,0.3)]' : ''}`}
                     >
                         -
                     </td>
@@ -215,7 +215,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                   return (
                     <td
                       key={`${col.key}-total`}
-                      className="border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200 font-bold whitespace-nowrap sticky left-0 z-20"
+                      className="border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200 font-bold whitespace-nowrap sticky left-0 z-20 shadow-[4px_0_8px_0_rgba(0,0,0,0.3)]"
                     >
                         TOTAL
                     </td>
@@ -229,7 +229,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                     return (
                       <td
                         key={`${col.key}-total`}
-                        className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200 font-bold text-right ${color} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 z-20' : ''}`}
+                        className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200 font-bold text-right ${color} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 z-20 shadow-[4px_0_8px_0_rgba(0,0,0,0.3)]' : ''}`}
                       >
                         {total.toFixed(2)}%
                       </td>
@@ -238,7 +238,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                   return (
                     <td
                       key={`${col.key}-total`}
-                      className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200 text-right whitespace-nowrap${colIndex === 0 ? ' sticky left-0 z-20' : ''}`}
+                      className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200 text-right whitespace-nowrap${colIndex === 0 ? ' sticky left-0 z-20 shadow-[4px_0_8px_0_rgba(0,0,0,0.3)]' : ''}`}
                     >
                         -
                     </td>
@@ -249,7 +249,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                   return (
                     <td
                       key={`${col.key}-total`}
-                      className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200 font-bold${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 z-20' : ''}`}
+                      className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200 font-bold${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 z-20 shadow-[4px_0_8px_0_rgba(0,0,0,0.3)]' : ''}`}
                     >
                       {typeof total === 'number' ? total.toLocaleString('en-IN', {
                         maximumFractionDigits: 2,
@@ -262,7 +262,7 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                 return (
                   <td
                     key={`${col.key}-total`}
-                    className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 z-20' : ''}`}
+                    className={`border border-gray-300 px-2 sm:px-4 py-2 bg-gray-200${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 z-20 shadow-[4px_0_8px_0_rgba(0,0,0,0.3)]' : ''}`}
                   >
                       -
                   </td>
