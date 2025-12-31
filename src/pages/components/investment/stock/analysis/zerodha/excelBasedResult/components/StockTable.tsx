@@ -53,9 +53,9 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
   };
 
   return (
-    <div className="overflow-x-auto -mx-4 sm:mx-0" style={{ maxHeight: '500px', overflowY: 'auto' }}>
+    <div className="overflow-x-auto -mx-4 sm:mx-0">
       <div className="inline-block min-w-full align-middle">
-        <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+        <div className="shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg" style={{ maxHeight: '500px', overflowY: 'auto' }}>
           <table className="min-w-full border-collapse border border-gray-300 relative text-xs sm:text-sm">
             <thead className="bg-gray-100">
               <tr>
@@ -63,7 +63,6 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
                   <th
                     key={col.key}
                     className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} sticky top-0 bg-gray-100 z-20 cursor-pointer hover:bg-gray-200 select-none whitespace-nowrap`}
-                    style={{ top: 0 }}
                     onClick={() => handleSort(col.key)}
                   >
                     <div className="flex items-center justify-between gap-1">
