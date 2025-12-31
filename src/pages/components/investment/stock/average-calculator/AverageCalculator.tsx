@@ -177,7 +177,7 @@ function AverageCalculator() {
   };
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 lg:p-10">
+    <div className="p-2 sm:p-4 md:p-6 lg:p-8">
       <Breadcrumbs />
       <div className="mb-4 sm:mb-6">
         <Link
@@ -194,21 +194,23 @@ function AverageCalculator() {
         <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 border border-gray-200">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-3">
             <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Current Holdings</h2>
-            <div className="inline-flex rounded-md border border-gray-300 overflow-hidden">
-              <button
-                type="button"
-                onClick={() => currentInputMode !== 'price' && toggleCurrentInputMode()}
-                className={`px-1.5 sm:px-3 py-0.5 sm:py-1.5 text-xs font-medium transition-colors ${currentInputMode === 'price' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
-              >
-                Price
-              </button>
-              <button
-                type="button"
-                onClick={() => currentInputMode !== 'total' && toggleCurrentInputMode()}
-                className={`px-1.5 sm:px-3 py-0.5 sm:py-1.5 text-xs font-medium transition-colors border-l border-gray-300 ${currentInputMode === 'total' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
-              >
-                Total
-              </button>
+            <div className="flex">
+              <div className="inline-flex rounded-md border border-gray-300 overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => currentInputMode !== 'price' && toggleCurrentInputMode()}
+                  className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-colors ${currentInputMode === 'price' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                >
+                  Price
+                </button>
+                <button
+                  type="button"
+                  onClick={() => currentInputMode !== 'total' && toggleCurrentInputMode()}
+                  className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-colors border-l border-gray-300 ${currentInputMode === 'total' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                >
+                  Total
+                </button>
+              </div>
             </div>
           </div>
 
@@ -268,21 +270,23 @@ function AverageCalculator() {
             <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
               {calculationMode === 'purchase' ? 'New Purchase Details' : 'Target Average Price'}
             </h2>
-            <div className="inline-flex rounded-md border border-gray-300 overflow-hidden">
-              <button
-                type="button"
-                onClick={() => calculationMode !== 'purchase' && toggleCalculationMode()}
-                className={`px-1.5 sm:px-3 py-0.5 sm:py-1.5 text-xs font-medium transition-colors ${calculationMode === 'purchase' ? 'bg-purple-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
-              >
-                Purchase
-              </button>
-              <button
-                type="button"
-                onClick={() => calculationMode !== 'target' && toggleCalculationMode()}
-                className={`px-1.5 sm:px-3 py-0.5 sm:py-1.5 text-xs font-medium transition-colors border-l border-gray-300 ${calculationMode === 'target' ? 'bg-purple-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
-              >
-                Target
-              </button>
+            <div className="flex justify-start sm:justify-end">
+              <div className="inline-flex rounded-md border border-gray-300 overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => calculationMode !== 'purchase' && toggleCalculationMode()}
+                  className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-colors ${calculationMode === 'purchase' ? 'bg-purple-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                >
+                  Purchase
+                </button>
+                <button
+                  type="button"
+                  onClick={() => calculationMode !== 'target' && toggleCalculationMode()}
+                  className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-colors border-l border-gray-300 ${calculationMode === 'target' ? 'bg-purple-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                >
+                  Target
+                </button>
+              </div>
             </div>
           </div>
 
@@ -290,21 +294,23 @@ function AverageCalculator() {
             <>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-3">
                 <p className="text-xs sm:text-sm text-gray-600">Enter your purchase details</p>
-                <div className="inline-flex rounded-md border border-gray-300 overflow-hidden">
-                  <button
-                    type="button"
-                    onClick={() => buyInputMode !== 'price' && toggleBuyInputMode()}
-                    className={`px-1.5 sm:px-3 py-0.5 sm:py-1.5 text-xs font-medium transition-colors ${buyInputMode === 'price' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
-                  >
-                    Price
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => buyInputMode !== 'total' && toggleBuyInputMode()}
-                    className={`px-1.5 sm:px-3 py-0.5 sm:py-1.5 text-xs font-medium transition-colors border-l border-gray-300 ${buyInputMode === 'total' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
-                  >
-                    Total
-                  </button>
+                <div className="flex">
+                  <div className="inline-flex rounded-md border border-gray-300 overflow-hidden">
+                    <button
+                      type="button"
+                      onClick={() => buyInputMode !== 'price' && toggleBuyInputMode()}
+                      className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-colors ${buyInputMode === 'price' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                    >
+                      Price
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => buyInputMode !== 'total' && toggleBuyInputMode()}
+                      className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-colors border-l border-gray-300 ${buyInputMode === 'total' ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                    >
+                      Total
+                    </button>
+                  </div>
                 </div>
               </div>
 

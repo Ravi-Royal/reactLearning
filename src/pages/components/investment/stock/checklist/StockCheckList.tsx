@@ -100,7 +100,7 @@ function StockCheckList() {
   };
 
   return (
-    <div className="p-4 sm:p-6 md:p-8 lg:p-10">
+    <div className="p-2 sm:p-4 md:p-6 lg:p-8">
       <Breadcrumbs />
       <div className="mb-4 sm:mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-4 gap-3">
