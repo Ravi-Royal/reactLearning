@@ -125,15 +125,36 @@ function BeforeStartingBondCheckList() {
           </div>
           <div className="max-h-80 overflow-y-auto space-y-3">
             {mineItems.map(item => (
-              <div key={item.id} className="flex items-center">
-                <input
-                  type="checkbox"
-                  id={item.id}
-                  checked={item.checked}
-                  onChange={() => toggleItem(item.id)}
-                  className="mr-3"
-                />
-                <label htmlFor={item.id} className="text-gray-700">{item.label}</label>
+              <div
+                key={item.id}
+                className={`p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${
+                  item.checked
+                    ? 'bg-green-50 border-green-200'
+                    : 'bg-white border-gray-200 hover:border-gray-300'
+                }`}
+                onClick={() => toggleItem(item.id)}
+              >
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    checked={item.checked}
+                    onChange={() => toggleItem(item.id)}
+                    onClick={(e) => e.stopPropagation()}
+                    className="w-5 h-5 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 cursor-pointer"
+                  />
+                  <label
+                    className={`text-sm font-medium cursor-pointer flex-1 ${
+                      item.checked ? 'text-green-800' : 'text-gray-700'
+                    }`}
+                  >
+                    {item.label}
+                  </label>
+                  {item.checked && (
+                    <svg className="w-5 h-5 text-green-600 ml-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
+                </div>
               </div>
             ))}
           </div>
@@ -156,15 +177,36 @@ function BeforeStartingBondCheckList() {
               </div>
               <div className="space-y-3">
                 {educationItems.map(item => (
-                  <div key={item.id} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id={item.id}
-                      checked={item.checked}
-                      onChange={() => toggleItem(item.id)}
-                      className="mr-3"
-                    />
-                    <label htmlFor={item.id} className="text-gray-700">{item.label}</label>
+                  <div
+                    key={item.id}
+                    className={`p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${
+                      item.checked
+                        ? 'bg-green-50 border-green-200'
+                        : 'bg-white border-gray-200 hover:border-gray-300'
+                    }`}
+                    onClick={() => toggleItem(item.id)}
+                  >
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="checkbox"
+                        checked={item.checked}
+                        onChange={() => toggleItem(item.id)}
+                        onClick={(e) => e.stopPropagation()}
+                        className="w-5 h-5 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 cursor-pointer"
+                      />
+                      <label
+                        className={`text-sm font-medium cursor-pointer flex-1 ${
+                          item.checked ? 'text-green-800' : 'text-gray-700'
+                        }`}
+                      >
+                        {item.label}
+                      </label>
+                      {item.checked && (
+                        <svg className="w-5 h-5 text-green-600 ml-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -184,15 +226,36 @@ function BeforeStartingBondCheckList() {
               </div>
               <div className="space-y-3">
                 {preparationItems.map(item => (
-                  <div key={item.id} className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id={item.id}
-                      checked={item.checked}
-                      onChange={() => toggleItem(item.id)}
-                      className="mr-3"
-                    />
-                    <label htmlFor={item.id} className="text-gray-700">{item.label}</label>
+                  <div
+                    key={item.id}
+                    className={`p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${
+                      item.checked
+                        ? 'bg-green-50 border-green-200'
+                        : 'bg-white border-gray-200 hover:border-gray-300'
+                    }`}
+                    onClick={() => toggleItem(item.id)}
+                  >
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="checkbox"
+                        checked={item.checked}
+                        onChange={() => toggleItem(item.id)}
+                        onClick={(e) => e.stopPropagation()}
+                        className="w-5 h-5 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 cursor-pointer"
+                      />
+                      <label
+                        className={`text-sm font-medium cursor-pointer flex-1 ${
+                          item.checked ? 'text-green-800' : 'text-gray-700'
+                        }`}
+                      >
+                        {item.label}
+                      </label>
+                      {item.checked && (
+                        <svg className="w-5 h-5 text-green-600 ml-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>

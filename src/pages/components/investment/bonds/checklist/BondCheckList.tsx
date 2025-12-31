@@ -171,7 +171,7 @@ function BondCheckList() {
                       checked={item.checked}
                       onChange={() => toggleItem(item.id)}
                       onClick={(e) => e.stopPropagation()}
-                      className="w-5 h-5 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500"
+                      className="w-5 h-5 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 cursor-pointer"
                     />
                     <label
                       className={`text-sm font-medium cursor-pointer flex-1 ${
@@ -223,7 +223,7 @@ function BondCheckList() {
                       checked={item.checked}
                       onChange={() => toggleItem(item.id)}
                       onClick={(e) => e.stopPropagation()}
-                      className="w-5 h-5 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500"
+                      className="w-5 h-5 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 cursor-pointer"
                     />
                     <label
                       className={`text-sm font-medium cursor-pointer flex-1 ${
