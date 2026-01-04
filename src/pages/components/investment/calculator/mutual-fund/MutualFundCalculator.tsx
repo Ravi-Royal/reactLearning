@@ -115,7 +115,7 @@ function MutualFundCalculator() {
     if (swp > 0 && swpYears > 0) {
       let currentBalance = accumulatedAmount;
       const monthlyRate = returnRate / 12 / 100;
-      const totalSwpMonths = swpYears * 12;
+      const totalSwpMonths = Math.min(swpYears * 12, 600);
 
       for (let month = 1; month <= totalSwpMonths; month++) {
         currentBalance = currentBalance * (1 + monthlyRate) - swp;
@@ -168,6 +168,8 @@ function MutualFundCalculator() {
     // Determine period increment based on view
     const monthsPerPeriod = breakdownView === 'monthly' ? 1 : breakdownView === 'quarterly' ? 3 : 12;
     const periodsPerYear = 12 / monthsPerPeriod;
+    const maxMonths = 600;
+    const maxPeriods = Math.floor(maxMonths / monthsPerPeriod);
 
     if (investmentType === 'sip') {
       const sip = parseFloat(sipAmount);
@@ -187,7 +189,7 @@ function MutualFundCalculator() {
         const startingBalance = balance;
 
         for (let month = 1; month <= monthsPerPeriod; month++) {
-          balance = balance * (1 + monthlyRate) + sip;
+          balance = (balance + sip) * (1 + monthlyRate);
           totalInvested += sip;
           periodInvestment += sip;
         }
@@ -208,7 +210,7 @@ function MutualFundCalculator() {
 
       // SWP phase
       if (swp > 0 && swpYears > 0) {
-        const totalSwpPeriods = Math.min(swpYears * periodsPerYear, 50 * periodsPerYear);
+        const totalSwpPeriods = Math.min(swpYears * periodsPerYear, maxPeriods);
         for (let i = 1; i <= totalSwpPeriods; i++) {
           const openingBalance = balance;
           let periodWithdrawal = 0;
@@ -289,7 +291,7 @@ function MutualFundCalculator() {
 
       // SWP phase
       if (swp > 0 && swpYears > 0) {
-        const totalSwpPeriods = Math.min(swpYears * periodsPerYear, 50 * periodsPerYear);
+        const totalSwpPeriods = Math.min(swpYears * periodsPerYear, maxPeriods);
         for (let i = 1; i <= totalSwpPeriods; i++) {
           const openingBalance = balance;
           let periodWithdrawal = 0;
