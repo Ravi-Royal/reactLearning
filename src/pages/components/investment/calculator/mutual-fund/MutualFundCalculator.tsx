@@ -11,6 +11,14 @@ interface CalculationResult {
   minSWPToSustain: number;
 }
 
+interface YearlyBreakdown {
+  year: number;
+  invested: number;
+  interest: number;
+  totalValue: number;
+  withdrawal?: number;
+}
+
 function MutualFundCalculator() {
   const [investmentType, setInvestmentType] = useState<'sip' | 'lumpsum'>('sip');
   const [sipAmount, setSipAmount] = useState<string>('');
@@ -133,6 +141,137 @@ function MutualFundCalculator() {
     setSwpAmount('');
     setSwpPeriod('');
   };
+
+  // Calculate yearly breakdown for table
+  const yearlyBreakdown = useMemo<YearlyBreakdown[]>(() => {
+    const returnRate = parseFloat(annualReturn);
+    const period = parseFloat(investmentPeriod);
+    const swp = parseFloat(swpAmount) || 0;
+    const swpYears = parseFloat(swpPeriod) || 0;
+
+    if (isNaN(returnRate) || isNaN(period)) {
+      return [];
+    }
+
+    const monthlyRate = returnRate / 12 / 100;
+    const breakdown: YearlyBreakdown[] = [];
+    
+    if (investmentType === 'sip') {
+      const sip = parseFloat(sipAmount);
+      if (isNaN(sip) || sip <= 0) {
+        return [];
+      }
+
+      let balance = 0;
+      let totalInvested = 0;
+
+      // Investment phase
+      for (let year = 1; year <= period; year++) {
+        for (let month = 1; month <= 12; month++) {
+          balance = balance * (1 + monthlyRate) + sip;
+          totalInvested += sip;
+        }
+
+        breakdown.push({
+          year,
+          invested: totalInvested,
+          interest: balance - totalInvested,
+          totalValue: balance,
+        });
+      }
+
+      // SWP phase
+      if (swp > 0 && swpYears > 0) {
+        const totalSwpYears = Math.min(swpYears, 50); // Cap at 50 years
+        for (let year = 1; year <= totalSwpYears; year++) {
+          const yearStartBalance = balance;
+          let yearWithdrawal = 0;
+
+          for (let month = 1; month <= 12; month++) {
+            balance = balance * (1 + monthlyRate) - swp;
+            yearWithdrawal += swp;
+            
+            if (balance <= 0) {
+              balance = 0;
+              breakdown.push({
+                year: period + year,
+                invested: totalInvested,
+                interest: 0,
+                totalValue: 0,
+                withdrawal: yearWithdrawal,
+              });
+              return breakdown;
+            }
+          }
+
+          breakdown.push({
+            year: period + year,
+            invested: totalInvested,
+            interest: balance - yearStartBalance + yearWithdrawal,
+            totalValue: balance,
+            withdrawal: yearWithdrawal,
+          });
+        }
+      }
+    } else {
+      // Lumpsum
+      const lumpsum = parseFloat(lumpsumAmount);
+      if (isNaN(lumpsum) || lumpsum <= 0) {
+        return [];
+      }
+
+      let balance = lumpsum;
+      const totalInvested = lumpsum;
+
+      // Investment phase
+      for (let year = 1; year <= period; year++) {
+        balance = balance * Math.pow(1 + returnRate / 100, 1);
+
+        breakdown.push({
+          year,
+          invested: totalInvested,
+          interest: balance - totalInvested,
+          totalValue: balance,
+        });
+      }
+
+      // SWP phase
+      if (swp > 0 && swpYears > 0) {
+        const totalSwpYears = Math.min(swpYears, 50);
+        for (let year = 1; year <= totalSwpYears; year++) {
+          const yearStartBalance = balance;
+          let yearWithdrawal = 0;
+
+          for (let month = 1; month <= 12; month++) {
+            balance = balance * (1 + monthlyRate) - swp;
+            yearWithdrawal += swp;
+            
+            if (balance <= 0) {
+              balance = 0;
+              breakdown.push({
+                year: period + year,
+                invested: totalInvested,
+                interest: 0,
+                totalValue: 0,
+                withdrawal: yearWithdrawal,
+              });
+              return breakdown;
+            }
+          }
+
+          breakdown.push({
+            year: period + year,
+            invested: totalInvested,
+            interest: balance - yearStartBalance + yearWithdrawal,
+            totalValue: balance,
+            withdrawal: yearWithdrawal,
+          });
+        }
+      }
+    }
+
+    return breakdown;
+  }, [investmentType, sipAmount, lumpsumAmount, annualReturn, investmentPeriod, swpAmount, swpPeriod]);
 
   const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat('en-IN', {
@@ -366,6 +505,100 @@ function MutualFundCalculator() {
           <li>• Calculations assume returns are reinvested and rate remains constant.</li>
         </ul>
       </div>
+
+      {yearlyBreakdown.length > 0 && (
+        <div className="mt-6 bg-white rounded-lg shadow-md p-4 sm:p-6 border border-gray-200">
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">Year-by-Year Breakdown</h2>
+          
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-gray-100 border-b-2 border-gray-300">
+                  <th className="p-2 sm:p-3 text-left font-semibold text-gray-700">Year</th>
+                  <th className="p-2 sm:p-3 text-right font-semibold text-gray-700">Total Invested</th>
+                  <th className="p-2 sm:p-3 text-right font-semibold text-gray-700">Interest Earned</th>
+                  {yearlyBreakdown.some(row => row.withdrawal) && (
+                    <th className="p-2 sm:p-3 text-right font-semibold text-gray-700">Withdrawal</th>
+                  )}
+                  <th className="p-2 sm:p-3 text-right font-semibold text-gray-700">Total Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                {yearlyBreakdown.map((row, index) => {
+                  const isWithdrawalPhase = row.withdrawal !== undefined;
+                  const isLastYear = index === yearlyBreakdown.length - 1;
+                  
+                  return (
+                    <tr
+                      key={row.year}
+                      className={`border-b border-gray-200 hover:bg-gray-50 transition-colors ${
+                        isWithdrawalPhase ? 'bg-orange-50' : ''
+                      } ${isLastYear ? 'font-semibold bg-purple-50' : ''}`}
+                    >
+                      <td className="p-2 sm:p-3 text-left">
+                        <span className={isWithdrawalPhase ? 'text-orange-700' : 'text-gray-800'}>
+                          {row.year}
+                          {isWithdrawalPhase && <span className="text-xs ml-1">(SWP)</span>}
+                        </span>
+                      </td>
+                      <td className="p-2 sm:p-3 text-right text-blue-700">
+                        {formatCurrency(row.invested)}
+                      </td>
+                      <td className="p-2 sm:p-3 text-right text-green-700">
+                        {formatCurrency(row.interest)}
+                      </td>
+                      {yearlyBreakdown.some(r => r.withdrawal) && (
+                        <td className="p-2 sm:p-3 text-right text-orange-700">
+                          {row.withdrawal ? formatCurrency(row.withdrawal) : '-'}
+                        </td>
+                      )}
+                      <td className="p-2 sm:p-3 text-right font-semibold text-purple-700">
+                        {formatCurrency(row.totalValue)}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+              <div>
+                <div className="text-gray-600 mb-1">Total Years</div>
+                <div className="font-semibold text-gray-800">{yearlyBreakdown.length}</div>
+              </div>
+              <div>
+                <div className="text-gray-600 mb-1">Total Invested</div>
+                <div className="font-semibold text-blue-700">
+                  {formatCurrency(yearlyBreakdown[yearlyBreakdown.length - 1]?.invested || 0)}
+                </div>
+              </div>
+              <div>
+                <div className="text-gray-600 mb-1">Total Interest</div>
+                <div className="font-semibold text-green-700">
+                  {formatCurrency(yearlyBreakdown[yearlyBreakdown.length - 1]?.interest || 0)}
+                </div>
+              </div>
+              <div>
+                <div className="text-gray-600 mb-1">Final Value</div>
+                <div className="font-semibold text-purple-700">
+                  {formatCurrency(yearlyBreakdown[yearlyBreakdown.length - 1]?.totalValue || 0)}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-3 text-xs text-gray-600">
+            <p>
+              💡 <strong>Investment Phase:</strong> White background rows show accumulation years.
+              {yearlyBreakdown.some(row => row.withdrawal) && (
+                <span> <strong>Withdrawal Phase:</strong> Orange background rows show SWP withdrawal years.</span>
+              )}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
