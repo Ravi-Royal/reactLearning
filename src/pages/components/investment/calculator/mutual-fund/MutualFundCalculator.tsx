@@ -3,6 +3,7 @@ import Breadcrumbs from '../../../../navigation/Breadcrumbs';
 import { Link } from 'react-router-dom';
 
 interface CalculationResult {
+  corpusAfterInvestment: number;
   finalBalance: number;
   totalInvested: number;
   totalReturns: number;
@@ -116,7 +117,7 @@ function MutualFundCalculator() {
       const monthlyRate = returnRate / 12 / 100;
       const totalSwpMonths = swpYears * 12;
 
-      for (let month = 0; month < totalSwpMonths; month++) {
+      for (let month = 1; month <= totalSwpMonths; month++) {
         currentBalance = currentBalance * (1 + monthlyRate) - swp;
         if (currentBalance <= 0) {
           currentBalance = 0;
@@ -131,6 +132,7 @@ function MutualFundCalculator() {
     const minSWP = calculateMinSWP(accumulatedAmount, returnRate);
 
     return {
+      corpusAfterInvestment: accumulatedAmount,
       finalBalance,
       totalInvested,
       totalReturns: accumulatedAmount - totalInvested,
@@ -358,11 +360,11 @@ function MutualFundCalculator() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 border border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Investment Details</h2>
+        <div className="bg-gradient-to-br from-purple-50 via-white to-blue-50 rounded-lg shadow-lg p-4 sm:p-6 border-2 border-purple-200">
+          <h2 className="text-lg font-semibold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-4">💰 Investment Details</h2>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Investment Type</label>
+            <label className="block text-sm font-medium text-purple-700 mb-2">Investment Type</label>
             <div className="flex gap-4">
               <label className="flex items-center">
                 <input
@@ -389,73 +391,78 @@ function MutualFundCalculator() {
 
           {investmentType === 'sip' ? (
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Monthly SIP Amount (₹)</label>
+              <label className="block text-sm font-medium text-purple-700 mb-2">💵 Monthly SIP Amount (₹)</label>
               <input
                 type="number"
                 value={sipAmount}
                 onChange={(e) => setSipAmount(e.target.value)}
                 placeholder="e.g., 10000"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                step="1"
+                className="w-full px-3 py-2 border-2 border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white"
               />
             </div>
           ) : (
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Lumpsum Amount (₹)</label>
+              <label className="block text-sm font-medium text-purple-700 mb-2">💰 Lumpsum Amount (₹)</label>
               <input
                 type="number"
                 value={lumpsumAmount}
                 onChange={(e) => setLumpsumAmount(e.target.value)}
                 placeholder="e.g., 100000"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                step="1"
+                className="w-full px-3 py-2 border-2 border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white"
               />
             </div>
           )}
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Expected Annual Return (%)</label>
+            <label className="block text-sm font-medium text-purple-700 mb-2">📈 Expected Annual Return (%)</label>
             <input
               type="number"
               value={annualReturn}
               onChange={(e) => setAnnualReturn(e.target.value)}
               placeholder="e.g., 12"
-              step="0.1"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              step="1"
+              className="w-full px-3 py-2 border-2 border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
             />
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Investment Period (Years)</label>
+            <label className="block text-sm font-medium text-purple-700 mb-2">⏱️ Investment Period (Years)</label>
             <input
               type="number"
               value={investmentPeriod}
               onChange={(e) => setInvestmentPeriod(e.target.value)}
               placeholder="e.g., 10"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              step="1"
+              className="w-full px-3 py-2 border-2 border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
             />
           </div>
 
-          <div className="border-t pt-4 mt-4">
-            <h3 className="text-md font-semibold text-gray-800 mb-3">Systematic Withdrawal Plan (SWP) - Optional</h3>
+          <div className="border-t-2 border-orange-200 pt-4 mt-4 bg-orange-50 -mx-4 sm:-mx-6 px-4 sm:px-6 py-4 rounded-lg">
+            <h3 className="text-md font-semibold text-orange-700 mb-3">💸 Systematic Withdrawal Plan (SWP) - Optional</h3>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Monthly SWP Amount (₹)</label>
+              <label className="block text-sm font-medium text-orange-700 mb-2">Monthly SWP Amount (₹)</label>
               <input
                 type="number"
                 value={swpAmount}
                 onChange={(e) => setSwpAmount(e.target.value)}
                 placeholder="e.g., 20000"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                step="1"
+                className="w-full px-3 py-2 border-2 border-orange-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white"
               />
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">SWP Period (Years)</label>
+              <label className="block text-sm font-medium text-orange-700 mb-2">SWP Period (Years)</label>
               <input
                 type="number"
                 value={swpPeriod}
                 onChange={(e) => setSwpPeriod(e.target.value)}
                 placeholder="e.g., 20"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                step="1"
+                className="w-full px-3 py-2 border-2 border-orange-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white"
               />
             </div>
           </div>
@@ -463,34 +470,41 @@ function MutualFundCalculator() {
           <div className="flex gap-3 mt-6">
             <button
               onClick={handleReset}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium text-gray-700"
+              className="w-full px-4 py-2 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-lg hover:from-red-600 hover:to-pink-600 transition-all font-medium shadow-md hover:shadow-lg"
             >
-              Reset All
+              🔄 Reset All
             </button>
           </div>
         </div>
 
         {result && (
-          <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 border border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">Calculation Results</h2>
+          <div className="bg-gradient-to-br from-green-50 via-white to-teal-50 rounded-lg shadow-lg p-4 sm:p-6 border-2 border-green-200">
+            <h2 className="text-lg font-semibold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent mb-4">📊 Calculation Results</h2>
 
             <div className="space-y-4">
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <div className="text-sm text-gray-600 mb-1">Total Invested</div>
-                <div className="text-2xl font-bold text-blue-600">{formatCurrency(result.totalInvested)}</div>
+              <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-lg border-2 border-blue-200 shadow-sm">
+                <div className="text-sm text-blue-700 font-medium mb-1">💵 Total Invested</div>
+                <div className="text-2xl font-bold text-blue-700">{formatCurrency(result.totalInvested)}</div>
               </div>
 
-              <div className="bg-green-50 p-4 rounded-lg">
-                <div className="text-sm text-gray-600 mb-1">Total Returns</div>
-                <div className="text-2xl font-bold text-green-600">{formatCurrency(result.totalReturns)}</div>
+              <div className="bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-lg border-2 border-green-200 shadow-sm">
+                <div className="text-sm text-green-700 font-medium mb-1">📈 Total Returns</div>
+                <div className="text-2xl font-bold text-green-700">{formatCurrency(result.totalReturns)}</div>
               </div>
 
-              <div className="bg-purple-50 p-4 rounded-lg">
-                <div className="text-sm text-gray-600 mb-1">
-                  Final Balance {swpAmount && swpPeriod ? '(After SWP)' : '(At Maturity)'}
+              <div className="bg-gradient-to-r from-teal-50 to-teal-100 p-4 rounded-lg border-2 border-teal-200 shadow-sm">
+                <div className="text-sm text-teal-700 font-medium mb-1">🎯 Corpus After Investment</div>
+                <div className="text-2xl font-bold text-teal-700">{formatCurrency(result.corpusAfterInvestment)}</div>
+                <div className="text-xs text-teal-600 mt-1">Amount accumulated at the end of investment period</div>
+              </div>
+
+              {parseFloat(swpAmount) > 0 && parseFloat(swpPeriod) > 0 && (
+                <div className="bg-gradient-to-r from-purple-50 to-purple-100 p-4 rounded-lg border-2 border-purple-200 shadow-sm">
+                  <div className="text-sm text-purple-700 font-medium mb-1">💰 Final Balance (After SWP)</div>
+                  <div className="text-2xl font-bold text-purple-700">{formatCurrency(result.finalBalance)}</div>
+                  <div className="text-xs text-purple-600 mt-1">Balance remaining after {swpPeriod} years of withdrawals</div>
                 </div>
-                <div className="text-2xl font-bold text-purple-600">{formatCurrency(result.finalBalance)}</div>
-              </div>
+              )}
 
               {parseFloat(swpAmount) > 0 && (
                 <>
