@@ -40,6 +40,8 @@ function MutualFundCalculator() {
     return principal * Math.pow(1 + rate / 100, time);
   };
 
+  // SIP calculation using annuity due formula (payment at beginning of period)
+  // FV = P × [(1 + r)^n - 1] / r × (1 + r) where r = monthly rate, n = months, P = monthly investment
   const calculateSIPFutureValue = (monthlyInvestment: number, annualRate: number, years: number): number => {
     const monthlyRate = annualRate / 12 / 100;
     const months = years * 12;
@@ -149,6 +151,18 @@ function MutualFundCalculator() {
     setInvestmentPeriod('');
     setSwpAmount('');
     setSwpPeriod('');
+  };
+
+  // Prevent clearing values when switching investment type
+  const handleInvestmentTypeChange = (type: 'sip' | 'lumpsum') => {
+    if (type === 'lumpsum' && sipAmount && !lumpsumAmount) {
+      // Copy SIP amount to Lumpsum when switching from SIP to Lumpsum
+      setLumpsumAmount(sipAmount);
+    } else if (type === 'sip' && lumpsumAmount && !sipAmount) {
+      // Copy Lumpsum amount to SIP when switching from Lumpsum to SIP
+      setSipAmount(lumpsumAmount);
+    }
+    setInvestmentType(type);
   };
 
   // Calculate breakdown for table based on selected view
@@ -373,7 +387,7 @@ function MutualFundCalculator() {
                   type="radio"
                   value="sip"
                   checked={investmentType === 'sip'}
-                  onChange={(e) => setInvestmentType(e.target.value as 'sip' | 'lumpsum')}
+                  onChange={() => handleInvestmentTypeChange('sip')}
                   className="mr-2"
                 />
                 <span className="text-sm">SIP (Monthly)</span>
@@ -383,7 +397,7 @@ function MutualFundCalculator() {
                   type="radio"
                   value="lumpsum"
                   checked={investmentType === 'lumpsum'}
-                  onChange={(e) => setInvestmentType(e.target.value as 'sip' | 'lumpsum')}
+                  onChange={() => handleInvestmentTypeChange('lumpsum')}
                   className="mr-2"
                 />
                 <span className="text-sm">Lumpsum</span>
