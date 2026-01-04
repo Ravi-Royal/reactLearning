@@ -155,7 +155,7 @@ function MutualFundCalculator() {
 
     const monthlyRate = returnRate / 12 / 100;
     const breakdown: YearlyBreakdown[] = [];
-    
+
     if (investmentType === 'sip') {
       const sip = parseFloat(sipAmount);
       if (isNaN(sip) || sip <= 0) {
@@ -190,7 +190,7 @@ function MutualFundCalculator() {
           for (let month = 1; month <= 12; month++) {
             balance = balance * (1 + monthlyRate) - swp;
             yearWithdrawal += swp;
-            
+
             if (balance <= 0) {
               balance = 0;
               breakdown.push({
@@ -245,7 +245,7 @@ function MutualFundCalculator() {
           for (let month = 1; month <= 12; month++) {
             balance = balance * (1 + monthlyRate) - swp;
             yearWithdrawal += swp;
-            
+
             if (balance <= 0) {
               balance = 0;
               breakdown.push({
@@ -509,7 +509,7 @@ function MutualFundCalculator() {
       {yearlyBreakdown.length > 0 && (
         <div className="mt-6 bg-white rounded-lg shadow-md p-4 sm:p-6 border border-gray-200">
           <h2 className="text-lg font-semibold text-gray-800 mb-4">Year-by-Year Breakdown</h2>
-          
+
           <div className="overflow-x-auto">
             <table className="w-full text-sm border-collapse">
               <thead>
@@ -527,7 +527,7 @@ function MutualFundCalculator() {
                 {yearlyBreakdown.map((row, index) => {
                   const isWithdrawalPhase = row.withdrawal !== undefined;
                   const isLastYear = index === yearlyBreakdown.length - 1;
-                  
+
                   return (
                     <tr
                       key={row.year}
