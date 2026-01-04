@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Breadcrumbs from '../../../../navigation/Breadcrumbs';
 import { Link } from 'react-router-dom';
 
@@ -19,7 +19,6 @@ function MutualFundCalculator() {
   const [investmentPeriod, setInvestmentPeriod] = useState<string>('');
   const [swpAmount, setSwpAmount] = useState<string>('');
   const [swpPeriod, setSwpPeriod] = useState<string>('');
-  const [result, setResult] = useState<CalculationResult | null>(null);
 
   const calculateCompoundInterest = (principal: number, rate: number, time: number): number => {
     return principal * Math.pow(1 + rate / 100, time);
@@ -65,15 +64,15 @@ function MutualFundCalculator() {
     return initialAmount * monthlyRate;
   };
 
-  const handleCalculate = () => {
+  // Compute result automatically using useMemo
+  const result = useMemo<CalculationResult | null>(() => {
     const returnRate = parseFloat(annualReturn);
     const period = parseFloat(investmentPeriod);
     const swp = parseFloat(swpAmount) || 0;
     const swpYears = parseFloat(swpPeriod) || 0;
 
     if (isNaN(returnRate) || isNaN(period)) {
-      alert('Please enter valid values for return rate and investment period');
-      return;
+      return null;
     }
 
     let accumulatedAmount = 0;
@@ -81,17 +80,15 @@ function MutualFundCalculator() {
 
     if (investmentType === 'sip') {
       const sip = parseFloat(sipAmount);
-      if (isNaN(sip)) {
-        alert('Please enter valid SIP amount');
-        return;
+      if (isNaN(sip) || sip <= 0) {
+        return null;
       }
       accumulatedAmount = calculateSIPFutureValue(sip, returnRate, period);
       totalInvested = sip * period * 12;
     } else {
       const lumpsum = parseFloat(lumpsumAmount);
-      if (isNaN(lumpsum)) {
-        alert('Please enter valid lumpsum amount');
-        return;
+      if (isNaN(lumpsum) || lumpsum <= 0) {
+        return null;
       }
       accumulatedAmount = calculateCompoundInterest(lumpsum, returnRate, period);
       totalInvested = lumpsum;
@@ -118,15 +115,15 @@ function MutualFundCalculator() {
     const { years: yearsToZero, months: monthsToZero } = swp > 0 ? calculateMonthsToZero(accumulatedAmount, swp, returnRate) : { years: null, months: null };
     const minSWP = calculateMinSWP(accumulatedAmount, returnRate);
 
-    setResult({
+    return {
       finalBalance,
       totalInvested,
       totalReturns: accumulatedAmount - totalInvested,
       yearsToZero,
       monthsToZero,
       minSWPToSustain: minSWP,
-    });
-  };
+    };
+  }, [investmentType, sipAmount, lumpsumAmount, annualReturn, investmentPeriod, swpAmount, swpPeriod]);
 
   const handleReset = () => {
     setSipAmount('');
@@ -135,7 +132,6 @@ function MutualFundCalculator() {
     setInvestmentPeriod('');
     setSwpAmount('');
     setSwpPeriod('');
-    setResult(null);
   };
 
   const formatCurrency = (amount: number): string => {
@@ -265,16 +261,10 @@ function MutualFundCalculator() {
 
           <div className="flex gap-3 mt-6">
             <button
-              onClick={handleCalculate}
-              className="flex-1 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors font-medium"
-            >
-              Calculate
-            </button>
-            <button
               onClick={handleReset}
-              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium text-gray-700"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium text-gray-700"
             >
-              Reset
+              Reset All
             </button>
           </div>
         </div>
