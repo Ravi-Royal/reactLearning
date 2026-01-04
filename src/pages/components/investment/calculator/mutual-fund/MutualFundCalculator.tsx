@@ -17,6 +17,10 @@ interface YearlyBreakdown {
   interest: number;
   totalValue: number;
   withdrawal?: number;
+  openingBalance: number;
+  periodInvestment: number;
+  periodInterest: number;
+  closingBalance: number;
 }
 
 type BreakdownView = 'monthly' | 'quarterly' | 'yearly';
@@ -176,16 +180,27 @@ function MutualFundCalculator() {
       // Investment phase
       const totalInvestmentPeriods = period * periodsPerYear;
       for (let i = 1; i <= totalInvestmentPeriods; i++) {
+        const openingBalance = balance;
+        let periodInvestment = 0;
+        const startingBalance = balance;
+
         for (let month = 1; month <= monthsPerPeriod; month++) {
           balance = balance * (1 + monthlyRate) + sip;
           totalInvested += sip;
+          periodInvestment += sip;
         }
+
+        const periodInterest = balance - startingBalance - periodInvestment;
 
         breakdown.push({
           year: periodCounter++,
           invested: totalInvested,
           interest: balance - totalInvested,
           totalValue: balance,
+          openingBalance,
+          periodInvestment,
+          periodInterest,
+          closingBalance: balance,
         });
       }
 
@@ -193,7 +208,9 @@ function MutualFundCalculator() {
       if (swp > 0 && swpYears > 0) {
         const totalSwpPeriods = Math.min(swpYears * periodsPerYear, 50 * periodsPerYear);
         for (let i = 1; i <= totalSwpPeriods; i++) {
+          const openingBalance = balance;
           let periodWithdrawal = 0;
+          const startingBalance = balance;
 
           for (let month = 1; month <= monthsPerPeriod; month++) {
             balance = balance * (1 + monthlyRate) - swp;
@@ -201,16 +218,23 @@ function MutualFundCalculator() {
 
             if (balance <= 0) {
               balance = 0;
+              const periodInterest = 0 - startingBalance - periodWithdrawal;
               breakdown.push({
                 year: periodCounter++,
                 invested: totalInvested,
                 interest: 0,
                 totalValue: 0,
                 withdrawal: periodWithdrawal,
+                openingBalance,
+                periodInvestment: 0,
+                periodInterest: Math.max(periodInterest, 0),
+                closingBalance: 0,
               });
               return breakdown;
             }
           }
+
+          const periodInterest = balance - startingBalance + periodWithdrawal;
 
           breakdown.push({
             year: periodCounter++,
@@ -218,6 +242,10 @@ function MutualFundCalculator() {
             interest: balance - totalInvested,
             totalValue: balance,
             withdrawal: periodWithdrawal,
+            openingBalance,
+            periodInvestment: 0,
+            periodInterest,
+            closingBalance: balance,
           });
         }
       }
@@ -235,15 +263,25 @@ function MutualFundCalculator() {
       // Investment phase
       const totalInvestmentPeriods = period * periodsPerYear;
       for (let i = 1; i <= totalInvestmentPeriods; i++) {
+        const openingBalance = balance;
+        const startingBalance = balance;
+
         for (let month = 1; month <= monthsPerPeriod; month++) {
           balance = balance * (1 + monthlyRate);
         }
+
+        const periodInterest = balance - startingBalance;
+        const periodInvestment = i === 1 ? lumpsum : 0;
 
         breakdown.push({
           year: periodCounter++,
           invested: totalInvested,
           interest: balance - totalInvested,
           totalValue: balance,
+          openingBalance,
+          periodInvestment,
+          periodInterest,
+          closingBalance: balance,
         });
       }
 
@@ -251,7 +289,9 @@ function MutualFundCalculator() {
       if (swp > 0 && swpYears > 0) {
         const totalSwpPeriods = Math.min(swpYears * periodsPerYear, 50 * periodsPerYear);
         for (let i = 1; i <= totalSwpPeriods; i++) {
+          const openingBalance = balance;
           let periodWithdrawal = 0;
+          const startingBalance = balance;
 
           for (let month = 1; month <= monthsPerPeriod; month++) {
             balance = balance * (1 + monthlyRate) - swp;
@@ -259,16 +299,23 @@ function MutualFundCalculator() {
 
             if (balance <= 0) {
               balance = 0;
+              const periodInterest = 0 - startingBalance - periodWithdrawal;
               breakdown.push({
                 year: periodCounter++,
                 invested: totalInvested,
                 interest: 0,
                 totalValue: 0,
                 withdrawal: periodWithdrawal,
+                openingBalance,
+                periodInvestment: 0,
+                periodInterest: Math.max(periodInterest, 0),
+                closingBalance: 0,
               });
               return breakdown;
             }
           }
+
+          const periodInterest = balance - startingBalance + periodWithdrawal;
 
           breakdown.push({
             year: periodCounter++,
@@ -276,6 +323,10 @@ function MutualFundCalculator() {
             interest: balance - totalInvested,
             totalValue: balance,
             withdrawal: periodWithdrawal,
+            openingBalance,
+            periodInvestment: 0,
+            periodInterest,
+            closingBalance: balance,
           });
         }
       }
@@ -556,19 +607,22 @@ function MutualFundCalculator() {
             </div>
           </div>
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-h-[500px] relative">
             <table className="w-full text-sm border-collapse">
-              <thead>
+              <thead className="sticky top-0 z-10">
                 <tr className="bg-gray-100 border-b-2 border-gray-300">
-                  <th className="p-2 sm:p-3 text-left font-semibold text-gray-700">
+                  <th className="p-2 sm:p-3 text-left font-semibold text-gray-700 bg-gray-100">
                     {breakdownView === 'monthly' ? 'Month' : breakdownView === 'quarterly' ? 'Quarter' : 'Year'}
                   </th>
-                  <th className="p-2 sm:p-3 text-right font-semibold text-gray-700">Total Invested</th>
-                  <th className="p-2 sm:p-3 text-right font-semibold text-gray-700">Interest Earned</th>
+                  <th className="p-2 sm:p-3 text-right font-semibold text-gray-700 bg-gray-100">Opening Balance</th>
+                  <th className="p-2 sm:p-3 text-right font-semibold text-gray-700 bg-gray-100">Period Investment</th>
+                  <th className="p-2 sm:p-3 text-right font-semibold text-gray-700 bg-gray-100">Period Interest</th>
                   {yearlyBreakdown.some(row => row.withdrawal) && (
-                    <th className="p-2 sm:p-3 text-right font-semibold text-gray-700">Withdrawal</th>
+                    <th className="p-2 sm:p-3 text-right font-semibold text-gray-700 bg-gray-100">Withdrawal</th>
                   )}
-                  <th className="p-2 sm:p-3 text-right font-semibold text-gray-700">Total Value</th>
+                  <th className="p-2 sm:p-3 text-right font-semibold text-gray-700 bg-gray-100">Closing Balance</th>
+                  <th className="p-2 sm:p-3 text-right font-semibold text-gray-700 bg-gray-100">Total Invested</th>
+                  <th className="p-2 sm:p-3 text-right font-semibold text-gray-700 bg-gray-100">Total Interest</th>
                 </tr>
               </thead>
               <tbody>
@@ -589,11 +643,14 @@ function MutualFundCalculator() {
                           {isWithdrawalPhase && <span className="text-xs ml-1">(SWP)</span>}
                         </span>
                       </td>
-                      <td className="p-2 sm:p-3 text-right text-blue-700">
-                        {formatCurrency(row.invested)}
+                      <td className="p-2 sm:p-3 text-right text-gray-700">
+                        {formatCurrency(row.openingBalance)}
                       </td>
-                      <td className="p-2 sm:p-3 text-right text-green-700">
-                        {formatCurrency(row.interest)}
+                      <td className="p-2 sm:p-3 text-right text-indigo-700">
+                        {row.periodInvestment > 0 ? formatCurrency(row.periodInvestment) : '-'}
+                      </td>
+                      <td className="p-2 sm:p-3 text-right text-green-600">
+                        {formatCurrency(row.periodInterest)}
                       </td>
                       {yearlyBreakdown.some(r => r.withdrawal) && (
                         <td className="p-2 sm:p-3 text-right text-orange-700">
@@ -601,7 +658,13 @@ function MutualFundCalculator() {
                         </td>
                       )}
                       <td className="p-2 sm:p-3 text-right font-semibold text-purple-700">
-                        {formatCurrency(row.totalValue)}
+                        {formatCurrency(row.closingBalance)}
+                      </td>
+                      <td className="p-2 sm:p-3 text-right text-blue-700">
+                        {formatCurrency(row.invested)}
+                      </td>
+                      <td className="p-2 sm:p-3 text-right text-green-700">
+                        {formatCurrency(row.interest)}
                       </td>
                     </tr>
                   );
@@ -610,7 +673,7 @@ function MutualFundCalculator() {
             </table>
           </div>
 
-          <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="mt-4 p-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg border-2 border-gray-300 shadow-sm sticky bottom-0 z-10">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
               <div>
                 <div className="text-gray-600 mb-1">Total Periods</div>
@@ -637,13 +700,21 @@ function MutualFundCalculator() {
             </div>
           </div>
 
-          <div className="mt-3 text-xs text-gray-600">
+          <div className="mt-3 text-xs text-gray-600 space-y-2">
             <p>
               💡 <strong>Investment Phase:</strong> White background rows show accumulation periods.
               {yearlyBreakdown.some(row => row.withdrawal) && (
                 <span> <strong>Withdrawal Phase:</strong> Orange background rows show SWP withdrawal periods.</span>
               )}
             </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs bg-blue-50 p-3 rounded-lg border border-blue-200">
+              <div><strong>Opening Balance:</strong> Balance at the start of period</div>
+              <div><strong>Period Investment:</strong> Amount invested during this period</div>
+              <div><strong>Period Interest:</strong> Interest earned during this period only</div>
+              <div><strong>Closing Balance:</strong> Balance at the end of period</div>
+              <div><strong>Total Invested:</strong> Cumulative invested till this period</div>
+              <div><strong>Total Interest:</strong> Cumulative interest earned till this period</div>
+            </div>
           </div>
         </div>
       )}
