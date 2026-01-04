@@ -360,7 +360,7 @@ function MutualFundCalculator() {
     }
 
     return breakdown;
-  }, [investmentType, sipAmount, lumpsumAmount, annualReturn, investmentPeriod, swpAmount, swpPeriod, breakdownView]);
+  }, [investmentType, sipAmount, lumpsumAmount, annualReturn, investmentPeriod, swpAmount, swpPeriod, breakdownView, result]);
 
   // Ref for SWP start row (must be after yearlyBreakdown is defined)
   const swpStartRowRef = useRef<HTMLTableRowElement | null>(null);
