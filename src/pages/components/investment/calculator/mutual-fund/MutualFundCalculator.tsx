@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import Breadcrumbs from '../../../../navigation/Breadcrumbs';
 import { Link } from 'react-router-dom';
 
@@ -223,8 +223,17 @@ function MutualFundCalculator() {
       }
 
       // SWP phase
-      if (swp > 0 && swpYears > 0) {
-        const totalSwpPeriods = Math.min(swpYears * periodsPerYear, maxPeriods);
+      if (swp > 0 && (swpYears > 0 || (swpYears === 0 && result && result.yearsToZero !== null))) {
+        // If SWP period is not entered but yearsToZero is available, show until balance reaches zero
+        let totalSwpPeriods;
+        if (swpYears > 0) {
+          totalSwpPeriods = Math.min(swpYears * periodsPerYear, maxPeriods);
+        } else if (result && result.yearsToZero !== null) {
+          // Calculate periods until zero
+          totalSwpPeriods = Math.ceil((result.yearsToZero * 12 + (result.monthsToZero || 0)) / monthsPerPeriod);
+        } else {
+          totalSwpPeriods = 0;
+        }
         for (let i = 1; i <= totalSwpPeriods; i++) {
           const openingBalance = balance;
           let periodWithdrawal = 0;
@@ -352,6 +361,10 @@ function MutualFundCalculator() {
 
     return breakdown;
   }, [investmentType, sipAmount, lumpsumAmount, annualReturn, investmentPeriod, swpAmount, swpPeriod, breakdownView]);
+
+  // Ref for SWP start row (must be after yearlyBreakdown is defined)
+  const swpStartRowRef = useRef<HTMLTableRowElement | null>(null);
+  const swpStartIndex = yearlyBreakdown.findIndex(row => row.withdrawal !== undefined);
 
   const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat('en-IN', {
@@ -603,7 +616,19 @@ function MutualFundCalculator() {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
             <h2 className="text-lg font-semibold text-gray-800">Period-by-Period Breakdown</h2>
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
+              {swpStartIndex !== -1 && (
+                <button
+                  className="px-3 py-1.5 text-xs sm:text-sm rounded-lg font-medium bg-orange-500 text-white hover:bg-orange-600 transition-colors border border-orange-600"
+                  onClick={() => {
+                    setTimeout(() => {
+                      swpStartRowRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 0);
+                  }}
+                >
+                  Jump to SWP Start
+                </button>
+              )}
               <button
                 onClick={() => setBreakdownView('monthly')}
                 className={`px-3 py-1.5 text-xs sm:text-sm rounded-lg font-medium transition-colors ${
@@ -659,10 +684,14 @@ function MutualFundCalculator() {
                 {yearlyBreakdown.map((row, index) => {
                   const isWithdrawalPhase = row.withdrawal !== undefined;
                   const isLastYear = index === yearlyBreakdown.length - 1;
-
+                  // Attach ref to first SWP row
+                  const rowProps = (index === swpStartIndex && isWithdrawalPhase)
+                    ? { ref: swpStartRowRef }
+                    : {};
                   return (
                     <tr
                       key={row.year}
+                      {...rowProps}
                       className={`border-b border-gray-200 hover:bg-gray-50 transition-colors ${
                         isWithdrawalPhase ? 'bg-orange-50' : ''
                       } ${isLastYear ? 'font-semibold bg-purple-50' : ''}`}
