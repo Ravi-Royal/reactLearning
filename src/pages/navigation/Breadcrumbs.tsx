@@ -42,6 +42,14 @@ function Breadcrumbs() {
         } else if (pathnames.includes('checklist')) {
           breadcrumbs.push({ label: 'Bond Investment Checklist', path: '/investment/bonds/checklist' });
         }
+      } else if (pathnames.includes('calculator')) {
+        breadcrumbs.push({ label: 'Calculator', path: '/investment/calculator' });
+        
+        if (pathnames.includes('stock-average')) {
+          breadcrumbs.push({ label: 'Stock Average Calculator', path: '/investment/calculator/stock-average' });
+        } else if (pathnames.includes('mutual-fund')) {
+          breadcrumbs.push({ label: 'Mutual Fund Calculator', path: '/investment/calculator/mutual-fund' });
+        }
       }
     } else if (pathnames.includes('hooks')) {
       breadcrumbs.push({ label: 'React Hooks', path: '/hooks' });

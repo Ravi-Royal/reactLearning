@@ -8,6 +8,7 @@ const AboutPage = lazy(() => import('../About'));
 const HooksNavigation = lazy(() => import('../navigation/HooksNavigation'));
 const InvestmentNavigation = lazy(() => import('../navigation/InvestmentNavigation'));
 const StockNavigation = lazy(() => import('../navigation/StockNavigation'));
+const CalculatorNavigation = lazy(() => import('../navigation/CalculatorNavigation'));
 
 const UseStateHook = lazy(() => import('../components/hookRef/UseStateHook'));
 const UseEffectHook = lazy(() => import('../components/hookRef/UseEffectHook'));
@@ -25,6 +26,7 @@ const StockResult = lazy(() => import('../components/investment/stock/analysis/z
 const StockCheckList = lazy(() => import('../components/investment/stock/checklist/StockCheckList'));
 const MyFavStocks = lazy(() => import('../components/investment/stock/favorites/MyFavStocks'));
 const AverageCalculator = lazy(() => import('../components/investment/stock/average-calculator/AverageCalculator'));
+const MutualFundCalculator = lazy(() => import('../components/investment/calculator/mutual-fund/MutualFundCalculator'));
 
 const RouteFallback = (): React.ReactElement => (
   <div className="p-6">
@@ -66,6 +68,11 @@ function Routing(): React.ReactElement {
               <Route index element={<Bonds />} />
               <Route path="before-starting" element={<BeforeStartingBondCheckList />} />
               <Route path="checklist" element={<BondCheckList />} />
+            </Route>
+            <Route path="calculator" element={<Outlet />}>
+              <Route index element={<CalculatorNavigation />} />
+              <Route path="stock-average" element={<AverageCalculator />} />
+              <Route path="mutual-fund" element={<MutualFundCalculator />} />
             </Route>
           </Route>
           <Route path="*" element={<Navigate to="/home" replace />} />

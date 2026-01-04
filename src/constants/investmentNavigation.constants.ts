@@ -31,12 +31,28 @@ export const INVESTMENT_NAVIGATION_ITEMS = [
       inactive: 'bg-green-50 text-green-600 hover:bg-green-100',
     },
   },
+  {
+    id: 'calculator',
+    title: 'Calculator',
+    description: 'Financial calculators for stock average and mutual fund SIP/SWP calculations.',
+    icon: {
+      path: 'M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z',
+      bgColor: 'bg-purple-100',
+      color: 'text-purple-600',
+    },
+    route: 'calculator',
+    buttonText: 'Open Calculators',
+    buttonColors: {
+      active: 'bg-purple-600 text-white',
+      inactive: 'bg-purple-50 text-purple-600 hover:bg-purple-100',
+    },
+  },
 ];
 
 export const INVESTMENT_QUICK_STATS = [
   {
     id: 'tools',
-    value: '2',
+    value: '3',
     label: 'Investment Types',
     color: 'text-blue-600',
   },
