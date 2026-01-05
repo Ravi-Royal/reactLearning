@@ -379,10 +379,10 @@ function MutualFundCalculator() {
       <Breadcrumbs />
       <div className="mb-4 sm:mb-6">
         <Link
-          to="/investment/calculator"
+          to="/investment/mutual-fund"
           className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 text-xs sm:text-sm font-medium inline-flex items-center gap-2 mb-3 sm:mb-4 px-3 py-2 rounded-md transition-colors"
         >
-          ← Back to Calculators
+          ← Back to Mutual Funds
         </Link>
         <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">Mutual Fund Calculator</h1>
         <p className="text-sm sm:text-base text-gray-600 mt-1">Calculate SIP/Lumpsum returns and SWP sustainability</p>

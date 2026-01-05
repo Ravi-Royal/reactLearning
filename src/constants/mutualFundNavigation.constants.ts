@@ -8,7 +8,7 @@ export const MUTUAL_FUND_NAVIGATION_ITEMS = [
       bgColor: 'bg-blue-100',
       color: 'text-blue-600',
     },
-    route: 'calculator/mutual-fund',
+    route: 'calculator',
     buttonText: 'Open Calculator',
     buttonColors: {
       active: 'bg-blue-600 text-white',
