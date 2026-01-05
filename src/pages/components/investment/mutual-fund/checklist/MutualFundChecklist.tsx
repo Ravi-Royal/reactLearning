@@ -4,7 +4,7 @@ import ProgressBar from '../../../ProgressBar';
 import { Button, CategoryBadge, PageHeader, SelectionModal } from '../../../common';
 import { AiOutlineInfoCircle } from 'react-icons/ai';
 import { copyAllChecklistItems, copyChecklistCategory } from '../../helpers/checklistCopy.helper';
-import { CopyIcon } from '../../helpers/CopyIcons';
+import { CopyAllIcon, CopyIcon } from '../../helpers/CopyIcons';
 import { useChecklist } from '../../../common/hooks/useChecklist';
 import { RESPONSIVE_PATTERNS } from '../../../../../constants/responsive.constants';
 import { CHECKLIST_CATEGORIES, MUTUAL_FUND_LIST, type MutualFundItem } from './mutualFundChecklist.constants';
@@ -151,6 +151,11 @@ function MutualFundChecklist() {
       <PageHeader
         title="Mutual Fund Investment Checklist"
         subtitle="Use this checklist to evaluate potential mutual fund investments systematically."
+        actions={
+          <Button onClick={handleCopyAll} variant="secondary" icon={<CopyAllIcon />}>
+            Copy All
+          </Button>
+        }
       />
 
       <div className={`flex flex-wrap ${RESPONSIVE_PATTERNS.gap.sm} ${RESPONSIVE_PATTERNS.margin.element} text-xs`}>
@@ -217,11 +222,6 @@ function MutualFundChecklist() {
       </div>
 
       <div className={`border border-gray-200 rounded-lg ${RESPONSIVE_PATTERNS.padding.card} bg-gray-50`}>
-        <div className="flex justify-end mb-2">
-          <Button onClick={handleCopyAll} variant="secondary">
-             Copy All
-          </Button>
-        </div>
         <div className={`grid md:grid-cols-2 ${RESPONSIVE_PATTERNS.gap.lg}`}>
           {/* Personal Criteria Section */}
           <div className="space-y-4">
