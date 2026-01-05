@@ -55,7 +55,7 @@ function Breadcrumbs() {
         if (pathnames.includes('stock-average')) {
           breadcrumbItems.push({ label: 'Stock Average Calculator', path: '/investment/calculator/stock-average' });
         } else if (pathnames.includes('mutual-fund')) {
-          breadcrumbItems.push({ label: 'Mutual Fund Calculator', path: '/investment/calculator/mutual-fund' });
+          breadcrumbItems.push({ label: 'Mutual Fund Calculator', path: '/investment/mutual-fund/calculator' });
         }
       }
     } else if (pathnames.includes('hooks')) {

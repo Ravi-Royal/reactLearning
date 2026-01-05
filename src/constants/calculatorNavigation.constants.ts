@@ -24,7 +24,7 @@ export const CALCULATOR_NAVIGATION_ITEMS = [
       bgColor: 'bg-purple-100',
       color: 'text-purple-600',
     },
-    route: '/investment/calculator/mutual-fund',
+    route: '/investment/mutual-fund/calculator',
     buttonText: 'Calculate MF Returns',
     buttonColors: {
       active: 'bg-purple-600 text-white',
