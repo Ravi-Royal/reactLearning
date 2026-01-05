@@ -459,6 +459,16 @@ function AverageCalculator() {
                     ).toFixed(2)}
                   </div>
                 </div>
+                <div>
+                  <div className={`${RESPONSIVE_PATTERNS.text.sm} text-gray-600 mb-1`}>New Purchase Total Amount Needed</div>
+                  <div className={`${RESPONSIVE_PATTERNS.text['2xl']} font-bold text-indigo-700`}>
+                    ₹{(
+                      buyInputMode === 'price'
+                        ? ((parseFloat(buyQuantity) || 0) * (parseFloat(buyPrice) || 0))
+                        : (parseFloat(buyTotalPrice) || 0)
+                    ).toFixed(2)}
+                  </div>
+                </div>
                 <div className={`bg-white rounded-lg ${RESPONSIVE_PATTERNS.padding.card} shadow-md`}>
                   <div className={`${RESPONSIVE_PATTERNS.text.sm} text-orange-600 font-medium mb-1`}>New Average Price</div>
                   <div className={`${RESPONSIVE_PATTERNS.text['3xl']} font-bold text-orange-600`}>
