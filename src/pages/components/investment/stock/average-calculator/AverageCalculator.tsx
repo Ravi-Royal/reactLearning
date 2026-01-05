@@ -461,15 +461,14 @@ function AverageCalculator() {
           )}
 
           {calculationMode === 'purchase' && calculationResult.newAvgPrice !== null && (
-            <div className={`bg-gradient-to-r from-orange-50 to-orange-100 border-2 border-orange-300 rounded-lg ${RESPONSIVE_PATTERNS.padding.cardLg}`}>
-              <h3 className={`${RESPONSIVE_PATTERNS.text.lg} font-semibold text-gray-800 mb-4 flex items-center gap-2`}>Result <span title="This section summarizes your new holdings after the purchase.">ℹ️</span></h3>
+            <div className="bg-gradient-to-r from-orange-50 to-orange-100 border-2 border-orange-300 rounded-lg px-2 py-6 sm:py-8 mb-6">
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-center">
                 <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center">
-                  <div className="text-gray-600 text-sm mb-1 flex items-center gap-1">Total Quantity <span title="Total shares after your new purchase.">ℹ️</span></div>
+                  <div className="text-gray-600 text-sm mb-1 flex items-center gap-1">Total Quantity <span title="Total shares after your new purchase." className="text-blue-400">ℹ️</span></div>
                   <div className="text-2xl font-bold text-gray-800">{((parseFloat(currentQuantity) || 0) + (parseFloat(buyQuantity) || 0)).toFixed(0)}</div>
                 </div>
                 <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center">
-                  <div className="text-gray-600 text-sm mb-1 flex items-center gap-1">Total Investment <span title="Sum of your previous and new investments.">ℹ️</span></div>
+                  <div className="text-gray-600 text-sm mb-1 flex items-center gap-1">Total Investment <span title="Sum of your previous and new investments." className="text-blue-400">ℹ️</span></div>
                   <div className="text-2xl font-bold text-gray-800">
                     ₹{(
                       ((parseFloat(currentQuantity) || 0) * (parseFloat(currentAvgPrice) || (parseFloat(currentTotalPrice) || 0) / (parseFloat(currentQuantity) || 1))) +
@@ -480,7 +479,7 @@ function AverageCalculator() {
                   </div>
                 </div>
                 <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center">
-                  <div className="text-indigo-700 text-sm mb-1 flex items-center gap-1">New Purchase Amount <span title="Amount needed for this new purchase only.">ℹ️</span></div>
+                  <div className="text-indigo-700 text-sm mb-1 flex items-center gap-1">New Purchase Amount <span title="Amount needed for this new purchase only." className="text-blue-400">ℹ️</span></div>
                   <div className="text-2xl font-bold text-indigo-700">
                     ₹{(
                       buyInputMode === 'price'
@@ -490,7 +489,7 @@ function AverageCalculator() {
                   </div>
                 </div>
                 <div className="bg-orange-100 rounded-lg shadow p-4 flex flex-col items-center border-2 border-orange-300">
-                  <div className="text-orange-600 text-sm font-medium mb-1 flex items-center gap-1">New Average Price <span title="Your new average price per share after this purchase.">ℹ️</span></div>
+                  <div className="text-orange-600 text-sm font-medium mb-1 flex items-center gap-1">New Average Price <span title="Your new average price per share after this purchase." className="text-blue-400">ℹ️</span></div>
                   <div className="text-3xl font-bold text-orange-600">₹{calculationResult.newAvgPrice.toFixed(2)}</div>
                 </div>
               </div>
