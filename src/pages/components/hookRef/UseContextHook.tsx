@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react';
+import Breadcrumbs from '../../navigation/Breadcrumbs';
 
 const MyContext = createContext<{ test: string } | null>(null);
 
@@ -8,6 +9,7 @@ export default function UseContextHook() {
     <MyContext.Provider value={{ test: 'from Context' }}>
       <div className="p-4 sm:p-6 md:p-8">
         <div className="max-w-4xl mx-auto">
+          <Breadcrumbs />
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-gray-800">useContext Hook</h2>
           <ChildComponent />
         </div>

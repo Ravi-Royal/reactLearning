@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/refs */
 import { useEffect, useRef, useState } from 'react';
+import Breadcrumbs from '../../navigation/Breadcrumbs';
 
 function UseRefHook() {
   const [count, setCount] = useState(0);
@@ -17,6 +18,7 @@ function UseRefHook() {
   return (
     <div className="p-4 sm:p-6 md:p-8">
       <div className="max-w-6xl mx-auto">
+        <Breadcrumbs />
         <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 text-gray-800">useRef Hook Page</h2>
 
         <div className="mb-6 p-4 sm:p-6 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg">
