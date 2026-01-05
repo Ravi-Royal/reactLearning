@@ -678,6 +678,7 @@ function MutualFundCalculator() {
                   <th className="p-2 sm:p-3 text-right font-semibold text-gray-700 bg-gray-100">Closing Balance</th>
                   <th className="p-2 sm:p-3 text-right font-semibold text-gray-700 bg-gray-100">Total Invested</th>
                   <th className="p-2 sm:p-3 text-right font-semibold text-gray-700 bg-gray-100">Total Interest</th>
+                  <th className="p-2 sm:p-3 text-right font-semibold text-gray-700 bg-gray-100">Value at Term End</th>
                 </tr>
               </thead>
               <tbody>
@@ -724,6 +725,19 @@ function MutualFundCalculator() {
                       </td>
                       <td className="p-2 sm:p-3 text-right text-green-700">
                         {formatCurrency(row.interest)}
+                      </td>
+                      <td className="p-2 sm:p-3 text-right text-teal-700">
+                        {row.periodInvestment > 0 && !isWithdrawalPhase ? (() => {
+                          const annualRate = parseFloat(annualReturn) || 0;
+                          const monthsPerPeriod = breakdownView === 'monthly' ? 1 : breakdownView === 'quarterly' ? 3 : 12;
+                          const totalInvestmentPeriods = (parseFloat(investmentPeriod) || 0) * (12 / monthsPerPeriod);
+                          const periodsCompleted = index + 1;
+                          const remainingPeriods = Math.max(0, totalInvestmentPeriods - periodsCompleted);
+                          const remainingMonths = remainingPeriods * monthsPerPeriod;
+                          const monthlyRate = annualRate / 12 / 100;
+                          const fv = row.periodInvestment * Math.pow(1 + monthlyRate, remainingMonths);
+                          return formatCurrency(fv);
+                        })() : '-'}
                       </td>
                     </tr>
                   );
