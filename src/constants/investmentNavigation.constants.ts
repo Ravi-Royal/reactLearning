@@ -16,19 +16,35 @@ export const INVESTMENT_NAVIGATION_ITEMS = [
     },
   },
   {
+    id: 'mutual-fund',
+    title: 'Mutual Fund',
+    description: 'Calculate SIP returns, analyze funds, and use checklists for informed investment decisions.',
+    icon: {
+      path: 'M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z',
+      bgColor: 'bg-green-100',
+      color: 'text-green-600',
+    },
+    route: 'mutual-fund',
+    buttonText: 'Explore Mutual Funds',
+    buttonColors: {
+      active: 'bg-green-600 text-white',
+      inactive: 'bg-green-50 text-green-600 hover:bg-green-100',
+    },
+  },
+  {
     id: 'bonds',
     title: 'Bonds & Fixed Income',
     description: 'Learn about bonds, fixed income investments, and portfolio diversification.',
     icon: {
       path: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1',
-      bgColor: 'bg-green-100',
-      color: 'text-green-600',
+      bgColor: 'bg-yellow-100',
+      color: 'text-yellow-600',
     },
     route: 'bonds',
     buttonText: 'Learn Bonds',
     buttonColors: {
-      active: 'bg-green-600 text-white',
-      inactive: 'bg-green-50 text-green-600 hover:bg-green-100',
+      active: 'bg-yellow-600 text-white',
+      inactive: 'bg-yellow-50 text-yellow-600 hover:bg-yellow-100',
     },
   },
   {
@@ -52,7 +68,7 @@ export const INVESTMENT_NAVIGATION_ITEMS = [
 export const INVESTMENT_QUICK_STATS = [
   {
     id: 'tools',
-    value: '3',
+    value: '4',
     label: 'Investment Types',
     color: 'text-blue-600',
   },
