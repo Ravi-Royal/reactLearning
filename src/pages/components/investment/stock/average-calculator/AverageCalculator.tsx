@@ -218,7 +218,7 @@ function AverageCalculator() {
           <div className={`grid grid-cols-1 md:grid-cols-2 ${RESPONSIVE_PATTERNS.gap.lg} ${RESPONSIVE_PATTERNS.margin.section}`}>
             <div>
               <label htmlFor="currentQuantity" className={`block ${RESPONSIVE_PATTERNS.text.sm} font-medium text-gray-700 ${RESPONSIVE_PATTERNS.margin.element}`}>
-                Current Holding Quantity
+                  Current Holding Quantity <span title="How many shares you currently own.">ℹ️</span>
               </label>
               <input
                 type="number"
@@ -235,7 +235,7 @@ function AverageCalculator() {
             {currentInputMode === 'price' ? (
               <div>
                 <label htmlFor="currentAvgPrice" className={`block ${RESPONSIVE_PATTERNS.text.sm} font-medium text-gray-700 ${RESPONSIVE_PATTERNS.margin.element}`}>
-                  Current Average Price (₹)
+                  Current Average Price (₹) <span title="Your average buy price per share so far.">ℹ️</span>
                 </label>
                 <input
                   type="number"
@@ -251,7 +251,7 @@ function AverageCalculator() {
             ) : (
               <div>
                 <label htmlFor="currentTotalPrice" className={`block ${RESPONSIVE_PATTERNS.text.sm} font-medium text-gray-700 ${RESPONSIVE_PATTERNS.margin.element}`}>
-                  Total Amount Invested (₹)
+                  Total Amount Invested (₹) <span title="Total money spent on your current holdings.">ℹ️</span>
                 </label>
                 <input
                   type="number"
@@ -318,7 +318,7 @@ function AverageCalculator() {
               <div className={`grid grid-cols-1 md:grid-cols-2 ${RESPONSIVE_PATTERNS.gap.lg} ${RESPONSIVE_PATTERNS.margin.section}`}>
                 <div>
                   <label htmlFor="buyQuantity" className={`block ${RESPONSIVE_PATTERNS.text.sm} font-medium text-gray-700 ${RESPONSIVE_PATTERNS.margin.element}`}>
-                    Quantity to Buy
+                    Quantity to Buy <span title="How many new shares you want to purchase.">ℹ️</span>
                   </label>
                   <input
                     type="number"
@@ -335,7 +335,7 @@ function AverageCalculator() {
                 {buyInputMode === 'price' ? (
                   <div>
                     <label htmlFor="buyPrice" className={`block ${RESPONSIVE_PATTERNS.text.sm} font-medium text-gray-700 ${RESPONSIVE_PATTERNS.margin.element}`}>
-                      Purchase Average Price (₹)
+                      Purchase Average Price (₹) <span title="Expected price per share for your new purchase.">ℹ️</span>
                     </label>
                     <input
                       type="number"
@@ -351,7 +351,7 @@ function AverageCalculator() {
                 ) : (
                   <div>
                     <label htmlFor="buyTotalPrice" className={`block ${RESPONSIVE_PATTERNS.text.sm} font-medium text-gray-700 ${RESPONSIVE_PATTERNS.margin.element}`}>
-                      Total Amount to Invest (₹)
+                      Total Amount to Invest (₹) <span title="Total money you plan to spend on this new purchase.">ℹ️</span>
                     </label>
                     <input
                       type="number"
@@ -440,17 +440,15 @@ function AverageCalculator() {
 
           {calculationMode === 'purchase' && calculationResult.newAvgPrice !== null && (
             <div className={`bg-gradient-to-r from-orange-50 to-orange-100 border-2 border-orange-300 rounded-lg ${RESPONSIVE_PATTERNS.padding.cardLg}`}>
-              <h3 className={`${RESPONSIVE_PATTERNS.text.lg} font-semibold text-gray-800 mb-4`}>Result</h3>
-              <div className={`grid grid-cols-1 sm:grid-cols-3 ${RESPONSIVE_PATTERNS.gap.md} text-center`}>
-                <div>
-                  <div className={`${RESPONSIVE_PATTERNS.text.sm} text-gray-600 mb-1`}>Total Quantity</div>
-                  <div className={`${RESPONSIVE_PATTERNS.text['2xl']} font-bold text-gray-800`}>
-                    {((parseFloat(currentQuantity) || 0) + (parseFloat(buyQuantity) || 0)).toFixed(0)}
-                  </div>
+              <h3 className={`${RESPONSIVE_PATTERNS.text.lg} font-semibold text-gray-800 mb-4 flex items-center gap-2`}>Result <span title="This section summarizes your new holdings after the purchase.">ℹ️</span></h3>
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-center">
+                <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center">
+                  <div className="text-gray-600 text-sm mb-1 flex items-center gap-1">Total Quantity <span title="Total shares after your new purchase.">ℹ️</span></div>
+                  <div className="text-2xl font-bold text-gray-800">{((parseFloat(currentQuantity) || 0) + (parseFloat(buyQuantity) || 0)).toFixed(0)}</div>
                 </div>
-                <div>
-                  <div className={`${RESPONSIVE_PATTERNS.text.sm} text-gray-600 mb-1`}>Total Investment</div>
-                  <div className={`${RESPONSIVE_PATTERNS.text['2xl']} font-bold text-gray-800`}>
+                <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center">
+                  <div className="text-gray-600 text-sm mb-1 flex items-center gap-1">Total Investment <span title="Sum of your previous and new investments.">ℹ️</span></div>
+                  <div className="text-2xl font-bold text-gray-800">
                     ₹{(
                       ((parseFloat(currentQuantity) || 0) * (parseFloat(currentAvgPrice) || (parseFloat(currentTotalPrice) || 0) / (parseFloat(currentQuantity) || 1))) +
                       (buyInputMode === 'price'
@@ -459,9 +457,9 @@ function AverageCalculator() {
                     ).toFixed(2)}
                   </div>
                 </div>
-                <div>
-                  <div className={`${RESPONSIVE_PATTERNS.text.sm} text-gray-600 mb-1`}>New Purchase Total Amount Needed</div>
-                  <div className={`${RESPONSIVE_PATTERNS.text['2xl']} font-bold text-indigo-700`}>
+                <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center">
+                  <div className="text-indigo-700 text-sm mb-1 flex items-center gap-1">New Purchase Amount <span title="Amount needed for this new purchase only.">ℹ️</span></div>
+                  <div className="text-2xl font-bold text-indigo-700">
                     ₹{(
                       buyInputMode === 'price'
                         ? ((parseFloat(buyQuantity) || 0) * (parseFloat(buyPrice) || 0))
@@ -469,12 +467,17 @@ function AverageCalculator() {
                     ).toFixed(2)}
                   </div>
                 </div>
-                <div className={`bg-white rounded-lg ${RESPONSIVE_PATTERNS.padding.card} shadow-md`}>
-                  <div className={`${RESPONSIVE_PATTERNS.text.sm} text-orange-600 font-medium mb-1`}>New Average Price</div>
-                  <div className={`${RESPONSIVE_PATTERNS.text['3xl']} font-bold text-orange-600`}>
-                    ₹{calculationResult.newAvgPrice.toFixed(2)}
-                  </div>
+                <div className="bg-orange-100 rounded-lg shadow p-4 flex flex-col items-center border-2 border-orange-300">
+                  <div className="text-orange-600 text-sm font-medium mb-1 flex items-center gap-1">New Average Price <span title="Your new average price per share after this purchase.">ℹ️</span></div>
+                  <div className="text-3xl font-bold text-orange-600">₹{calculationResult.newAvgPrice.toFixed(2)}</div>
                 </div>
+              </div>
+              <div className="mt-4 text-center text-gray-700 text-base">
+                After buying <span className="font-semibold">{(parseFloat(buyQuantity) || 0).toFixed(0)}</span> shares for ₹<span className="font-semibold">{(
+                  buyInputMode === 'price'
+                    ? ((parseFloat(buyQuantity) || 0) * (parseFloat(buyPrice) || 0))
+                    : (parseFloat(buyTotalPrice) || 0)
+                ).toFixed(2)}</span>, your new average price will be <span className="font-semibold text-orange-600">₹{calculationResult.newAvgPrice.toFixed(2)}</span> for a total of <span className="font-semibold">{((parseFloat(currentQuantity) || 0) + (parseFloat(buyQuantity) || 0)).toFixed(0)}</span> shares.
               </div>
             </div>
           )}
