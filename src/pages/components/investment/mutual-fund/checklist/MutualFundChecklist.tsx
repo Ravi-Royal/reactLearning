@@ -78,6 +78,10 @@ const CHECKLIST_INFO = {
     title: 'Downside Capture',
     info: 'Lower downside capture ratio means less loss in market falls. <100% is good.',
   },
+  upsideDownsideCapture: {
+    title: 'Upside and Downside Capture Ratios',
+    info: 'Upside capture >100% means fund gains more than market in uptrends. Downside capture <100% means fund loses less than market in downtrends. Both are desirable.',
+  },
 };
 
 const INITIAL_CHECKLIST_ITEMS = [
@@ -85,6 +89,7 @@ const INITIAL_CHECKLIST_ITEMS = [
   { id: 'alpha', label: 'Positive alpha', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
   { id: 'beta', label: 'Low beta (<1)', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
   { id: 'expenseRatio', label: 'Low expense ratio (<1% for equity, <0.5% for index)', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
+  { id: 'upsideDownsideCapture', label: 'Good upside (>100%) and downside (<100%) capture ratios', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
   { id: 'aum', label: 'Adequate AUM (>₹1000 crores)', checked: false, category: CHECKLIST_CATEGORIES.AI },
   { id: 'fundHouse', label: 'Reputed and established fund house', checked: false, category: CHECKLIST_CATEGORIES.AI },
   { id: 'returns5y', label: 'Consistent returns over 5 years', checked: false, category: CHECKLIST_CATEGORIES.AI },

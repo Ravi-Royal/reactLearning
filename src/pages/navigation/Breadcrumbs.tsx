@@ -11,56 +11,64 @@ function Breadcrumbs() {
   const getBreadcrumbs = (): BreadcrumbItem[] => {
     const pathnames = location.pathname.split('/').filter(x => x);
 
-    const breadcrumbs: BreadcrumbItem[] = [
+    const breadcrumbItems: BreadcrumbItem[] = [
       { label: 'Home', path: '/' },
     ];
 
     if (pathnames.includes('investment')) {
-      breadcrumbs.push({ label: 'Investment', path: '/investment' });
+      breadcrumbItems.push({ label: 'Investment', path: '/investment' });
 
       if (pathnames.includes('stock')) {
-        breadcrumbs.push({ label: 'Stock', path: '/investment/stock' });
+        breadcrumbItems.push({ label: 'Stock', path: '/investment/stock' });
 
         if (pathnames.includes('analysis')) {
-          breadcrumbs.push({ label: 'P&L Analysis', path: '/investment/stock/analysis' });
+          breadcrumbItems.push({ label: 'P&L Analysis', path: '/investment/stock/analysis' });
 
           if (pathnames.includes('zerodha')) {
-            breadcrumbs.push({ label: 'Zerodha', path: '/investment/stock/analysis/zerodha' });
+            breadcrumbItems.push({ label: 'Zerodha', path: '/investment/stock/analysis/zerodha' });
           }
         } else if (pathnames.includes('favorites')) {
-          breadcrumbs.push({ label: 'My Favorites', path: '/investment/stock/favorites' });
+          breadcrumbItems.push({ label: 'My Favorites', path: '/investment/stock/favorites' });
         } else if (pathnames.includes('checklist')) {
-          breadcrumbs.push({ label: 'Stock Checklist', path: '/investment/stock/checklist' });
+          breadcrumbItems.push({ label: 'Stock Checklist', path: '/investment/stock/checklist' });
         } else if (pathnames.includes('average-calculator')) {
-          breadcrumbs.push({ label: 'Average Calculator', path: '/investment/stock/average-calculator' });
+          breadcrumbItems.push({ label: 'Average Calculator', path: '/investment/stock/average-calculator' });
+        }
+      } else if (pathnames.includes('mutual-fund')) {
+        breadcrumbItems.push({ label: 'Mutual Fund', path: '/investment/mutual-fund' });
+
+        if (pathnames.includes('checklist')) {
+          breadcrumbItems.push({ label: 'Mutual Fund Checklist', path: '/investment/mutual-fund/checklist' });
+        } else if (pathnames.includes('calculator')) {
+          breadcrumbItems.push({ label: 'Mutual Fund Calculator', path: '/investment/mutual-fund/calculator' });
         }
       } else if (pathnames.includes('bonds')) {
-        breadcrumbs.push({ label: 'Bonds & Fixed Income', path: '/investment/bonds' });
+        breadcrumbItems.push({ label: 'Bonds & Fixed Income', path: '/investment/bonds' });
         // Add child breadcrumb for before-starting
         if (pathnames.includes('before-starting')) {
-          breadcrumbs.push({ label: 'Before Starting Checklist', path: '/investment/bonds/before-starting' });
+          breadcrumbItems.push({ label: 'Before Starting Checklist', path: '/investment/bonds/before-starting' });
         } else if (pathnames.includes('checklist')) {
-          breadcrumbs.push({ label: 'Bond Investment Checklist', path: '/investment/bonds/checklist' });
+          breadcrumbItems.push({ label: 'Bond Investment Checklist', path: '/investment/bonds/checklist' });
         }
       } else if (pathnames.includes('calculator')) {
-        breadcrumbs.push({ label: 'Calculator', path: '/investment/calculator' });
+        breadcrumbItems.push({ label: 'Calculator', path: '/investment/calculator' });
         if (pathnames.includes('stock-average')) {
-          breadcrumbs.push({ label: 'Stock Average Calculator', path: '/investment/calculator/stock-average' });
+          breadcrumbItems.push({ label: 'Stock Average Calculator', path: '/investment/calculator/stock-average' });
         } else if (pathnames.includes('mutual-fund')) {
-          breadcrumbs.push({ label: 'Mutual Fund Calculator', path: '/investment/calculator/mutual-fund' });
+          breadcrumbItems.push({ label: 'Mutual Fund Calculator', path: '/investment/calculator/mutual-fund' });
         }
       }
     } else if (pathnames.includes('hooks')) {
-      breadcrumbs.push({ label: 'React Hooks', path: '/hooks' });
+      breadcrumbItems.push({ label: 'React Hooks', path: '/hooks' });
 
       const hookName = pathnames.find(p => p.startsWith('use'));
       if (hookName) {
         const capitalizedHook = hookName.charAt(0).toUpperCase() + hookName.slice(1);
-        breadcrumbs.push({ label: capitalizedHook, path: `/hooks/${hookName}` });
+        breadcrumbItems.push({ label: capitalizedHook, path: `/hooks/${hookName}` });
       }
     }
 
-    return breadcrumbs;
+    return breadcrumbItems;
   };
 
   const breadcrumbs = getBreadcrumbs();
