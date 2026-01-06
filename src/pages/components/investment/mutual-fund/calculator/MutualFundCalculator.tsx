@@ -127,34 +127,41 @@ function MutualFundCalculator() {
 
     const corpusAfterHoldingPeriod = currentBalance;
 
-    const corpusBeforeWithdrawal = currentBalance;
-
     // Step 3: Apply one-time withdrawal if specified
     if (withdrawal > 0) {
       currentBalance = Math.max(0, currentBalance - withdrawal);
     }
 
-    // Step 4: Apply SWP withdrawals
+    // For SWP Analysis: use balance after holding and withdrawal, but before SWP
+    const balanceForSWPCalc = currentBalance;
+    const minSWP = balanceForSWPCalc > 0 ? calculateMinSWP(balanceForSWPCalc, returnRate) : 0;
+
+    // Calculate time to zero only if SWP exceeds minimum sustainable amount
+    let yearsToZero: number | null = null;
+    let monthsToZero: number | null = null;
+
+    if (swp > 0 && balanceForSWPCalc > 0) {
+      if (swp > minSWP) {
+        const result = calculateMonthsToZero(balanceForSWPCalc, swp, returnRate);
+        yearsToZero = result.years;
+        monthsToZero = result.months;
+      }
+      // If swp <= minSWP, yearsToZero and monthsToZero remain null (sustainable)
+    }
+
+    // Step 4: Apply SWP withdrawals for final balance
     let finalBalance = currentBalance;
     if (swp > 0 && swpYears > 0 && currentBalance > 0) {
       const monthlyRate = returnRate / 12 / 100;
       const totalSwpMonths = Math.min(swpYears * 12, 600);
-
       for (let month = 1; month <= totalSwpMonths; month++) {
-        currentBalance = currentBalance * (1 + monthlyRate) - swp;
-        if (currentBalance <= 0) {
-          currentBalance = 0;
+        finalBalance = finalBalance * (1 + monthlyRate) - swp;
+        if (finalBalance <= 0) {
+          finalBalance = 0;
           break;
         }
       }
-      finalBalance = currentBalance;
     }
-
-    const balanceForSWPCalc = corpusBeforeWithdrawal - withdrawal;
-    const { years: yearsToZero, months: monthsToZero } = swp > 0 && balanceForSWPCalc > 0
-      ? calculateMonthsToZero(balanceForSWPCalc, swp, returnRate)
-      : { years: null, months: null };
-    const minSWP = balanceForSWPCalc > 0 ? calculateMinSWP(balanceForSWPCalc, returnRate) : 0;
 
     return {
       corpusAfterInvestment: accumulatedAmount,
@@ -221,6 +228,7 @@ function MutualFundCalculator() {
 
       let balance = 0;
       let totalInvested = 0;
+      let cumulativeInterest = 0;
       let periodCounter = 1;
 
       // Investment phase
@@ -237,11 +245,12 @@ function MutualFundCalculator() {
         }
 
         const periodInterest = balance - startingBalance - periodInvestment;
+        cumulativeInterest += periodInterest;
 
         breakdown.push({
           year: periodCounter++,
           invested: totalInvested,
-          interest: balance - totalInvested,
+          interest: cumulativeInterest,
           totalValue: balance,
           openingBalance,
           periodInvestment,
@@ -262,11 +271,12 @@ function MutualFundCalculator() {
           }
 
           const periodInterest = balance - startingBalance;
+          cumulativeInterest += periodInterest;
 
           breakdown.push({
             year: periodCounter++,
             invested: totalInvested,
-            interest: balance - totalInvested,
+            interest: cumulativeInterest,
             totalValue: balance,
             openingBalance,
             periodInvestment: 0,
@@ -284,7 +294,7 @@ function MutualFundCalculator() {
         breakdown.push({
           year: periodCounter++,
           invested: totalInvested,
-          interest: balance - totalInvested,
+          interest: cumulativeInterest,
           totalValue: balance,
           openingBalance,
           periodInvestment: 0,
@@ -312,11 +322,12 @@ function MutualFundCalculator() {
           }
 
           const periodInterest = balance - startingBalance + periodWithdrawal;
+          cumulativeInterest += periodInterest;
 
           breakdown.push({
             year: periodCounter++,
             invested: totalInvested,
-            interest: balance - totalInvested,
+            interest: cumulativeInterest,
             totalValue: balance,
             openingBalance,
             periodInvestment: 0,
@@ -337,6 +348,7 @@ function MutualFundCalculator() {
 
       let balance = lumpsum;
       const totalInvested = lumpsum;
+      let cumulativeInterest = 0;
       let periodCounter = 1;
 
       // Investment phase (single period for lumpsum)
@@ -348,11 +360,12 @@ function MutualFundCalculator() {
       }
 
       const periodInterest = balance - startingBalance;
+      cumulativeInterest += periodInterest;
 
       breakdown.push({
         year: periodCounter++,
         invested: totalInvested,
-        interest: balance - totalInvested,
+        interest: cumulativeInterest,
         totalValue: balance,
         openingBalance,
         periodInvestment: totalInvested,
@@ -372,11 +385,12 @@ function MutualFundCalculator() {
           }
 
           const periodInterest = balance - startingBalance;
+          cumulativeInterest += periodInterest;
 
           breakdown.push({
             year: periodCounter++,
             invested: totalInvested,
-            interest: balance - totalInvested,
+            interest: cumulativeInterest,
             totalValue: balance,
             openingBalance,
             periodInvestment: 0,
@@ -398,11 +412,12 @@ function MutualFundCalculator() {
           }
 
           const periodInterest = balance - startingBalance;
+          cumulativeInterest += periodInterest;
 
           breakdown.push({
             year: periodCounter++,
             invested: totalInvested,
-            interest: balance - totalInvested,
+            interest: cumulativeInterest,
             totalValue: balance,
             openingBalance,
             periodInvestment: 0,
@@ -420,7 +435,7 @@ function MutualFundCalculator() {
         breakdown.push({
           year: periodCounter++,
           invested: totalInvested,
-          interest: balance - totalInvested,
+          interest: cumulativeInterest,
           totalValue: balance,
           openingBalance,
           periodInvestment: 0,
@@ -448,11 +463,12 @@ function MutualFundCalculator() {
           }
 
           const periodInterest = balance - startingBalance + periodWithdrawal;
+          cumulativeInterest += periodInterest;
 
           breakdown.push({
             year: periodCounter++,
             invested: totalInvested,
-            interest: balance - totalInvested,
+            interest: cumulativeInterest,
             totalValue: balance,
             openingBalance,
             periodInvestment: 0,
@@ -691,7 +707,7 @@ function MutualFundCalculator() {
               {parseFloat(swpAmount) > 0 && parseFloat(swpPeriod) > 0 && (
                 <div className="bg-gradient-to-r from-purple-50 to-purple-100 p-4 rounded-lg border-2 border-purple-200 shadow-sm">
                   <div className="text-sm text-purple-700 font-medium mb-1">💰 Final Balance (After SWP)</div>
-                  <div className="text-2xl font-bold text-purple-700">{formatCurrency(result.finalBalance)}</div>
+                  <div className="text-2xl font-bold text-purple-700">{formatCurrency(yearlyBreakdown[yearlyBreakdown.length - 1]?.totalValue || 0)}</div>
                   <div className="text-xs text-purple-600 mt-1">Balance remaining after {swpPeriod} years of withdrawals</div>
                 </div>
               )}
