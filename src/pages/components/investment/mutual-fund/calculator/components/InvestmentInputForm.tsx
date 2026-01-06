@@ -81,6 +81,7 @@ export const InvestmentInputForm: React.FC<InvestmentInputFormProps> = ({
             onChange={(e) => setSipAmount(e.target.value)}
             placeholder="e.g., 10000"
             step="1"
+            min="0"
             className="w-full px-3 py-2 border-2 border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white"
           />
         </div>
@@ -95,6 +96,7 @@ export const InvestmentInputForm: React.FC<InvestmentInputFormProps> = ({
             onChange={(e) => setLumpsumAmount(e.target.value)}
             placeholder="e.g., 100000"
             step="1"
+            min="0"
             className="w-full px-3 py-2 border-2 border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white"
           />
         </div>
@@ -110,6 +112,7 @@ export const InvestmentInputForm: React.FC<InvestmentInputFormProps> = ({
           onChange={(e) => setAnnualReturn(e.target.value)}
           placeholder="e.g., 12"
           step="1"
+          min="0"
           className="w-full px-3 py-2 border-2 border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
         />
       </div>
@@ -124,6 +127,7 @@ export const InvestmentInputForm: React.FC<InvestmentInputFormProps> = ({
           onChange={(e) => setInvestmentPeriod(e.target.value)}
           placeholder="e.g., 10"
           step="1"
+          min="0"
           className="w-full px-3 py-2 border-2 border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
         />
       </div>
@@ -143,6 +147,7 @@ export const InvestmentInputForm: React.FC<InvestmentInputFormProps> = ({
             onChange={(e) => setSwpAmount(e.target.value)}
             placeholder="e.g., 20000"
             step="1"
+            min="0"
             className="w-full px-3 py-2 border-2 border-orange-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white"
           />
         </div>
@@ -157,6 +162,7 @@ export const InvestmentInputForm: React.FC<InvestmentInputFormProps> = ({
             onChange={(e) => setSwpPeriod(e.target.value)}
             placeholder="e.g., 20"
             step="1"
+            min="0"
             className="w-full px-3 py-2 border-2 border-orange-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white"
           />
         </div>

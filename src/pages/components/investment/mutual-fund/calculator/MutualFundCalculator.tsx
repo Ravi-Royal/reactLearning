@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 interface CalculationResult {
   corpusAfterInvestment: number;
+  corpusAfterHoldingPeriod: number;
   finalBalance: number;
   totalInvested: number;
   totalReturns: number;
@@ -32,6 +33,8 @@ function MutualFundCalculator() {
   const [lumpsumAmount, setLumpsumAmount] = useState<string>('');
   const [annualReturn, setAnnualReturn] = useState<string>('');
   const [investmentPeriod, setInvestmentPeriod] = useState<string>('');
+  const [postInvestmentHoldingPeriod, setPostInvestmentHoldingPeriod] = useState<string>('');
+  const [oneTimeWithdrawal, setOneTimeWithdrawal] = useState<string>('');
   const [swpAmount, setSwpAmount] = useState<string>('');
   const [swpPeriod, setSwpPeriod] = useState<string>('');
   const [breakdownView, setBreakdownView] = useState<BreakdownView>('yearly');
@@ -85,37 +88,55 @@ function MutualFundCalculator() {
   // Compute result automatically using useMemo
   const result = useMemo<CalculationResult | null>(() => {
     const returnRate = parseFloat(annualReturn);
-    const period = parseFloat(investmentPeriod);
+    const investYears = parseFloat(investmentPeriod);
+    const holdingYears = parseFloat(postInvestmentHoldingPeriod) || 0;
+    const withdrawal = parseFloat(oneTimeWithdrawal) || 0;
     const swp = parseFloat(swpAmount) || 0;
     const swpYears = parseFloat(swpPeriod) || 0;
 
-    if (isNaN(returnRate) || isNaN(period)) {
+    if (isNaN(returnRate) || isNaN(investYears) || returnRate < 0 || investYears <= 0) {
       return null;
     }
 
     let accumulatedAmount = 0;
     let totalInvested = 0;
 
+    // Step 1: Calculate corpus after investment period
     if (investmentType === 'sip') {
       const sip = parseFloat(sipAmount);
       if (isNaN(sip) || sip <= 0) {
         return null;
       }
-      accumulatedAmount = calculateSIPFutureValue(sip, returnRate, period);
-      totalInvested = sip * period * 12;
+      accumulatedAmount = calculateSIPFutureValue(sip, returnRate, investYears);
+      totalInvested = sip * investYears * 12;
     } else {
       const lumpsum = parseFloat(lumpsumAmount);
       if (isNaN(lumpsum) || lumpsum <= 0) {
         return null;
       }
-      accumulatedAmount = calculateCompoundInterest(lumpsum, returnRate, period);
+      accumulatedAmount = calculateCompoundInterest(lumpsum, returnRate, investYears);
       totalInvested = lumpsum;
     }
 
-    let finalBalance = accumulatedAmount;
+    let currentBalance = accumulatedAmount;
 
-    if (swp > 0 && swpYears > 0) {
-      let currentBalance = accumulatedAmount;
+    // Step 2: Apply post-investment holding period (corpus grows without withdrawals)
+    if (holdingYears > 0) {
+      currentBalance = calculateCompoundInterest(currentBalance, returnRate, holdingYears);
+    }
+
+    const corpusAfterHoldingPeriod = currentBalance;
+
+    const corpusBeforeWithdrawal = currentBalance;
+
+    // Step 3: Apply one-time withdrawal if specified
+    if (withdrawal > 0) {
+      currentBalance = Math.max(0, currentBalance - withdrawal);
+    }
+
+    // Step 4: Apply SWP withdrawals
+    let finalBalance = currentBalance;
+    if (swp > 0 && swpYears > 0 && currentBalance > 0) {
       const monthlyRate = returnRate / 12 / 100;
       const totalSwpMonths = Math.min(swpYears * 12, 600);
 
@@ -126,15 +147,18 @@ function MutualFundCalculator() {
           break;
         }
       }
-
       finalBalance = currentBalance;
     }
 
-    const { years: yearsToZero, months: monthsToZero } = swp > 0 ? calculateMonthsToZero(accumulatedAmount, swp, returnRate) : { years: null, months: null };
-    const minSWP = calculateMinSWP(accumulatedAmount, returnRate);
+    const balanceForSWPCalc = corpusBeforeWithdrawal - withdrawal;
+    const { years: yearsToZero, months: monthsToZero } = swp > 0 && balanceForSWPCalc > 0
+      ? calculateMonthsToZero(balanceForSWPCalc, swp, returnRate)
+      : { years: null, months: null };
+    const minSWP = balanceForSWPCalc > 0 ? calculateMinSWP(balanceForSWPCalc, returnRate) : 0;
 
     return {
       corpusAfterInvestment: accumulatedAmount,
+      corpusAfterHoldingPeriod,
       finalBalance,
       totalInvested,
       totalReturns: accumulatedAmount - totalInvested,
@@ -142,13 +166,15 @@ function MutualFundCalculator() {
       monthsToZero,
       minSWPToSustain: minSWP,
     };
-  }, [investmentType, sipAmount, lumpsumAmount, annualReturn, investmentPeriod, swpAmount, swpPeriod]);
+  }, [investmentType, sipAmount, lumpsumAmount, annualReturn, investmentPeriod, postInvestmentHoldingPeriod, oneTimeWithdrawal, swpAmount, swpPeriod]);
 
   const handleReset = () => {
     setSipAmount('');
     setLumpsumAmount('');
     setAnnualReturn('');
     setInvestmentPeriod('');
+    setPostInvestmentHoldingPeriod('');
+    setOneTimeWithdrawal('');
     setSwpAmount('');
     setSwpPeriod('');
   };
@@ -168,11 +194,13 @@ function MutualFundCalculator() {
   // Calculate breakdown for table based on selected view
   const yearlyBreakdown = useMemo<YearlyBreakdown[]>(() => {
     const returnRate = parseFloat(annualReturn);
-    const period = parseFloat(investmentPeriod);
+    const investYears = parseFloat(investmentPeriod);
+    const holdingYears = parseFloat(postInvestmentHoldingPeriod) || 0;
+    const withdrawal = parseFloat(oneTimeWithdrawal) || 0;
     const swp = parseFloat(swpAmount) || 0;
     const swpYears = parseFloat(swpPeriod) || 0;
 
-    if (isNaN(returnRate) || isNaN(period)) {
+    if (isNaN(returnRate) || isNaN(investYears) || returnRate < 0 || investYears <= 0) {
       return [];
     }
 
@@ -196,7 +224,7 @@ function MutualFundCalculator() {
       let periodCounter = 1;
 
       // Investment phase
-      const totalInvestmentPeriods = period * periodsPerYear;
+      const totalInvestmentPeriods = investYears * periodsPerYear;
       for (let i = 1; i <= totalInvestmentPeriods; i++) {
         const openingBalance = balance;
         let periodInvestment = 0;
@@ -222,42 +250,64 @@ function MutualFundCalculator() {
         });
       }
 
-      // SWP phase
-      if (swp > 0 && (swpYears > 0 || (swpYears === 0 && result && result.yearsToZero !== null))) {
-        // If SWP period is not entered but yearsToZero is available, show until balance reaches zero
-        let totalSwpPeriods;
-        if (swpYears > 0) {
-          totalSwpPeriods = Math.min(swpYears * periodsPerYear, maxPeriods);
-        } else if (result && result.yearsToZero !== null) {
-          // Calculate periods until zero
-          totalSwpPeriods = Math.ceil((result.yearsToZero * 12 + (result.monthsToZero || 0)) / monthsPerPeriod);
-        } else {
-          totalSwpPeriods = 0;
+      // Holding phase (no new investments, just growth)
+      if (holdingYears > 0) {
+        const totalHoldingPeriods = holdingYears * periodsPerYear;
+        for (let i = 1; i <= totalHoldingPeriods; i++) {
+          const openingBalance = balance;
+          const startingBalance = balance;
+
+          for (let month = 1; month <= monthsPerPeriod; month++) {
+            balance = balance * (1 + monthlyRate);
+          }
+
+          const periodInterest = balance - startingBalance;
+
+          breakdown.push({
+            year: periodCounter++,
+            invested: totalInvested,
+            interest: balance - totalInvested,
+            totalValue: balance,
+            openingBalance,
+            periodInvestment: 0,
+            periodInterest,
+            closingBalance: balance,
+          });
         }
+      }
+
+      // One-time withdrawal
+      if (withdrawal > 0) {
+        const openingBalance = balance;
+        balance = Math.max(0, balance - withdrawal);
+
+        breakdown.push({
+          year: periodCounter++,
+          invested: totalInvested,
+          interest: balance - totalInvested,
+          totalValue: balance,
+          openingBalance,
+          periodInvestment: 0,
+          periodInterest: 0,
+          closingBalance: balance,
+          withdrawal: withdrawal,
+        });
+      }
+
+      // SWP phase
+      if (swp > 0 && swpYears > 0 && balance > 0) {
+        const totalSwpPeriods = Math.min(swpYears * periodsPerYear, maxPeriods - breakdown.length);
         for (let i = 1; i <= totalSwpPeriods; i++) {
           const openingBalance = balance;
-          let periodWithdrawal = 0;
           const startingBalance = balance;
+          let periodWithdrawal = 0;
 
           for (let month = 1; month <= monthsPerPeriod; month++) {
             balance = balance * (1 + monthlyRate) - swp;
             periodWithdrawal += swp;
-
             if (balance <= 0) {
               balance = 0;
-              const periodInterest = 0 - startingBalance - periodWithdrawal;
-              breakdown.push({
-                year: periodCounter++,
-                invested: totalInvested,
-                interest: 0,
-                totalValue: 0,
-                withdrawal: periodWithdrawal,
-                openingBalance,
-                periodInvestment: 0,
-                periodInterest: Math.max(periodInterest, 0),
-                closingBalance: 0,
-              });
-              return breakdown;
+              break;
             }
           }
 
@@ -268,16 +318,18 @@ function MutualFundCalculator() {
             invested: totalInvested,
             interest: balance - totalInvested,
             totalValue: balance,
-            withdrawal: periodWithdrawal,
             openingBalance,
             periodInvestment: 0,
             periodInterest,
             closingBalance: balance,
+            withdrawal: periodWithdrawal,
           });
+
+          if (balance <= 0) { break; }
         }
       }
     } else {
-      // Lumpsum
+      // Lumpsum logic
       const lumpsum = parseFloat(lumpsumAmount);
       if (isNaN(lumpsum) || lumpsum <= 0) {
         return [];
@@ -287,18 +339,83 @@ function MutualFundCalculator() {
       const totalInvested = lumpsum;
       let periodCounter = 1;
 
-      // Investment phase
-      const totalInvestmentPeriods = period * periodsPerYear;
-      for (let i = 1; i <= totalInvestmentPeriods; i++) {
-        const openingBalance = balance;
-        const startingBalance = balance;
+      // Investment phase (single period for lumpsum)
+      const openingBalance = 0;
+      const startingBalance = balance;
 
-        for (let month = 1; month <= monthsPerPeriod; month++) {
-          balance = balance * (1 + monthlyRate);
+      for (let month = 1; month <= monthsPerPeriod; month++) {
+        balance = balance * (1 + monthlyRate);
+      }
+
+      const periodInterest = balance - startingBalance;
+
+      breakdown.push({
+        year: periodCounter++,
+        invested: totalInvested,
+        interest: balance - totalInvested,
+        totalValue: balance,
+        openingBalance,
+        periodInvestment: totalInvested,
+        periodInterest,
+        closingBalance: balance,
+      });
+
+      // Holding phase for remaining investment years
+      if (investYears > 1) {
+        const remainingPeriods = (investYears - 1) * periodsPerYear;
+        for (let i = 1; i <= remainingPeriods; i++) {
+          const openingBalance = balance;
+          const startingBalance = balance;
+
+          for (let month = 1; month <= monthsPerPeriod; month++) {
+            balance = balance * (1 + monthlyRate);
+          }
+
+          const periodInterest = balance - startingBalance;
+
+          breakdown.push({
+            year: periodCounter++,
+            invested: totalInvested,
+            interest: balance - totalInvested,
+            totalValue: balance,
+            openingBalance,
+            periodInvestment: 0,
+            periodInterest,
+            closingBalance: balance,
+          });
         }
+      }
 
-        const periodInterest = balance - startingBalance;
-        const periodInvestment = i === 1 ? lumpsum : 0;
+      // Additional holding phase
+      if (holdingYears > 0) {
+        const totalHoldingPeriods = holdingYears * periodsPerYear;
+        for (let i = 1; i <= totalHoldingPeriods; i++) {
+          const openingBalance = balance;
+          const startingBalance = balance;
+
+          for (let month = 1; month <= monthsPerPeriod; month++) {
+            balance = balance * (1 + monthlyRate);
+          }
+
+          const periodInterest = balance - startingBalance;
+
+          breakdown.push({
+            year: periodCounter++,
+            invested: totalInvested,
+            interest: balance - totalInvested,
+            totalValue: balance,
+            openingBalance,
+            periodInvestment: 0,
+            periodInterest,
+            closingBalance: balance,
+          });
+        }
+      }
+
+      // One-time withdrawal
+      if (withdrawal > 0) {
+        const openingBalance = balance;
+        balance = Math.max(0, balance - withdrawal);
 
         breakdown.push({
           year: periodCounter++,
@@ -306,39 +423,27 @@ function MutualFundCalculator() {
           interest: balance - totalInvested,
           totalValue: balance,
           openingBalance,
-          periodInvestment,
-          periodInterest,
+          periodInvestment: 0,
+          periodInterest: 0,
           closingBalance: balance,
+          withdrawal: withdrawal,
         });
       }
 
       // SWP phase
-      if (swp > 0 && swpYears > 0) {
-        const totalSwpPeriods = Math.min(swpYears * periodsPerYear, maxPeriods);
+      if (swp > 0 && swpYears > 0 && balance > 0) {
+        const totalSwpPeriods = Math.min(swpYears * periodsPerYear, maxPeriods - breakdown.length);
         for (let i = 1; i <= totalSwpPeriods; i++) {
           const openingBalance = balance;
-          let periodWithdrawal = 0;
           const startingBalance = balance;
+          let periodWithdrawal = 0;
 
           for (let month = 1; month <= monthsPerPeriod; month++) {
             balance = balance * (1 + monthlyRate) - swp;
             periodWithdrawal += swp;
-
             if (balance <= 0) {
               balance = 0;
-              const periodInterest = 0 - startingBalance - periodWithdrawal;
-              breakdown.push({
-                year: periodCounter++,
-                invested: totalInvested,
-                interest: 0,
-                totalValue: 0,
-                withdrawal: periodWithdrawal,
-                openingBalance,
-                periodInvestment: 0,
-                periodInterest: Math.max(periodInterest, 0),
-                closingBalance: 0,
-              });
-              return breakdown;
+              break;
             }
           }
 
@@ -349,18 +454,20 @@ function MutualFundCalculator() {
             invested: totalInvested,
             interest: balance - totalInvested,
             totalValue: balance,
-            withdrawal: periodWithdrawal,
             openingBalance,
             periodInvestment: 0,
             periodInterest,
             closingBalance: balance,
+            withdrawal: periodWithdrawal,
           });
+
+          if (balance <= 0) { break; }
         }
       }
     }
 
     return breakdown;
-  }, [investmentType, sipAmount, lumpsumAmount, annualReturn, investmentPeriod, swpAmount, swpPeriod, breakdownView, result]);
+  }, [investmentType, sipAmount, lumpsumAmount, annualReturn, investmentPeriod, postInvestmentHoldingPeriod, oneTimeWithdrawal, swpAmount, swpPeriod, breakdownView]);
 
   // Ref for SWP start row (must be after yearlyBreakdown is defined)
   const swpStartRowRef = useRef<HTMLTableRowElement | null>(null);
@@ -427,6 +534,7 @@ function MutualFundCalculator() {
                 onChange={(e) => setSipAmount(e.target.value)}
                 placeholder="e.g., 10000"
                 step="1"
+                min="0"
                 className="w-full px-3 py-2 border-2 border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white"
               />
             </div>
@@ -439,6 +547,7 @@ function MutualFundCalculator() {
                 onChange={(e) => setLumpsumAmount(e.target.value)}
                 placeholder="e.g., 100000"
                 step="1"
+                min="0"
                 className="w-full px-3 py-2 border-2 border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white"
               />
             </div>
@@ -452,6 +561,7 @@ function MutualFundCalculator() {
               onChange={(e) => setAnnualReturn(e.target.value)}
               placeholder="e.g., 12"
               step="1"
+              min="0"
               className="w-full px-3 py-2 border-2 border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
             />
           </div>
@@ -464,12 +574,52 @@ function MutualFundCalculator() {
               onChange={(e) => setInvestmentPeriod(e.target.value)}
               placeholder="e.g., 10"
               step="1"
+              min="0"
               className="w-full px-3 py-2 border-2 border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
             />
           </div>
 
+          <div className="border-t-2 border-teal-200 pt-4 mt-4 bg-teal-50 -mx-4 sm:-mx-6 px-4 sm:px-6 py-4 rounded-lg">
+            <h3 className="text-md font-semibold text-teal-700 mb-3">🕐 Post-Investment Holding Period - Optional</h3>
+            <p className="text-xs text-teal-600 mb-3">After investment period ends, let your corpus grow without any withdrawals</p>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-teal-700 mb-2">Post-Investment Holding Period (Years)</label>
+              <input
+                type="number"
+                value={postInvestmentHoldingPeriod}
+                onChange={(e) => setPostInvestmentHoldingPeriod(e.target.value)}
+                placeholder="e.g., 3"
+                step="1"
+                min="0"
+                className="w-full px-3 py-2 border-2 border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 bg-white"
+              />
+              <p className="text-xs text-teal-600 mt-1">Years to hold before starting withdrawals (corpus continues to grow)</p>
+            </div>
+          </div>
+
+          <div className="border-t-2 border-indigo-200 pt-4 mt-4 bg-indigo-50 -mx-4 sm:-mx-6 px-4 sm:px-6 py-4 rounded-lg">
+            <h3 className="text-md font-semibold text-indigo-700 mb-3">💰 One-Time Withdrawal - Optional</h3>
+            <p className="text-xs text-indigo-600 mb-3">Withdraw a lump sum amount before starting SWP</p>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-indigo-700 mb-2">One-Time Withdrawal Amount (₹)</label>
+              <input
+                type="number"
+                value={oneTimeWithdrawal}
+                onChange={(e) => setOneTimeWithdrawal(e.target.value)}
+                placeholder="e.g., 100000"
+                step="1"
+                min="0"
+                className="w-full px-3 py-2 border-2 border-indigo-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
+              />
+              <p className="text-xs text-indigo-600 mt-1">Amount to withdraw after holding period (before SWP starts)</p>
+            </div>
+          </div>
+
           <div className="border-t-2 border-orange-200 pt-4 mt-4 bg-orange-50 -mx-4 sm:-mx-6 px-4 sm:px-6 py-4 rounded-lg">
             <h3 className="text-md font-semibold text-orange-700 mb-3">💸 Systematic Withdrawal Plan (SWP) - Optional</h3>
+            <p className="text-xs text-orange-600 mb-3">Set up regular monthly withdrawals after holding period</p>
 
             <div className="mb-4">
               <label className="block text-sm font-medium text-orange-700 mb-2">Monthly SWP Amount (₹)</label>
@@ -479,20 +629,23 @@ function MutualFundCalculator() {
                 onChange={(e) => setSwpAmount(e.target.value)}
                 placeholder="e.g., 20000"
                 step="1"
+                min="0"
                 className="w-full px-3 py-2 border-2 border-orange-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white"
               />
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-orange-700 mb-2">SWP Period (Years)</label>
+              <label className="block text-sm font-medium text-orange-700 mb-2">SWP Duration (Years)</label>
               <input
                 type="number"
                 value={swpPeriod}
                 onChange={(e) => setSwpPeriod(e.target.value)}
                 placeholder="e.g., 20"
                 step="1"
+                min="0"
                 className="w-full px-3 py-2 border-2 border-orange-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white"
               />
+              <p className="text-xs text-orange-600 mt-1">How many years to continue monthly withdrawals</p>
             </div>
           </div>
 
@@ -526,6 +679,14 @@ function MutualFundCalculator() {
                 <div className="text-2xl font-bold text-teal-700">{formatCurrency(result.corpusAfterInvestment)}</div>
                 <div className="text-xs text-teal-600 mt-1">Amount accumulated at the end of investment period</div>
               </div>
+
+              {parseFloat(postInvestmentHoldingPeriod) > 0 && (
+                <div className="bg-gradient-to-r from-cyan-50 to-cyan-100 p-4 rounded-lg border-2 border-cyan-200 shadow-sm">
+                  <div className="text-sm text-cyan-700 font-medium mb-1">🕐 Corpus After Holding Period</div>
+                  <div className="text-2xl font-bold text-cyan-700">{formatCurrency(result.corpusAfterHoldingPeriod)}</div>
+                  <div className="text-xs text-cyan-600 mt-1">Amount after {postInvestmentHoldingPeriod} years of holding (compounded growth)</div>
+                </div>
+              )}
 
               {parseFloat(swpAmount) > 0 && parseFloat(swpPeriod) > 0 && (
                 <div className="bg-gradient-to-r from-purple-50 to-purple-100 p-4 rounded-lg border-2 border-purple-200 shadow-sm">
@@ -631,30 +792,27 @@ function MutualFundCalculator() {
               )}
               <button
                 onClick={() => setBreakdownView('monthly')}
-                className={`px-3 py-1.5 text-xs sm:text-sm rounded-lg font-medium transition-colors ${
-                  breakdownView === 'monthly'
-                    ? 'bg-purple-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                className={`px-3 py-1.5 text-xs sm:text-sm rounded-lg font-medium transition-colors ${breakdownView === 'monthly'
+                  ? 'bg-purple-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
                 Monthly
               </button>
               <button
                 onClick={() => setBreakdownView('quarterly')}
-                className={`px-3 py-1.5 text-xs sm:text-sm rounded-lg font-medium transition-colors ${
-                  breakdownView === 'quarterly'
-                    ? 'bg-purple-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                className={`px-3 py-1.5 text-xs sm:text-sm rounded-lg font-medium transition-colors ${breakdownView === 'quarterly'
+                  ? 'bg-purple-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
                 Quarterly
               </button>
               <button
                 onClick={() => setBreakdownView('yearly')}
-                className={`px-3 py-1.5 text-xs sm:text-sm rounded-lg font-medium transition-colors ${
-                  breakdownView === 'yearly'
-                    ? 'bg-purple-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                className={`px-3 py-1.5 text-xs sm:text-sm rounded-lg font-medium transition-colors ${breakdownView === 'yearly'
+                  ? 'bg-purple-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
                 Yearly
@@ -683,24 +841,41 @@ function MutualFundCalculator() {
               </thead>
               <tbody>
                 {yearlyBreakdown.map((row, index) => {
-                  const isWithdrawalPhase = row.withdrawal !== undefined;
+                  const investYears = parseFloat(investmentPeriod) || 0;
+                  const holdingYears = parseFloat(postInvestmentHoldingPeriod) || 0;
+                  const periodsPerYear = breakdownView === 'monthly' ? 12 : breakdownView === 'quarterly' ? 4 : 1;
+                  const investPeriods = investYears * periodsPerYear;
+                  const holdingPeriods = holdingYears * periodsPerYear;
+
+                  const isInvestmentPhase = index < investPeriods;
+                  const isHoldingPhase = index >= investPeriods && index < investPeriods + holdingPeriods;
+                  const isWithdrawalPhase = row.withdrawal !== undefined && row.withdrawal > 0;
                   const isLastYear = index === yearlyBreakdown.length - 1;
+
                   // Attach ref to first SWP row
                   const rowProps = (index === swpStartIndex && isWithdrawalPhase)
                     ? { ref: swpStartRowRef }
                     : {};
+
                   return (
                     <tr
                       key={row.year}
                       {...rowProps}
-                      className={`border-b border-gray-200 hover:bg-gray-50 transition-colors ${
-                        isWithdrawalPhase ? 'bg-orange-50' : ''
+                      className={`border-b border-gray-200 hover:bg-gray-50 transition-colors ${isWithdrawalPhase ? 'bg-orange-50' :
+                        isHoldingPhase ? 'bg-teal-50' :
+                          isInvestmentPhase ? 'bg-blue-50' : ''
                       } ${isLastYear ? 'font-semibold bg-purple-50' : ''}`}
                     >
                       <td className="p-2 sm:p-3 text-left">
-                        <span className={isWithdrawalPhase ? 'text-orange-700' : 'text-gray-800'}>
+                        <span className={
+                          isWithdrawalPhase ? 'text-orange-700' :
+                            isHoldingPhase ? 'text-teal-700' :
+                              isInvestmentPhase ? 'text-blue-700' : 'text-gray-800'
+                        }>
                           {row.year}
+                          {isHoldingPhase && <span className="text-xs ml-1">(Holding)</span>}
                           {isWithdrawalPhase && <span className="text-xs ml-1">(SWP)</span>}
+                          {row.withdrawal && !isWithdrawalPhase && <span className="text-xs ml-1">(Withdrawal)</span>}
                         </span>
                       </td>
                       <td className="p-2 sm:p-3 text-right text-gray-700">
@@ -775,9 +950,15 @@ function MutualFundCalculator() {
 
           <div className="mt-3 text-xs text-gray-600 space-y-2">
             <p>
-              💡 <strong>Investment Phase:</strong> White background rows show accumulation periods.
-              {yearlyBreakdown.some(row => row.withdrawal) && (
-                <span> <strong>Withdrawal Phase:</strong> Orange background rows show SWP withdrawal periods.</span>
+              💡 <strong>Investment Phase:</strong> Blue background rows show accumulation periods.
+              {parseFloat(postInvestmentHoldingPeriod) > 0 && (
+                <span> <strong>Holding Phase:</strong> Teal background rows show post-investment holding periods.</span>
+              )}
+              {yearlyBreakdown.some(row => row.withdrawal && row.withdrawal > 0) && (
+                <span> <strong>SWP Phase:</strong> Orange background rows show SWP withdrawal periods.</span>
+              )}
+              {yearlyBreakdown.some(row => row.withdrawal && row.withdrawal < 0) && (
+                <span> <strong>One-time Withdrawal:</strong> Rows with withdrawal amounts show lump sum withdrawals.</span>
               )}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs bg-blue-50 p-3 rounded-lg border border-blue-200">
