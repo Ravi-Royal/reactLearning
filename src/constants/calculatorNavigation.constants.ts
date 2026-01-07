@@ -31,12 +31,28 @@ export const CALCULATOR_NAVIGATION_ITEMS = [
       inactive: 'bg-purple-50 text-purple-600 hover:bg-purple-100',
     },
   },
+  {
+    id: 'stock-profit',
+    title: 'Stock Profit Calculator',
+    description: 'Calculate profit percentage for your stock investments. Track multiple stock groups.',
+    icon: {
+      path: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6',
+      bgColor: 'bg-teal-100',
+      color: 'text-teal-600',
+    },
+    route: '/investment/calculator/stock-profit',
+    buttonText: 'Calculate Stock Profit',
+    buttonColors: {
+      active: 'bg-teal-600 text-white',
+      inactive: 'bg-teal-50 text-teal-600 hover:bg-teal-100',
+    },
+  },
 ];
 
 export const CALCULATOR_QUICK_STATS = [
   {
     id: 'calculators',
-    value: '2',
+    value: '3',
     label: 'Calculators Available',
     color: 'text-blue-600',
   },

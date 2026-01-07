@@ -33,6 +33,8 @@ function Breadcrumbs() {
           breadcrumbItems.push({ label: 'Stock Checklist', path: '/investment/stock/checklist' });
         } else if (pathnames.includes('average-calculator')) {
           breadcrumbItems.push({ label: 'Average Calculator', path: '/investment/stock/average-calculator' });
+        } else if (pathnames.includes('profit-calculator')) {
+          breadcrumbItems.push({ label: 'Stock Profit Calculator', path: '/investment/stock/profit-calculator' });
         }
       } else if (pathnames.includes('mutual-fund')) {
         breadcrumbItems.push({ label: 'Mutual Fund', path: '/investment/mutual-fund' });
@@ -54,6 +56,8 @@ function Breadcrumbs() {
         breadcrumbItems.push({ label: 'Calculator', path: '/investment/calculator' });
         if (pathnames.includes('stock-average')) {
           breadcrumbItems.push({ label: 'Stock Average Calculator', path: '/investment/calculator/stock-average' });
+        } else if (pathnames.includes('stock-profit')) {
+          breadcrumbItems.push({ label: 'Stock Profit Calculator', path: '/investment/calculator/stock-profit' });
         } else if (pathnames.includes('mutual-fund')) {
           breadcrumbItems.push({ label: 'Mutual Fund Calculator', path: '/investment/mutual-fund/calculator' });
         }

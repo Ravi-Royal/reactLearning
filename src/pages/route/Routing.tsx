@@ -27,6 +27,7 @@ const StockResult = lazy(() => import('../components/investment/stock/analysis/z
 const StockCheckList = lazy(() => import('../components/investment/stock/checklist/StockCheckList'));
 const MyFavStocks = lazy(() => import('../components/investment/stock/favorites/MyFavStocks'));
 const AverageCalculator = lazy(() => import('../components/investment/stock/average-calculator/AverageCalculator'));
+const StockProfitCalculator = lazy(() => import('../components/investment/stock/profit-calculator/StockProfitCalculator'));
 const MutualFundCalculator = lazy(() => import('../components/investment/mutual-fund/calculator/MutualFundCalculator'));
 const MutualFundChecklist = lazy(() => import('../components/investment/mutual-fund/checklist/MutualFundChecklist'));
 
@@ -65,6 +66,7 @@ function Routing(): React.ReactElement {
               <Route path="favorites" element={<MyFavStocks />} />
               <Route path="checklist" element={<StockCheckList />} />
               <Route path="average-calculator" element={<AverageCalculator />} />
+              <Route path="profit-calculator" element={<StockProfitCalculator />} />
             </Route>
             <Route path="mutual-fund" element={<Outlet />}>
               <Route index element={<MutualFundNavigation />} />
@@ -79,6 +81,7 @@ function Routing(): React.ReactElement {
             <Route path="calculator" element={<Outlet />}>
               <Route index element={<CalculatorNavigation />} />
               <Route path="stock-average" element={<AverageCalculator />} />
+              <Route path="stock-profit" element={<StockProfitCalculator />} />
             </Route>
           </Route>
           <Route path="*" element={<Navigate to="/home" replace />} />
