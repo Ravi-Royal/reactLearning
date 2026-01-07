@@ -71,6 +71,65 @@ function StockProfitCalculator() {
     ? (overallTotals.totalProfit / overallTotals.totalInvested) * 100
     : 0;
 
+  // Compute XIRR (money-weighted IRR) across groups when age is provided
+  const computeXIRR = (groups: StockGroup[]): number | null => {
+    const flows: { amount: number; years: number }[] = [];
+
+    groups.forEach(group => {
+      const numStocks = parseFloat(group.numStocks) || 0;
+      const pricePerStock = parseFloat(group.pricePerStock) || 0;
+      const totalProfit = parseFloat(group.totalProfit) || 0;
+      const age = parseFloat(group.age) || 0;
+
+      const invested = numStocks * pricePerStock;
+      if (invested > 0 && age > 0) {
+        const years = group.ageUnit === 'days' ? age / 365 : age / 12;
+        flows.push({ amount: -invested, years: 0 });
+        flows.push({ amount: invested + totalProfit, years });
+      }
+    });
+
+    if (flows.length === 0) {return null;}
+
+    const npv = (rate: number) => flows.reduce((s, f) => s + f.amount / Math.pow(1 + rate, f.years), 0);
+
+    let low = -0.9999;
+    let high = 10;
+    let fLow = npv(low);
+    let fHigh = npv(high);
+
+    if (isNaN(fLow) || isNaN(fHigh)) {return null;}
+
+    // If signs are same, try expanding high
+    let attempts = 0;
+    while (fLow * fHigh > 0 && attempts < 50) {
+      high *= 2;
+      fHigh = npv(high);
+      attempts += 1;
+    }
+
+    if (fLow * fHigh > 0) {return null;}
+
+    // Bisection
+    let mid = 0;
+    for (let i = 0; i < 80; i++) {
+      mid = (low + high) / 2;
+      const fMid = npv(mid);
+      if (Math.abs(fMid) < 1e-8) {break;}
+      if (fLow * fMid <= 0) {
+        high = mid;
+        fHigh = fMid;
+      } else {
+        low = mid;
+        fLow = fMid;
+      }
+    }
+
+    return mid * 100; // percentage
+  };
+
+  const overallXIRR = computeXIRR(stockGroups);
+
   return (
     <div className={`bg-white rounded-lg shadow-md ${RESPONSIVE_PATTERNS.padding.cardLg} border border-gray-200`}>
       <Breadcrumbs />
@@ -204,7 +263,7 @@ function StockProfitCalculator() {
       {stockGroups.length > 1 && overallTotals.totalInvested > 0 && (
         <div className={`${RESPONSIVE_PATTERNS.margin.section} bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-300 rounded-lg ${RESPONSIVE_PATTERNS.padding.card}`}>
           <h3 className={`${RESPONSIVE_PATTERNS.text.lg} font-bold text-purple-800 mb-4`}>📈 Overall Summary</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
             <div className="bg-white rounded-lg shadow p-4 text-center">
               <div className="text-gray-600 text-sm font-medium mb-1">Total Invested (All Groups)</div>
               <div className="text-2xl font-bold text-blue-600">₹{overallTotals.totalInvested.toFixed(2)}</div>
@@ -216,11 +275,17 @@ function StockProfitCalculator() {
                 ₹{overallTotals.totalProfit.toFixed(2)}
               </div>
             </div>
-
             <div className="bg-white rounded-lg shadow p-4 text-center">
               <div className="text-gray-600 text-sm font-medium mb-1">Overall Profit %</div>
               <div className={`text-3xl font-bold ${overallProfitPercentage >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                 {overallProfitPercentage >= 0 ? '+' : ''}{overallProfitPercentage.toFixed(2)}%
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg shadow p-4 text-center">
+              <div className="text-gray-600 text-sm font-medium mb-1">Overall XIRR</div>
+              <div className={`text-2xl font-bold ${overallXIRR !== null && overallXIRR >= 0 ? 'text-green-600' : overallXIRR !== null ? 'text-red-600' : 'text-gray-400'}`}>
+                {overallXIRR !== null ? `${overallXIRR >= 0 ? '+' : ''}${overallXIRR.toFixed(2)}%` : '--'}
               </div>
             </div>
           </div>
