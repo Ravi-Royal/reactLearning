@@ -7,16 +7,18 @@ interface StockGroup {
   numStocks: string;
   pricePerStock: string;
   totalProfit: string;
+  age: string;
+  ageUnit: 'days' | 'months';
 }
 
 function StockProfitCalculator() {
   const [stockGroups, setStockGroups] = useState<StockGroup[]>([
-    { id: 1, numStocks: '', pricePerStock: '', totalProfit: '' },
+    { id: 1, numStocks: '', pricePerStock: '', totalProfit: '', age: '', ageUnit: 'days' },
   ]);
 
   const addStockGroup = () => {
     const newId = Math.max(...stockGroups.map(g => g.id), 0) + 1;
-    setStockGroups([...stockGroups, { id: newId, numStocks: '', pricePerStock: '', totalProfit: '' }]);
+    setStockGroups([...stockGroups, { id: newId, numStocks: '', pricePerStock: '', totalProfit: '', age: '', ageUnit: 'days' }]);
   };
 
   const removeStockGroup = (id: number) => {
@@ -35,13 +37,22 @@ function StockProfitCalculator() {
     const numStocks = parseFloat(group.numStocks) || 0;
     const pricePerStock = parseFloat(group.pricePerStock) || 0;
     const totalProfit = parseFloat(group.totalProfit) || 0;
+    const age = parseFloat(group.age) || 0;
 
     const totalInvested = numStocks * pricePerStock;
     const profitPercentage = totalInvested > 0 ? (totalProfit / totalInvested) * 100 : 0;
 
+    let annualizedReturn: number | null = null;
+    if (age > 0 && totalInvested > 0) {
+      const years = group.ageUnit === 'days' ? age / 365 : age / 12;
+      const totalReturn = totalProfit / totalInvested;
+      annualizedReturn = (Math.pow(1 + totalReturn, 1 / years) - 1) * 100;
+    }
+
     return {
       totalInvested,
       profitPercentage,
+      annualizedReturn,
       isValid: numStocks > 0 && pricePerStock > 0,
     };
   };
@@ -93,7 +104,7 @@ function StockProfitCalculator() {
               )}
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 mb-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Number of Stocks Purchased</label>
                 <input
@@ -105,7 +116,6 @@ function StockProfitCalculator() {
                   placeholder="e.g., 100"
                 />
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Average Price per Stock (₹)</label>
                 <input
@@ -118,7 +128,6 @@ function StockProfitCalculator() {
                   placeholder="e.g., 250.50"
                 />
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Total Profit (₹)</label>
                 <input
@@ -130,28 +139,48 @@ function StockProfitCalculator() {
                   placeholder="e.g., 5000"
                 />
               </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Age</label>
+                <input
+                  type="number"
+                  min="0"
+                  value={group.age}
+                  onChange={e => updateStockGroup(group.id, 'age', e.target.value)}
+                  className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                  placeholder="e.g., 365"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Unit</label>
+                <select
+                  value={group.ageUnit}
+                  onChange={e => updateStockGroup(group.id, 'ageUnit', e.target.value as 'days' | 'months')}
+                  className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                >
+                  <option value="days">Days</option>
+                  <option value="months">Months</option>
+                </select>
+              </div>
             </div>
 
             {result.isValid && (
               <div className="bg-white rounded-lg shadow-lg p-4 border-2 border-gray-300">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                   <div className="text-center">
                     <div className="text-gray-600 text-sm font-medium mb-1">Total Invested</div>
                     <div className="text-xl font-bold text-blue-600">₹{result.totalInvested.toFixed(2)}</div>
                   </div>
-
                   <div className="text-center">
                     <div className="text-gray-600 text-sm font-medium mb-1">Total Profit</div>
-                    <div className={`text-xl font-bold ${parseFloat(group.totalProfit) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                      ₹{parseFloat(group.totalProfit || '0').toFixed(2)}
-                    </div>
+                    <div className={`text-xl font-bold ${parseFloat(group.totalProfit) >= 0 ? 'text-green-600' : 'text-red-600'}`}>₹{parseFloat(group.totalProfit || '0').toFixed(2)}</div>
                   </div>
-
                   <div className="text-center">
                     <div className="text-gray-600 text-sm font-medium mb-1">Profit Percentage</div>
-                    <div className={`text-2xl font-bold ${result.profitPercentage >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                      {result.profitPercentage >= 0 ? '+' : ''}{result.profitPercentage.toFixed(2)}%
-                    </div>
+                    <div className={`text-2xl font-bold ${result.profitPercentage >= 0 ? 'text-green-600' : 'text-red-600'}`}>{result.profitPercentage >= 0 ? '+' : ''}{result.profitPercentage.toFixed(2)}%</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-gray-600 text-sm font-medium mb-1">Annualized Return</div>
+                    <div className={`text-2xl font-bold ${result.annualizedReturn !== null && result.annualizedReturn >= 0 ? 'text-green-600' : result.annualizedReturn !== null ? 'text-red-600' : 'text-gray-400'}`}>{result.annualizedReturn !== null ? `${result.annualizedReturn >= 0 ? '+' : ''}${result.annualizedReturn.toFixed(2)}%` : '--'}</div>
                   </div>
                 </div>
               </div>
@@ -203,11 +232,14 @@ function StockProfitCalculator() {
         <p className={`${RESPONSIVE_PATTERNS.text.sm} text-blue-800 ${RESPONSIVE_PATTERNS.margin.element}`}>
           <strong>Profit Percentage</strong> = (Total Profit ÷ Total Invested) × 100
         </p>
+        <p className={`${RESPONSIVE_PATTERNS.text.sm} text-blue-800 ${RESPONSIVE_PATTERNS.margin.element}`}>
+          <strong>Annualized Return</strong> = [(1 + Total Return)^(1/Years) - 1] × 100 (shown when age is entered)
+        </p>
         <p className={`${RESPONSIVE_PATTERNS.text.xs} text-blue-700`}>
           <strong>Example:</strong> If you bought 100 stocks at ₹250 each (₹25,000 invested) and made a profit of ₹5,000, your profit percentage is 20%.
         </p>
         <p className={`${RESPONSIVE_PATTERNS.text.xs} text-blue-700 mt-2`}>
-          <strong>Tip:</strong> Add multiple stock groups to calculate profit percentages for different purchases and see an overall summary.
+          <strong>Tip:</strong> Add multiple stock groups to calculate profit percentages for different purchases and see an overall summary. Enter the holding period to see annualized returns.
         </p>
       </div>
     </div>
