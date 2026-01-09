@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import ProfitSimulatorModal from './ProfitSimulatorModal';
 import Breadcrumbs from '../../../../navigation/Breadcrumbs';
 import { RESPONSIVE_PATTERNS } from '../../../../../constants/responsive.constants';
 
@@ -15,6 +16,7 @@ function StockProfitCalculator() {
   const [stockGroups, setStockGroups] = useState<StockGroup[]>([
     { id: 1, numStocks: '', pricePerStock: '', totalProfit: '', age: '', ageUnit: 'days' },
   ]);
+  const [simModal, setSimModal] = useState<{ open: boolean; price: number; profit: number } | null>(null);
 
   const addStockGroup = () => {
     const newId = Math.max(...stockGroups.map(g => g.id), 0) + 1;
@@ -149,18 +151,28 @@ function StockProfitCalculator() {
               <h2 className={`${RESPONSIVE_PATTERNS.text.lg} font-semibold bg-gradient-to-r from-gray-600 to-blue-600 bg-clip-text text-transparent`}>
                 📊 Stock Group {index + 1}
               </h2>
-              {stockGroups.length > 1 && (
+              <div className="flex gap-2 items-center">
                 <button
-                  onClick={() => removeStockGroup(group.id)}
-                  className="text-red-600 hover:text-red-800 font-medium text-sm transition-colors flex items-center gap-1"
-                  title="Remove this stock group"
+                  className="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors flex items-center gap-1 border border-blue-200 px-2 py-1 rounded"
+                  title="Simulate Profit"
+                  onClick={() => setSimModal({ open: true, price: parseFloat(group.pricePerStock) || 0, profit: (parseFloat(group.totalProfit) || 0) / (parseFloat(group.numStocks) || 1) })}
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
-                  Remove
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M12 20c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8z" /></svg>
+                  Simulate Profit
                 </button>
-              )}
+                {stockGroups.length > 1 && (
+                  <button
+                    onClick={() => removeStockGroup(group.id)}
+                    className="text-red-600 hover:text-red-800 font-medium text-sm transition-colors flex items-center gap-1"
+                    title="Remove this stock group"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Remove
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 mb-4">
@@ -221,7 +233,15 @@ function StockProfitCalculator() {
             </div>
 
             {result.isValid && (
-              <div className="bg-white rounded-lg shadow-lg p-4 border-2 border-gray-300">
+              <div className="bg-white rounded-lg shadow-lg p-4 border-2 border-gray-300 relative">
+                <button
+                  className="absolute top-2 right-2 flex items-center text-blue-600 hover:text-blue-800 font-semibold text-sm px-3 py-1 rounded border border-blue-200 bg-white shadow transition-colors duration-150 z-10"
+                  onClick={() => setSimModal({ open: true, price: parseFloat(group.pricePerStock) || 0, profit: (parseFloat(group.totalProfit) || 0) / (parseFloat(group.numStocks) || 1) })}
+                  title="Simulate Profit"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M12 20c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8z" /></svg>
+                  Simulate Profit
+                </button>
                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                   <div className="text-center">
                     <div className="text-gray-600 text-sm font-medium mb-1">Total Invested</div>
@@ -305,6 +325,15 @@ function StockProfitCalculator() {
           <strong>Tip:</strong> Add multiple stock groups to calculate profit percentages for different purchases and see an overall summary. Enter the holding period to see annualized returns.
         </p>
       </div>
+
+      {simModal?.open && (
+        <ProfitSimulatorModal
+          isOpen={simModal.open}
+          onClose={() => setSimModal(null)}
+          pricePerStock={simModal.price}
+          profitPerStock={simModal.profit}
+        />
+      )}
     </div>
   );
 }
