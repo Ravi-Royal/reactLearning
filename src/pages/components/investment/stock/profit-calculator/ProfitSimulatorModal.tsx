@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 interface ProfitSimulatorModalProps {
   isOpen: boolean;
@@ -12,20 +12,17 @@ const ProfitSimulatorModal: React.FC<ProfitSimulatorModalProps> = ({ isOpen, onC
   const [amount, setAmount] = useState('');
   const [quantity, setQuantity] = useState('');
 
-  const [result, setResult] = useState<{ invest: number; qty: number; profit: number } | null>(null);
 
-  useEffect(() => {
-    let qty = 0;
-    if (inputType === 'amount') {
-      const amt = Math.floor(Number(amount));
-      qty = Math.floor(amt / pricePerStock);
-    } else {
-      qty = Math.floor(Number(quantity));
-    }
-    const invest = qty * pricePerStock;
-    const profit = qty * profitPerStock;
-    setResult({ invest, qty, profit });
-  }, [amount, quantity, inputType, pricePerStock, profitPerStock]);
+  let qty = 0;
+  if (inputType === 'amount') {
+    const amt = Math.floor(Number(amount));
+    qty = Math.floor(amt / pricePerStock);
+  } else {
+    qty = Math.floor(Number(quantity));
+  }
+  const invest = qty * pricePerStock;
+  const profit = qty * profitPerStock;
+  const result = (qty > 0) ? { invest, qty, profit } : null;
 
   if (!isOpen) {return null;}
 
