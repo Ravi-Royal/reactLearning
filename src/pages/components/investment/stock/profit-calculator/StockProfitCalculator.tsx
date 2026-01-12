@@ -220,29 +220,47 @@ function StockProfitCalculator() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Profit Input</label>
-                <div className="flex gap-2 mb-2">
+                <div className="flex flex-wrap gap-1.5 mb-3">
                   <button
                     type="button"
-                    className={`px-2 py-1 rounded ${group.profitInputType === 'total' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-blue-700'} text-xs font-semibold`}
+                    className={`flex-1 min-w-[110px] px-3 py-2 rounded-lg transition-all duration-200 ${
+                      group.profitInputType === 'total'
+                        ? 'bg-blue-600 text-white shadow-md transform scale-105'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
+                    } text-xs font-semibold`}
                     onClick={() => updateStockGroup(group.id, 'profitInputType', 'total')}
-                  >Total Profit (₹)</button>
+                  >
+                    Total Profit (₹)
+                  </button>
                   <button
                     type="button"
-                    className={`px-2 py-1 rounded ${group.profitInputType === 'perShare' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-blue-700'} text-xs font-semibold`}
+                    className={`flex-1 min-w-[110px] px-3 py-2 rounded-lg transition-all duration-200 ${
+                      group.profitInputType === 'perShare'
+                        ? 'bg-blue-600 text-white shadow-md transform scale-105'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
+                    } text-xs font-semibold`}
                     onClick={() => updateStockGroup(group.id, 'profitInputType', 'perShare')}
-                  >Profit per Share (₹)</button>
+                  >
+                    Profit per Share (₹)
+                  </button>
                   <button
                     type="button"
-                    className={`px-2 py-1 rounded ${group.profitInputType === 'currentPrice' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-blue-700'} text-xs font-semibold`}
+                    className={`flex-1 min-w-[110px] px-3 py-2 rounded-lg transition-all duration-200 ${
+                      group.profitInputType === 'currentPrice'
+                        ? 'bg-blue-600 text-white shadow-md transform scale-105'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
+                    } text-xs font-semibold`}
                     onClick={() => updateStockGroup(group.id, 'profitInputType', 'currentPrice')}
-                  >Current Price per Share (₹)</button>
+                  >
+                    Current Price per Share (₹)
+                  </button>
                 </div>
                 {group.profitInputType === 'total' && (
                   <input
                     type="number"
                     value={group.totalProfit}
                     onChange={e => updateStockGroup(group.id, 'totalProfit', e.target.value)}
-                    className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                    className="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white transition-all"
                     placeholder="e.g., 5000"
                   />
                 )}
@@ -251,7 +269,7 @@ function StockProfitCalculator() {
                     type="number"
                     value={group.profitPerShare}
                     onChange={e => updateStockGroup(group.id, 'profitPerShare', e.target.value)}
-                    className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                    className="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white transition-all"
                     placeholder="e.g., 10"
                   />
                 )}
@@ -260,7 +278,7 @@ function StockProfitCalculator() {
                     type="number"
                     value={group.currentPricePerShare || ''}
                     onChange={e => updateStockGroup(group.id, 'currentPricePerShare', e.target.value)}
-                    className="w-full px-3 py-2 border-2 border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                    className="w-full px-3 py-2.5 border-2 border-blue-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-blue-50 transition-all"
                     placeholder="e.g., 405.8"
                   />
                 )}
