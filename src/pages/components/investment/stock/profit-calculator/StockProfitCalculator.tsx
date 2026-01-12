@@ -7,20 +7,26 @@ interface StockGroup {
   id: number;
   numStocks: string;
   pricePerStock: string;
-  totalProfit: string;
+  profitInputType: 'total' | 'perShare' | 'currentPrice';
+  totalProfit: string; // used if profitInputType === 'total'
+  profitPerShare: string; // used if profitInputType === 'perShare'
+  currentPricePerShare?: string; // used if profitInputType === 'currentPrice'
   age: string;
   ageUnit: 'days' | 'months';
 }
 
 function StockProfitCalculator() {
   const [stockGroups, setStockGroups] = useState<StockGroup[]>([
-    { id: 1, numStocks: '', pricePerStock: '', totalProfit: '', age: '', ageUnit: 'days' },
+    { id: 1, numStocks: '', pricePerStock: '', profitInputType: 'total', totalProfit: '', profitPerShare: '', currentPricePerShare: '', age: '', ageUnit: 'days' },
   ]);
   const [simModal, setSimModal] = useState<{ open: boolean; price: number; profit: number } | null>(null);
 
   const addStockGroup = () => {
     const newId = Math.max(...stockGroups.map(g => g.id), 0) + 1;
-    setStockGroups([...stockGroups, { id: newId, numStocks: '', pricePerStock: '', totalProfit: '', age: '', ageUnit: 'days' }]);
+    setStockGroups([
+      ...stockGroups,
+      { id: newId, numStocks: '', pricePerStock: '', profitInputType: 'total', totalProfit: '', profitPerShare: '', currentPricePerShare: '', age: '', ageUnit: 'days' },
+    ]);
   };
 
   const removeStockGroup = (id: number) => {
@@ -38,7 +44,20 @@ function StockProfitCalculator() {
   const calculateProfit = (group: StockGroup) => {
     const numStocks = parseFloat(group.numStocks) || 0;
     const pricePerStock = parseFloat(group.pricePerStock) || 0;
-    const totalProfit = parseFloat(group.totalProfit) || 0;
+    const currentPricePerShare = parseFloat(group.currentPricePerShare || '') || 0;
+    const totalProfitInput = parseFloat(group.totalProfit) || 0;
+    const profitPerShareInput = parseFloat(group.profitPerShare) || 0;
+    let totalProfit = 0;
+    // Use only the selected input type
+    if (group.profitInputType === 'currentPrice' && currentPricePerShare > 0) {
+      totalProfit = (currentPricePerShare - pricePerStock) * numStocks;
+    } else if (group.profitInputType === 'total' && totalProfitInput !== 0) {
+      totalProfit = totalProfitInput;
+    } else if (group.profitInputType === 'perShare' && profitPerShareInput !== 0) {
+      totalProfit = profitPerShareInput * numStocks;
+    } else {
+      totalProfit = 0;
+    }
     const age = parseFloat(group.age) || 0;
 
     const totalInvested = numStocks * pricePerStock;
@@ -56,6 +75,7 @@ function StockProfitCalculator() {
       profitPercentage,
       annualizedReturn,
       isValid: numStocks > 0 && pricePerStock > 0,
+      totalProfit,
     };
   };
 
@@ -64,7 +84,7 @@ function StockProfitCalculator() {
     const result = calculateProfit(group);
     if (result.isValid) {
       acc.totalInvested += result.totalInvested;
-      acc.totalProfit += parseFloat(group.totalProfit) || 0;
+      acc.totalProfit += result.totalProfit;
     }
     return acc;
   }, { totalInvested: 0, totalProfit: 0 });
@@ -199,14 +219,51 @@ function StockProfitCalculator() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Total Profit (₹)</label>
-                <input
-                  type="number"
-                  value={group.totalProfit}
-                  onChange={e => updateStockGroup(group.id, 'totalProfit', e.target.value)}
-                  className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
-                  placeholder="e.g., 5000"
-                />
+                <label className="block text-sm font-medium text-gray-700 mb-2">Profit Input</label>
+                <div className="flex gap-2 mb-2">
+                  <button
+                    type="button"
+                    className={`px-2 py-1 rounded ${group.profitInputType === 'total' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-blue-700'} text-xs font-semibold`}
+                    onClick={() => updateStockGroup(group.id, 'profitInputType', 'total')}
+                  >Total Profit (₹)</button>
+                  <button
+                    type="button"
+                    className={`px-2 py-1 rounded ${group.profitInputType === 'perShare' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-blue-700'} text-xs font-semibold`}
+                    onClick={() => updateStockGroup(group.id, 'profitInputType', 'perShare')}
+                  >Profit per Share (₹)</button>
+                  <button
+                    type="button"
+                    className={`px-2 py-1 rounded ${group.profitInputType === 'currentPrice' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-blue-700'} text-xs font-semibold`}
+                    onClick={() => updateStockGroup(group.id, 'profitInputType', 'currentPrice')}
+                  >Current Price per Share (₹)</button>
+                </div>
+                {group.profitInputType === 'total' && (
+                  <input
+                    type="number"
+                    value={group.totalProfit}
+                    onChange={e => updateStockGroup(group.id, 'totalProfit', e.target.value)}
+                    className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                    placeholder="e.g., 5000"
+                  />
+                )}
+                {group.profitInputType === 'perShare' && (
+                  <input
+                    type="number"
+                    value={group.profitPerShare}
+                    onChange={e => updateStockGroup(group.id, 'profitPerShare', e.target.value)}
+                    className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                    placeholder="e.g., 10"
+                  />
+                )}
+                {group.profitInputType === 'currentPrice' && (
+                  <input
+                    type="number"
+                    value={group.currentPricePerShare || ''}
+                    onChange={e => updateStockGroup(group.id, 'currentPricePerShare', e.target.value)}
+                    className="w-full px-3 py-2 border-2 border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                    placeholder="e.g., 405.8"
+                  />
+                )}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Age</label>
@@ -249,7 +306,7 @@ function StockProfitCalculator() {
                   </div>
                   <div className="text-center">
                     <div className="text-gray-600 text-sm font-medium mb-1">Total Profit</div>
-                    <div className={`text-xl font-bold ${parseFloat(group.totalProfit) >= 0 ? 'text-green-600' : 'text-red-600'}`}>₹{parseFloat(group.totalProfit || '0').toFixed(2)}</div>
+                    <div className={`text-xl font-bold ${result.totalProfit >= 0 ? 'text-green-600' : 'text-red-600'}`}>₹{result.totalProfit.toFixed(2)}</div>
                   </div>
                   <div className="text-center">
                     <div className="text-gray-600 text-sm font-medium mb-1">Profit Percentage</div>
