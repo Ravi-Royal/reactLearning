@@ -72,35 +72,30 @@ export async function parseStockExcel(arrayBuffer: ArrayBuffer): Promise<StockDa
  */
 export function formatNormalizedStockData(data: StockData[]): StockData[] {
   return data.map((row) => {
-    const stockRealizedProfit = Number(row[StockColumnKey.RealizedPL]) || 0;
-    const numberOfStocksQuantity = Number(row[StockColumnKey.Quantity]) || 1;
-    const buyValuePerStock = (Number(row[StockColumnKey.BuyValue]) || 0) / numberOfStocksQuantity;
-    const sellValuePerStock = (Number(row[StockColumnKey.SellValue]) || 0) / numberOfStocksQuantity;
+    // Custom Realised Stock Value: What price to buy to break even, considering previous realized P&L
+    // = Previous Buy Price Per Stock - (Total Realized P&L / Total Quantity Sold)
+    const realizedPL = Number(row[StockColumnKey.RealizedPL]) || 0;
+    const quantitySold = Number(row[StockColumnKey.Quantity]) || 1;
+    const buyValue = Number(row[StockColumnKey.BuyValue]) || 0;
+    const buyValuePerStock = buyValue / quantitySold;
+    const customRealisedStockValue = buyValuePerStock - (realizedPL / quantitySold);
 
-    // Calculate custom realized stock value
-    let customRealisedStockValue: number;
-    if (stockRealizedProfit > 0) {
-      const stockprofitPerStock = stockRealizedProfit / numberOfStocksQuantity;
-      const stockBuyingPrice = buyValuePerStock - stockprofitPerStock;
-      customRealisedStockValue = Number(stockBuyingPrice.toFixed(2));
-    } else {
-      customRealisedStockValue = Number(sellValuePerStock.toFixed(2));
-    }
-
-    // Calculate custom unrealized stock value
-    const unrealizedPL = Number(row[StockColumnKey.UnrealizedPL]) || 0;
+    // Custom Unrealised Stock Value: Same calculation as realized, but assuming selling at current price
+    // = Current Open Buy Price Per Stock - (Potential P&L / Open Quantity)
+    // If profit: subtract to get lower buy price. If loss: add to get higher buy price
     const openQuantity = Number(row[StockColumnKey.OpenQuantity]) || 1;
-    const stockUnRealizedProfitPerStock = unrealizedPL / openQuantity;
-    const buyUnRealizedValuePerStock = (Number(row[StockColumnKey.OpenValue]) || 0) / openQuantity;
-    const stockUnRealizedBuyingPrice = buyUnRealizedValuePerStock + stockUnRealizedProfitPerStock;
-    const customUnrealisedStockValue = Number(stockUnRealizedBuyingPrice.toFixed(2));
+    const openValue = Number(row[StockColumnKey.OpenValue]) || 0;
+    const currentPrice = Number(row[StockColumnKey.CurrentPrice]) || 0;
+    const openValuePerStock = openValue / openQuantity;
+    const potentialPLPerStock = currentPrice - openValuePerStock;
+    const customUnrealisedStockValue = openValuePerStock - potentialPLPerStock;
 
     return {
       ...row,
       [StockColumnKey.BuyValuePerStock]: Number(buyValuePerStock.toFixed(2)),
-      [StockColumnKey.SellValuePerStock]: Number(sellValuePerStock.toFixed(2)),
-      [StockColumnKey.CustomRealisedStockValue]: customRealisedStockValue,
-      [StockColumnKey.CustomUnrealisedStockValue]: customUnrealisedStockValue,
+      [StockColumnKey.SellValuePerStock]: Number((Number(row[StockColumnKey.SellValue]) || 0) / quantitySold),
+      [StockColumnKey.CustomRealisedStockValue]: Number(customRealisedStockValue.toFixed(2)),
+      [StockColumnKey.CustomUnrealisedStockValue]: Number(customUnrealisedStockValue.toFixed(2)),
     };
   });
 }

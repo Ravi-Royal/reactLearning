@@ -61,12 +61,25 @@ const StockResult: React.FC = () => {
     const symbols = finalNormalized.map((s) => s.Symbol);
     const prices = await fetchStockPrices(symbols);
 
-    const enriched: StockData[] = finalNormalized.map((stock) => ({
-      ...stock,
-      'Current Price': prices[stock.Symbol]?.price ?? null,
-      '52W High': prices[stock.Symbol]?.fiftyTwoWeekHigh ?? null,
-      '52W Low': prices[stock.Symbol]?.fiftyTwoWeekLow ?? null,
-    }));
+    const enriched: StockData[] = finalNormalized.map((stock) => {
+      const currentPrice = prices[stock.Symbol]?.price ?? null;
+      const openValue = stock['Open Value'] ?? 0;
+      const openQuantity = stock['Open Quantity'] ?? 1;
+      const openValuePerStock = openValue / openQuantity;
+      const potentialPLPerStock = currentPrice ? currentPrice - openValuePerStock : 0;
+
+      // Recalculate Custom Unrealised Stock Value with actual current price
+      // If profit: subtract to get lower buy price. If loss: add to get higher buy price
+      const customUnrealisedStockValue = openValuePerStock - potentialPLPerStock;
+
+      return {
+        ...stock,
+        'Current Price': currentPrice,
+        '52W High': prices[stock.Symbol]?.fiftyTwoWeekHigh ?? null,
+        '52W Low': prices[stock.Symbol]?.fiftyTwoWeekLow ?? null,
+        'Custom Unrealised Stock Value': Number(customUnrealisedStockValue.toFixed(2)),
+      };
+    });
 
     applyLoadedStocks(enriched, prices);
     setNeedsSourceSelection(false);
@@ -102,12 +115,29 @@ const StockResult: React.FC = () => {
         throw new Error('No older version found (stockData.json)');
       }
 
-      setStockData(storedData.stocks);
+      // Recalculate Custom Unrealised Stock Value with stored current prices
+      const recalculatedStocks = storedData.stocks.map((stock) => {
+        const currentPrice = stock['Current Price'] ?? null;
+        const openValue = stock['Open Value'] ?? 0;
+        const openQuantity = stock['Open Quantity'] ?? 1;
+        const openValuePerStock = openValue / openQuantity;
+        const potentialPLPerStock = currentPrice ? currentPrice - openValuePerStock : 0;
+
+        // If profit: subtract to get lower buy price. If loss: add to get higher buy price
+        const customUnrealisedStockValue = openValuePerStock - potentialPLPerStock;
+
+        return {
+          ...stock,
+          'Custom Unrealised Stock Value': Number(customUnrealisedStockValue.toFixed(2)),
+        };
+      });
+
+      setStockData(recalculatedStocks);
       setLastUpdated(storedData.metadata.lastUpdated);
       setLastPriceUpdate(storedData.metadata.lastPriceUpdate);
 
       const storedPriceMap: PriceMap = {};
-      storedData.stocks.forEach(stock => {
+      recalculatedStocks.forEach(stock => {
         if (stock['Current Price'] !== undefined ||
           stock['52W High'] !== undefined ||
           stock['52W Low'] !== undefined) {
@@ -120,7 +150,7 @@ const StockResult: React.FC = () => {
       });
       setPriceMap(storedPriceMap);
       setNeedsSourceSelection(false);
-      console.warn('Loaded older version from stockData.json');
+      console.warn('Loaded older version from stockData.json with recalculated Custom Unrealised Stock Value');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
       setError(errorMessage);
