@@ -239,8 +239,8 @@ const StockResult: React.FC = () => {
 
     try {
       const sourceFile = excelSource === 'private' ? 'pnl-WAR042.xlsx' :
-                        excelSource === 'upload' ? uploadedFile?.name ?? 'uploaded.xlsx' :
-                        'stockData.json';
+        excelSource === 'upload' ? uploadedFile?.name ?? 'uploaded.xlsx' :
+          'stockData.json';
 
       await saveStockDataToJSON(stockData, sourceFile, false);
       console.warn('Data saved successfully to stockData.json');

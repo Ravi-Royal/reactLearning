@@ -58,25 +58,60 @@ const StockTable: React.FC<StockTableProps> = ({ stockData, priceMap }) => {
         <table className="min-w-full border-collapse border border-gray-300 relative text-xs sm:text-sm">
           <thead className="bg-gray-100">
             <tr>
-              {stockColumns.map((col: { key: StockColumnKeyType; label: string; align?: 'left' | 'right' }, index: number) => (
-                <th
-                  key={col.key}
-                  className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} sticky top-0 bg-gray-100 cursor-pointer hover:bg-gray-200 select-none whitespace-nowrap${index === 0 ? ' left-0 z-30 relative shadow-[4px_0_8px_0_rgba(0,0,0,0.3)]' : ' z-20'}`}
-                  onClick={() => handleSort(col.key)}
-                >
-                  <div className="flex items-center justify-between gap-1">
-                    <span className="text-xs sm:text-sm">{col.label}</span>
-                    {getSortIconElement(col.key)}
-                  </div>
-                  {index === 0 && <div className="absolute top-0 right-0 h-full w-[2px] bg-gray-300 z-40 pointer-events-none" />}
-                </th>
-              ))}
+                {stockColumns.map((col: { key: StockColumnKeyType; label: string; align?: 'left' | 'right' }, index: number) => (
+                  <th
+                    key={col.key}
+                    className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} sticky top-0 bg-gray-100 cursor-pointer hover:bg-gray-200 select-none whitespace-nowrap${index === 0 ? ' left-0 z-30 relative shadow-[4px_0_8px_0_rgba(0,0,0,0.3)]' : ' z-20'}`}
+                    onClick={() => handleSort(col.key)}
+                  >
+                    <div className="flex items-center justify-between gap-1">
+                      <span className="text-xs sm:text-sm">{col.label}</span>
+                      {getSortIconElement(col.key)}
+                    </div>
+                    {index === 0 && <div className="absolute top-0 right-0 h-full w-[2px] bg-gray-300 z-40 pointer-events-none" />}
+                  </th>
+                ))}
             </tr>
           </thead>
           <tbody>
             {sortedData.map((row, index) => (
               <tr key={index} className="hover:bg-gray-50">
                 {stockColumns.map((col: { key: StockColumnKeyType; label: string; align?: 'left' | 'right' }, colIndex: number) => {
+                                    // New column: Open Value / Open Qty
+                  if (col.key === StockColumnKey.OpenValuePerUnit) {
+                    const openValue = row[StockColumnKey.OpenValue] ?? 0;
+                    const openQty = row[StockColumnKey.OpenQuantity] ?? 0;
+                    let valuePerUnit: number | null = null;
+                    if (openQty && openQty !== 0) {
+                      valuePerUnit = openValue / openQty;
+                    }
+                    // Get current price
+                    const price = priceMap[row[StockColumnKey.Symbol] as string]?.price ?? null;
+                    let diff: number | null = null;
+                    let diffTotal: number | null = null;
+                    if (price !== null && valuePerUnit !== null && !isNaN(valuePerUnit)) {
+                      diff = price - valuePerUnit;
+                      diffTotal = diff * openQty;
+                    }
+                    let diffColor = '';
+                    if (diff !== null) {
+                      diffColor = diff > 0 ? 'text-green-600' : diff < 0 ? 'text-red-600' : '';
+                    }
+                    return (
+                      <td
+                        key={col.key}
+                        className={`border border-gray-300 px-2 sm:px-4 py-2${col.align === 'right' ? ' text-right' : ''} whitespace-nowrap${colIndex === 0 ? ' sticky left-0 bg-white z-10 relative shadow-[4px_0_8px_0_rgba(0,0,0,0.3)]' : ''}`}
+                      >
+                        {valuePerUnit !== null && !isNaN(valuePerUnit) ? valuePerUnit.toFixed(2) : '-'}
+                        {diff !== null && !isNaN(diff) && (
+                          <span className={"ml-1 " + diffColor}>
+                            ({diff > 0 ? '+' : ''}{diff.toFixed(2)} | {diffTotal !== null && !isNaN(diffTotal) ? (diffTotal > 0 ? '+' : '') + diffTotal.toFixed(2) : '-'} | {openQty})
+                          </span>
+                        )}
+                        {colIndex === 0 && <div className="absolute top-0 right-0 h-full w-[2px] bg-gray-300 z-40 pointer-events-none" />}
+                      </td>
+                    );
+                  }
                   // Color logic for P&L columns
                   if (pnlColumnKeys.includes(col.key)) {
                     const value = row[col.key as keyof StockData];

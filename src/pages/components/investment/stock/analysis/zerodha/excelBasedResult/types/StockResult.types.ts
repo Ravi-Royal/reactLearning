@@ -89,6 +89,7 @@ export const StockColumnKey = {
   FiftyTwoWeekLow: '52W Low',
   NearFiftyTwoWeekLow: 'Near 52W Low',
   CurrentPrice: 'Current Price',
+    OpenValuePerUnit: 'Current Holding Price',
   RealizedPriceVsValue: 'Realized Price vs Value',
   UnrealizedPriceToCmp: 'Unrealized Price to Cmp',
   OpenQuantity: 'Open Quantity',
@@ -118,11 +119,12 @@ export const pnlColumnKeys: StockColumnKeyType[] = [
  * Column configuration for rendering tables.
  */
 export const stockColumns: Array<{ key: StockColumnKeyType; label: string; align?: 'left' | 'right' }> = [
-  { key: StockColumnKey.Symbol, label: 'Symbol' },
-  { key: StockColumnKey.FiftyTwoWeekHigh, label: '52W High', align: 'right' },
-  { key: StockColumnKey.FiftyTwoWeekLow, label: '52W Low', align: 'right' },
-  { key: StockColumnKey.NearFiftyTwoWeekLow, label: 'Near 52W Low' },
-  { key: StockColumnKey.CurrentPrice, label: 'Current Price', align: 'right' },
+    { key: StockColumnKey.Symbol, label: 'Symbol' },
+    { key: StockColumnKey.FiftyTwoWeekHigh, label: '52W High', align: 'right' },
+    { key: StockColumnKey.FiftyTwoWeekLow, label: '52W Low', align: 'right' },
+    { key: StockColumnKey.NearFiftyTwoWeekLow, label: 'Near 52W Low' },
+    { key: StockColumnKey.CurrentPrice, label: 'Current Price', align: 'right' },
+    { key: StockColumnKey.OpenValuePerUnit, label: 'Current Holding Price', align: 'right' },
   { key: StockColumnKey.RealizedPriceVsValue, label: 'Realized Price vs Value', align: 'right' },
   { key: StockColumnKey.UnrealizedPriceToCmp, label: 'Unrealized Price to Cmp', align: 'right' },
   { key: StockColumnKey.CustomRealisedStockValue, label: 'Custom Realised Stock Value', align: 'right' },
