@@ -3,6 +3,7 @@ import React from 'react';
 interface StockControlsProps {
   onUpdatePrices: () => void;
   onRefreshData: () => void;
+  onSaveData: () => void;
   updatingPrices: boolean;
 }
 
@@ -12,6 +13,7 @@ interface StockControlsProps {
 const StockControls: React.FC<StockControlsProps> = ({
   onUpdatePrices,
   onRefreshData,
+  onSaveData,
   updatingPrices,
 }) => {
   return (
@@ -32,6 +34,14 @@ const StockControls: React.FC<StockControlsProps> = ({
         className="px-3 sm:px-4 py-2 text-xs sm:text-sm bg-blue-500 text-white rounded hover:bg-blue-600 whitespace-nowrap"
       >
         Refresh Data
+      </button>
+      <button
+        onClick={onSaveData}
+        title="Save current data to stockData.json file"
+        aria-label="Save data to JSON file"
+        className="px-3 sm:px-4 py-2 text-xs sm:text-sm bg-purple-500 text-white rounded hover:bg-purple-600 whitespace-nowrap"
+      >
+        Save Data
       </button>
     </div>
   );

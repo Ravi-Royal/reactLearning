@@ -3,7 +3,7 @@ import Breadcrumbs from '../../../../../navigation/Breadcrumbs';
 import StockControls from './excelBasedResult/components/StockControls';
 import StockMetadata from './excelBasedResult/components/StockMetadata';
 import StockTable from './excelBasedResult/components/StockTable';
-import { fetchStockPrices, formatNormalizedStockData, loadStockDataFromJSON, parseStockExcel, updateStockPricesInJSON } from './excelBasedResult/helpers/StockResult.helper';
+import { fetchStockPrices, formatNormalizedStockData, loadStockDataFromJSON, parseStockExcel, saveStockDataToJSON, updateStockPricesInJSON } from './excelBasedResult/helpers/StockResult.helper';
 import type { PriceMap, StockData } from './excelBasedResult/types/StockResult.types';
 
 /**
@@ -29,33 +29,8 @@ const StockResult: React.FC = () => {
     try {
       setLoading(true);
       setError(null);
-      setNeedsSourceSelection(false);
 
-      // First, try to load from JSON storage
-      const storedData = await loadStockDataFromJSON();
-      if (storedData) {
-        setExcelSource('json');
-        setStockData(storedData.stocks);
-        setLastUpdated(storedData.metadata.lastUpdated);
-        setLastPriceUpdate(storedData.metadata.lastPriceUpdate);
-
-        const storedPriceMap: PriceMap = {};
-        storedData.stocks.forEach(stock => {
-          if (stock['Current Price'] !== undefined ||
-            stock['52W High'] !== undefined ||
-            stock['52W Low'] !== undefined) {
-            storedPriceMap[stock.Symbol] = {
-              price: stock['Current Price'] ?? null,
-              fiftyTwoWeekHigh: stock['52W High'] ?? null,
-              fiftyTwoWeekLow: stock['52W Low'] ?? null,
-            };
-          }
-        });
-        setPriceMap(storedPriceMap);
-        return;
-      }
-
-      // No stored JSON -> ask user to choose Excel source.
+      // Always show source selection screen on initial load
       setExcelSource(null);
       setNeedsSourceSelection(true);
     } catch (err) {
@@ -116,6 +91,45 @@ const StockResult: React.FC = () => {
     }
   };
 
+  const loadOlderVersion = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      setExcelSource('json');
+
+      const storedData = await loadStockDataFromJSON();
+      if (!storedData) {
+        throw new Error('No older version found (stockData.json)');
+      }
+
+      setStockData(storedData.stocks);
+      setLastUpdated(storedData.metadata.lastUpdated);
+      setLastPriceUpdate(storedData.metadata.lastPriceUpdate);
+
+      const storedPriceMap: PriceMap = {};
+      storedData.stocks.forEach(stock => {
+        if (stock['Current Price'] !== undefined ||
+          stock['52W High'] !== undefined ||
+          stock['52W Low'] !== undefined) {
+          storedPriceMap[stock.Symbol] = {
+            price: stock['Current Price'] ?? null,
+            fiftyTwoWeekHigh: stock['52W High'] ?? null,
+            fiftyTwoWeekLow: stock['52W Low'] ?? null,
+          };
+        }
+      });
+      setPriceMap(storedPriceMap);
+      setNeedsSourceSelection(false);
+      console.warn('Loaded older version from stockData.json');
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      setError(errorMessage);
+      console.error('Error loading older version:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleUploadChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
     if (!file) { return; }
@@ -160,8 +174,14 @@ const StockResult: React.FC = () => {
         return;
       }
 
-      // If we loaded from JSON, we don't have access to the original Excel source.
-      console.warn('Refreshing from JSON source is not supported. Use Update Prices instead.');
+      if (excelSource === 'json') {
+        // For JSON source, refresh by updating prices
+        console.warn('Refreshing prices from JSON source...');
+        await updatePrices();
+        return;
+      }
+
+      console.warn('No data source available. Please reload from Excel.');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
       setError(errorMessage);
@@ -211,6 +231,27 @@ const StockResult: React.FC = () => {
     }
   };
 
+  const saveData = async () => {
+    if (stockData.length === 0) {
+      console.warn('No data to save');
+      return;
+    }
+
+    try {
+      const sourceFile = excelSource === 'private' ? 'pnl-WAR042.xlsx' :
+                        excelSource === 'upload' ? uploadedFile?.name ?? 'uploaded.xlsx' :
+                        'stockData.json';
+
+      await saveStockDataToJSON(stockData, sourceFile, false);
+      console.warn('Data saved successfully to stockData.json');
+      alert('Data saved! Please place the downloaded stockData.json file in src/privateDocument/');
+    } catch (err) {
+      console.error('Error saving data:', err);
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      alert(`Error saving data: ${errorMessage}`);
+    }
+  };
+
   if (loading) {
     return <div className="p-4 sm:p-6">Loading Excel data...</div>;
   }
@@ -251,6 +292,17 @@ const StockResult: React.FC = () => {
             </button>
           </div>
         </div>
+
+        <div className="mt-4 bg-white rounded-lg shadow-md p-4 border border-gray-200">
+          <h2 className="text-base sm:text-lg font-semibold text-gray-800">Load Older Version</h2>
+          <p className="text-xs sm:text-sm text-gray-600 mt-1">Load previously saved data from <span className="font-mono text-xs">stockData.json</span>.</p>
+          <button
+            onClick={loadOlderVersion}
+            className="mt-3 px-3 sm:px-4 py-2 text-sm sm:text-base bg-gray-500 text-white rounded hover:bg-gray-600"
+          >
+            Load Older Version
+          </button>
+        </div>
       </div>
     );
   }
@@ -277,6 +329,7 @@ const StockResult: React.FC = () => {
         <StockControls
           onUpdatePrices={updatePrices}
           onRefreshData={refreshData}
+          onSaveData={saveData}
           updatingPrices={updatingPrices}
         />
       </div>
