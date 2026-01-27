@@ -60,6 +60,16 @@ export const InvestmentInputForm: React.FC<InvestmentInputFormProps> = ({
           <label className="flex items-center">
             <input
               type="radio"
+              value="yearly-sip"
+              checked={investmentType === 'yearly-sip'}
+              onChange={(e) => setInvestmentType(e.target.value as InvestmentType)}
+              className="mr-2"
+            />
+            <span className="text-sm">SIP (Yearly)</span>
+          </label>
+          <label className="flex items-center">
+            <input
+              type="radio"
               value="lumpsum"
               checked={investmentType === 'lumpsum'}
               onChange={(e) => setInvestmentType(e.target.value as InvestmentType)}
@@ -70,16 +80,16 @@ export const InvestmentInputForm: React.FC<InvestmentInputFormProps> = ({
         </div>
       </div>
 
-      {investmentType === 'sip' ? (
+      {investmentType === 'sip' || investmentType === 'yearly-sip' ? (
         <div className="mb-4">
           <label className="block text-sm font-medium text-purple-700 mb-2">
-            💵 Monthly SIP Amount (₹)
+            💵 {investmentType === 'sip' ? 'Monthly' : 'Yearly'} SIP Amount (₹)
           </label>
           <input
             type="number"
             value={sipAmount}
             onChange={(e) => setSipAmount(e.target.value)}
-            placeholder="e.g., 10000"
+            placeholder={investmentType === 'sip' ? 'e.g., 10000' : 'e.g., 120000'}
             step="1"
             min="0"
             className="w-full px-3 py-2 border-2 border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white"

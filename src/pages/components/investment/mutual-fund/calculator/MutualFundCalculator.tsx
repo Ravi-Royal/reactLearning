@@ -28,7 +28,7 @@ interface YearlyBreakdown {
 type BreakdownView = 'monthly' | 'quarterly' | 'yearly';
 
 function MutualFundCalculator() {
-  const [investmentType, setInvestmentType] = useState<'sip' | 'lumpsum'>('sip');
+  const [investmentType, setInvestmentType] = useState<'sip' | 'yearly-sip' | 'lumpsum'>('sip');
   const [sipAmount, setSipAmount] = useState<string>('');
   const [lumpsumAmount, setLumpsumAmount] = useState<string>('');
   const [annualReturn, setAnnualReturn] = useState<string>('');
@@ -49,6 +49,14 @@ function MutualFundCalculator() {
     const monthlyRate = annualRate / 12 / 100;
     const months = years * 12;
     const futureValue = monthlyInvestment * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
+    return futureValue;
+  };
+
+  // Yearly SIP calculation using annuity due formula (payment at beginning of period)
+  // FV = P × [(1 + r)^n - 1] / r × (1 + r) where r = annual rate, n = years, P = yearly investment
+  const calculateYearlySIPFutureValue = (yearlyInvestment: number, annualRate: number, years: number): number => {
+    const yearlyRate = annualRate / 100;
+    const futureValue = yearlyInvestment * ((Math.pow(1 + yearlyRate, years) - 1) / yearlyRate) * (1 + yearlyRate);
     return futureValue;
   };
 
@@ -109,6 +117,13 @@ function MutualFundCalculator() {
       }
       accumulatedAmount = calculateSIPFutureValue(sip, returnRate, investYears);
       totalInvested = sip * investYears * 12;
+    } else if (investmentType === 'yearly-sip') {
+      const yearlySip = parseFloat(sipAmount);
+      if (isNaN(yearlySip) || yearlySip <= 0) {
+        return null;
+      }
+      accumulatedAmount = calculateYearlySIPFutureValue(yearlySip, returnRate, investYears);
+      totalInvested = yearlySip * investYears;
     } else {
       const lumpsum = parseFloat(lumpsumAmount);
       if (isNaN(lumpsum) || lumpsum <= 0) {
@@ -187,11 +202,11 @@ function MutualFundCalculator() {
   };
 
   // Prevent clearing values when switching investment type
-  const handleInvestmentTypeChange = (type: 'sip' | 'lumpsum') => {
+  const handleInvestmentTypeChange = (type: 'sip' | 'yearly-sip' | 'lumpsum') => {
     if (type === 'lumpsum' && sipAmount && !lumpsumAmount) {
       // Copy SIP amount to Lumpsum when switching from SIP to Lumpsum
       setLumpsumAmount(sipAmount);
-    } else if (type === 'sip' && lumpsumAmount && !sipAmount) {
+    } else if ((type === 'sip' || type === 'yearly-sip') && lumpsumAmount && !sipAmount) {
       // Copy Lumpsum amount to SIP when switching from Lumpsum to SIP
       setSipAmount(lumpsumAmount);
     }
@@ -339,7 +354,134 @@ function MutualFundCalculator() {
           if (balance <= 0) { break; }
         }
       }
-    } else {
+    } else if (investmentType === 'yearly-sip') {
+      const yearlySip = parseFloat(sipAmount);
+      if (isNaN(yearlySip) || yearlySip <= 0) {
+        return [];
+      }
+
+      let balance = 0;
+      let totalInvested = 0;
+      let cumulativeInterest = 0;
+      let periodCounter = 1;
+
+      // For yearly SIP, we invest once per year at the beginning
+      // Investment phase
+      const totalInvestmentPeriods = investYears * periodsPerYear;
+      for (let i = 1; i <= totalInvestmentPeriods; i++) {
+        const openingBalance = balance;
+        let periodInvestment = 0;
+        const startingBalance = balance;
+
+        // Check if this is the first period of a year (invest yearly at beginning)
+        const isYearStart = (i - 1) % periodsPerYear === 0;
+        if (isYearStart) {
+          balance += yearlySip;
+          totalInvested += yearlySip;
+          periodInvestment = yearlySip;
+        }
+
+        // Apply growth for the period
+        for (let month = 1; month <= monthsPerPeriod; month++) {
+          balance = balance * (1 + monthlyRate);
+        }
+
+        const periodInterest = balance - startingBalance - periodInvestment;
+        cumulativeInterest += periodInterest;
+
+        breakdown.push({
+          year: periodCounter++,
+          invested: totalInvested,
+          interest: cumulativeInterest,
+          totalValue: balance,
+          openingBalance,
+          periodInvestment,
+          periodInterest,
+          closingBalance: balance,
+        });
+      }
+
+      // Holding phase (no new investments, just growth)
+      if (holdingYears > 0) {
+        const totalHoldingPeriods = holdingYears * periodsPerYear;
+        for (let i = 1; i <= totalHoldingPeriods; i++) {
+          const openingBalance = balance;
+          const startingBalance = balance;
+
+          for (let month = 1; month <= monthsPerPeriod; month++) {
+            balance = balance * (1 + monthlyRate);
+          }
+
+          const periodInterest = balance - startingBalance;
+          cumulativeInterest += periodInterest;
+
+          breakdown.push({
+            year: periodCounter++,
+            invested: totalInvested,
+            interest: cumulativeInterest,
+            totalValue: balance,
+            openingBalance,
+            periodInvestment: 0,
+            periodInterest,
+            closingBalance: balance,
+          });
+        }
+      }
+
+      // One-time withdrawal
+      if (withdrawal > 0) {
+        const openingBalance = balance;
+        balance = Math.max(0, balance - withdrawal);
+
+        breakdown.push({
+          year: periodCounter++,
+          invested: totalInvested,
+          interest: cumulativeInterest,
+          totalValue: balance,
+          openingBalance,
+          periodInvestment: 0,
+          periodInterest: 0,
+          closingBalance: balance,
+          withdrawal: withdrawal,
+        });
+      }
+
+      // SWP phase
+      if (swp > 0 && swpYears > 0 && balance > 0) {
+        const totalSwpPeriods = Math.min(swpYears * periodsPerYear, maxPeriods - breakdown.length);
+        for (let i = 1; i <= totalSwpPeriods; i++) {
+          const openingBalance = balance;
+          const startingBalance = balance;
+          let periodWithdrawal = 0;
+
+          for (let month = 1; month <= monthsPerPeriod; month++) {
+            balance = balance * (1 + monthlyRate) - swp;
+            periodWithdrawal += swp;
+            if (balance <= 0) {
+              balance = 0;
+              break;
+            }
+          }
+
+          const periodInterest = balance - startingBalance + periodWithdrawal;
+          cumulativeInterest += periodInterest;
+
+          breakdown.push({
+            year: periodCounter++,
+            invested: totalInvested,
+            interest: cumulativeInterest,
+            totalValue: balance,
+            openingBalance,
+            periodInvestment: 0,
+            periodInterest,
+            closingBalance: balance,
+            withdrawal: periodWithdrawal,
+          });
+
+          if (balance <= 0) { break; }
+        }
+      }
+    } else if (investmentType === 'lumpsum') {
       // Lumpsum logic
       const lumpsum = parseFloat(lumpsumAmount);
       if (isNaN(lumpsum) || lumpsum <= 0) {
@@ -531,6 +673,16 @@ function MutualFundCalculator() {
               <label className="flex items-center">
                 <input
                   type="radio"
+                  value="yearly-sip"
+                  checked={investmentType === 'yearly-sip'}
+                  onChange={() => handleInvestmentTypeChange('yearly-sip')}
+                  className="mr-2"
+                />
+                <span className="text-sm">SIP (Yearly)</span>
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="radio"
                   value="lumpsum"
                   checked={investmentType === 'lumpsum'}
                   onChange={() => handleInvestmentTypeChange('lumpsum')}
@@ -541,14 +693,14 @@ function MutualFundCalculator() {
             </div>
           </div>
 
-          {investmentType === 'sip' ? (
+          {investmentType === 'sip' || investmentType === 'yearly-sip' ? (
             <div className="mb-4">
-              <label className="block text-sm font-medium text-purple-700 mb-2">💵 Monthly SIP Amount (₹)</label>
+              <label className="block text-sm font-medium text-purple-700 mb-2">💵 {investmentType === 'sip' ? 'Monthly' : 'Yearly'} SIP Amount (₹)</label>
               <input
                 type="number"
                 value={sipAmount}
                 onChange={(e) => setSipAmount(e.target.value)}
-                placeholder="e.g., 10000"
+                placeholder={investmentType === 'sip' ? 'e.g., 10000' : 'e.g., 120000'}
                 step="1"
                 min="0"
                 className="w-full px-3 py-2 border-2 border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white"

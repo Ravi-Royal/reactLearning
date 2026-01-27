@@ -20,5 +20,5 @@ export interface YearlyBreakdown {
   closingBalance: number;
 }
 
-export type InvestmentType = 'sip' | 'lumpsum';
+export type InvestmentType = 'sip' | 'yearly-sip' | 'lumpsum';
 export type BreakdownView = 'monthly' | 'quarterly' | 'yearly';
