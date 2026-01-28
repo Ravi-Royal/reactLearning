@@ -1034,10 +1034,41 @@ function MutualFundCalculator() {
                               const finalSwp = initialSwp * Math.pow(1 + inflation, swpYears - 1);
                               
                               return (
-                                <div className="text-xs text-blue-600 mt-2 space-y-1">
-                                  <div>• Initial monthly withdrawal: <span className="font-semibold">{formatCurrency(initialSwp)}</span></div>
-                                  <div>• Final monthly withdrawal (Year {swpYears}): <span className="font-semibold">{formatCurrency(finalSwp)}</span></div>
-                                </div>
+                                <>
+                                  {inflationStartFrom === 'sip-start' && yearsFromSipStart > 0 && (
+                                    <div className="bg-amber-50 border border-amber-300 rounded p-2 mt-2 mb-2">
+                                      <div className="text-xs font-semibold text-amber-800 mb-1">💡 Understanding "SIP Start Year" Mode:</div>
+                                      <div className="text-xs text-amber-700 space-y-1">
+                                        <div>• Your input: <span className="font-semibold">{formatCurrency(swp)}/month</span> represents the value in <span className="font-semibold">today's money</span> (at SIP start)</div>
+                                        <div>• After {yearsFromSipStart} years of {inflationRate}% inflation, this equals <span className="font-semibold">{formatCurrency(initialSwp)}/month</span> when SWP begins</div>
+                                        <div>• This ensures your withdrawals maintain the same purchasing power throughout</div>
+                                        
+                                        {(() => {
+                                          const sustainableInTodaysTerms = result.minSWPToSustain / Math.pow(1 + inflation, yearsFromSipStart);
+                                          const currentSwpValue = parseFloat(swpAmount);
+                                          const isOverSustainable = currentSwpValue > sustainableInTodaysTerms;
+                                          
+                                          return (
+                                            <div className={`mt-2 pt-2 border-t ${isOverSustainable ? 'border-red-300 bg-red-50' : 'border-green-300 bg-green-50'} rounded p-2`}>
+                                              <div className="text-xs font-bold">{isOverSustainable ? '⚠️ Current Entry' : '✅ Sustainable Entry'}:</div>
+                                              <div className="text-xs mt-1">
+                                                • To sustain forever: Enter max <span className="font-bold text-green-700">{formatCurrency(sustainableInTodaysTerms)}</span>
+                                              </div>
+                                              <div className="text-xs">
+                                                • You entered: <span className={`font-bold ${isOverSustainable ? 'text-red-700' : 'text-green-700'}`}>{formatCurrency(currentSwpValue)}</span>
+                                                {isOverSustainable && <span className="text-red-700"> (Exceeds sustainable by {formatCurrency(currentSwpValue - sustainableInTodaysTerms)})</span>}
+                                              </div>
+                                            </div>
+                                          );
+                                        })()}
+                                      </div>
+                                    </div>
+                                  )}
+                                  <div className="text-xs text-blue-600 mt-2 space-y-1">
+                                    <div>• {inflationStartFrom === 'sip-start' ? 'Actual first' : 'Initial'} monthly withdrawal: <span className="font-semibold">{formatCurrency(initialSwp)}</span></div>
+                                    <div>• Final monthly withdrawal (Year {swpYears}): <span className="font-semibold">{formatCurrency(finalSwp)}</span></div>
+                                  </div>
+                                </>
                               );
                             })()}
                           </div>
@@ -1064,14 +1095,55 @@ function MutualFundCalculator() {
                     <div className="text-xl font-bold text-teal-600">{formatCurrency(result.minSWPToSustain)}</div>
                     <div className="text-xs text-gray-500 mt-2">
                       {parseFloat(inflationRate) > 0 
-                        ? "Initial amount you can withdraw monthly (before inflation adjustments) without depleting your principal."
+                        ? "This is the maximum initial monthly withdrawal that keeps your corpus stable (interest = withdrawal)."
                         : "This is the maximum amount you can withdraw monthly without depleting your principal."
                       }
                     </div>
                     {parseFloat(inflationRate) > 0 && (
-                      <div className="text-xs text-amber-600 mt-1">
-                        ⚠️ Note: With {inflationRate}% inflation, sustainable withdrawal is approximately {formatCurrency(result.minSWPToSustain * (1 - parseFloat(inflationRate)/100))}/month
-                      </div>
+                      <>
+                        {inflationStartFrom === 'sip-start' && parseFloat(investmentPeriod) > 0 && parseFloat(postInvestmentHoldingPeriod) >= 0 && (
+                          <div className="bg-blue-50 border border-blue-300 rounded p-2 mt-2">
+                            <div className="text-xs font-semibold text-blue-800 mb-1">💡 In "SIP Start Year" Mode:</div>
+                            <div className="text-xs text-blue-700 space-y-1">
+                              {(() => {
+                                const inflation = parseFloat(inflationRate) / 100;
+                                const investYears = parseFloat(investmentPeriod) || 0;
+                                const holdingYears = parseFloat(postInvestmentHoldingPeriod) || 0;
+                                const yearsFromSipStart = investYears + holdingYears;
+                                const minSwpInTodaysTerms = result.minSWPToSustain / Math.pow(1 + inflation, yearsFromSipStart);
+                                
+                                return (
+                                  <>
+                                    <div>• Sustainable withdrawal in <span className="font-semibold">today's terms</span>: {formatCurrency(minSwpInTodaysTerms)}/month</div>
+                                    <div>• This grows to <span className="font-semibold">{formatCurrency(result.minSWPToSustain)}/month</span> when SWP starts (after {yearsFromSipStart} years)</div>
+                                    <div>• Then increases {inflationRate}% annually to maintain purchasing power</div>
+                                    <div className="mt-2 pt-2 border-t border-blue-300">
+                                      <div className="font-semibold text-blue-900">📝 To sustain forever, enter:</div>
+                                      <div className="bg-white rounded px-2 py-1 mt-1 border border-blue-400">
+                                        <span className="font-bold text-green-700">{formatCurrency(minSwpInTodaysTerms)}</span> in "Monthly SWP Amount" field
+                                      </div>
+                                      <div className="text-xs mt-1 italic">This will be inflation-adjusted to {formatCurrency(result.minSWPToSustain)}/month when SWP starts</div>
+                                    </div>
+                                  </>
+                                );
+                              })()}
+                            </div>
+                          </div>
+                        )}
+                        {inflationStartFrom === 'current-year' && (
+                          <div className="text-xs text-amber-600 mt-2">
+                            <div>⚠️ Important: With {inflationRate}% inflation growing each year:</div>
+                            <div className="mt-1">• Sustainable starting amount ≈ {formatCurrency(result.minSWPToSustain * (1 - parseFloat(inflationRate)/100))}/month</div>
+                            <div>• Your corpus will slowly deplete if you start with {formatCurrency(result.minSWPToSustain)}/month and apply inflation</div>
+                            <div className="mt-2 pt-2 border-t border-amber-400">
+                              <div className="font-semibold text-amber-900">📝 To sustain forever, enter approximately:</div>
+                              <div className="bg-white rounded px-2 py-1 mt-1 border border-amber-500">
+                                <span className="font-bold text-green-700">{formatCurrency(result.minSWPToSustain * (1 - parseFloat(inflationRate)/100))}</span> in "Monthly SWP Amount" field
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
 
