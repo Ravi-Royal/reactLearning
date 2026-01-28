@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import Breadcrumbs from '../../../../navigation/Breadcrumbs';
 import { RESPONSIVE_PATTERNS } from '../../../../../constants/responsive.constants';
 import { Money, safeParseNumber } from '../../../../../utils/financial';
-import { formatCurrency } from '../../../../../utils/currency';
 
 interface CalculationResult {
   newAvgPrice: number | null;
@@ -22,19 +21,6 @@ function AverageCalculator() {
   const [buyTotalPrice, setBuyTotalPrice] = useState<string>('');
   const [targetAvgPrice, setTargetAvgPrice] = useState<string>('');
   const [currentMarketPrice, setCurrentMarketPrice] = useState<string>('');
-
-  // Computed total price (never rounded in calculation)
-  const computedCurrentTotal = useMemo(() => {
-    const qty = safeParseNumber(currentQuantity, 0);
-    const price = safeParseNumber(currentAvgPrice, 0);
-    return qty > 0 && price > 0 ? Money.multiply(qty, price) : null;
-  }, [currentQuantity, currentAvgPrice]);
-
-  const computedBuyTotal = useMemo(() => {
-    const qty = safeParseNumber(buyQuantity, 0);
-    const price = safeParseNumber(buyPrice, 0);
-    return qty > 0 && price > 0 ? Money.multiply(qty, price) : null;
-  }, [buyQuantity, buyPrice]);
 
   // Calculate result using useMemo with precise decimal arithmetic
   const calculationResult = useMemo<CalculationResult>(() => {
@@ -458,16 +444,22 @@ function AverageCalculator() {
                 <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center">
                   <div className="text-gray-600 text-sm mb-1 flex items-center gap-1">Total Investment <span title="Sum of your previous and new investments." className="text-blue-400">ℹ️</span></div>
                   <div className="text-2xl font-bold text-gray-800">
-                    ₹{(
-                      ((parseFloat(currentQuantity) || 0) * (parseFloat(currentAvgPrice) || (parseFloat(currentTotalPrice) || 0) / (parseFloat(currentQuantity) || 1))) +
-                      (calculationResult.requiredQuantity * (parseFloat(currentMarketPrice) || 0))
-                    ).toFixed(2)}
+                    ₹{(() => {
+                      const currQty = safeParseNumber(currentQuantity, 0);
+                      const currPrice = currentInputMode === 'price'
+                        ? safeParseNumber(currentAvgPrice, 0)
+                        : Money.divide(safeParseNumber(currentTotalPrice, 0), Math.max(currQty, 1));
+                      const marketPrice = safeParseNumber(currentMarketPrice, 0);
+                      const currentInvestment = Money.multiply(currQty, currPrice);
+                      const newInvestment = Money.multiply(calculationResult.requiredQuantity || 0, marketPrice);
+                      return Money.add(currentInvestment, newInvestment).toFixed(2);
+                    })()}
                   </div>
                 </div>
                 <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center">
                   <div className="text-indigo-700 text-sm mb-1 flex items-center gap-1">New Purchase Amount <span title="Amount needed for this new purchase only." className="text-blue-400">ℹ️</span></div>
                   <div className="text-2xl font-bold text-indigo-700">
-                    ₹{(calculationResult.requiredQuantity * (parseFloat(currentMarketPrice) || 0)).toFixed(2)}
+                    ₹{Money.multiply(calculationResult.requiredQuantity || 0, safeParseNumber(currentMarketPrice, 0)).toFixed(2)}
                   </div>
                 </div>
                 <div className="bg-orange-100 rounded-lg shadow p-4 flex flex-col items-center border-2 border-orange-300">
@@ -488,22 +480,27 @@ function AverageCalculator() {
                 <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center">
                   <div className="text-gray-600 text-sm mb-1 flex items-center gap-1">Total Investment <span title="Sum of your previous and new investments." className="text-blue-400">ℹ️</span></div>
                   <div className="text-2xl font-bold text-gray-800">
-                    ₹{(
-                      ((parseFloat(currentQuantity) || 0) * (parseFloat(currentAvgPrice) || (parseFloat(currentTotalPrice) || 0) / (parseFloat(currentQuantity) || 1))) +
-                      (buyInputMode === 'price'
-                        ? ((parseFloat(buyQuantity) || 0) * (parseFloat(buyPrice) || 0))
-                        : (parseFloat(buyTotalPrice) || 0))
-                    ).toFixed(2)}
+                    ₹{(() => {
+                      const currQty = safeParseNumber(currentQuantity, 0);
+                      const currPrice = currentInputMode === 'price'
+                        ? safeParseNumber(currentAvgPrice, 0)
+                        : Money.divide(safeParseNumber(currentTotalPrice, 0), Math.max(currQty, 1));
+                      const currentInvestment = Money.multiply(currQty, currPrice);
+                      const newInvestment = buyInputMode === 'price'
+                        ? Money.multiply(safeParseNumber(buyQuantity, 0), safeParseNumber(buyPrice, 0))
+                        : safeParseNumber(buyTotalPrice, 0);
+                      return Money.add(currentInvestment, newInvestment).toFixed(2);
+                    })()}
                   </div>
                 </div>
                 <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center">
                   <div className="text-indigo-700 text-sm mb-1 flex items-center gap-1">New Purchase Amount <span title="Amount needed for this new purchase only." className="text-blue-400">ℹ️</span></div>
                   <div className="text-2xl font-bold text-indigo-700">
-                    ₹{(
-                      buyInputMode === 'price'
-                        ? ((parseFloat(buyQuantity) || 0) * (parseFloat(buyPrice) || 0))
-                        : (parseFloat(buyTotalPrice) || 0)
-                    ).toFixed(2)}
+                    ₹{(() => {
+                      return buyInputMode === 'price'
+                        ? Money.multiply(safeParseNumber(buyQuantity, 0), safeParseNumber(buyPrice, 0)).toFixed(2)
+                        : safeParseNumber(buyTotalPrice, 0).toFixed(2);
+                    })()}
                   </div>
                 </div>
                 <div className="bg-orange-100 rounded-lg shadow p-4 flex flex-col items-center border-2 border-orange-300">
@@ -512,11 +509,11 @@ function AverageCalculator() {
                 </div>
               </div>
               <div className="mt-4 text-center text-gray-700 text-base">
-                After buying <span className="font-semibold">{(parseFloat(buyQuantity) || 0).toFixed(0)}</span> shares for ₹<span className="font-semibold">{(
-                  buyInputMode === 'price'
-                    ? ((parseFloat(buyQuantity) || 0) * (parseFloat(buyPrice) || 0))
-                    : (parseFloat(buyTotalPrice) || 0)
-                ).toFixed(2)}</span>, your new average price will be <span className="font-semibold text-orange-600">₹{calculationResult.newAvgPrice.toFixed(2)}</span> for a total of <span className="font-semibold">{((parseFloat(currentQuantity) || 0) + (parseFloat(buyQuantity) || 0)).toFixed(0)}</span> shares.
+                After buying <span className="font-semibold">{safeParseNumber(buyQuantity, 0).toFixed(0)}</span> shares for ₹<span className="font-semibold">{(() => {
+                  return buyInputMode === 'price'
+                    ? Money.multiply(safeParseNumber(buyQuantity, 0), safeParseNumber(buyPrice, 0)).toFixed(2)
+                    : safeParseNumber(buyTotalPrice, 0).toFixed(2);
+                })()}</span>, your new average price will be <span className="font-semibold text-orange-600">₹{calculationResult.newAvgPrice.toFixed(2)}</span> for a total of <span className="font-semibold">{Money.add(safeParseNumber(currentQuantity, 0), safeParseNumber(buyQuantity, 0)).toFixed(0)}</span> shares.
               </div>
             </div>
           )}

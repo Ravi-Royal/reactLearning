@@ -116,12 +116,12 @@ function StockProfitCalculator() {
       }
     });
 
-    if (flows.length === 0) return null;
-    
+    if (flows.length === 0) {return null;}
+
     // Validate: must have both inflow and outflow
     const hasOutflow = flows.some(f => f.amount < 0);
     const hasInflow = flows.some(f => f.amount > 0);
-    if (!hasOutflow || !hasInflow) return null;
+    if (!hasOutflow || !hasInflow) {return null;}
 
     const npv = (rate: number) => flows.reduce((s, f) => Money.add(s, Money.divide(f.amount, Money.pow(1 + rate, f.years))), 0);
 
@@ -130,7 +130,7 @@ function StockProfitCalculator() {
     let fLow = npv(low);
     let fHigh = npv(high);
 
-    if (isNaN(fLow) || isNaN(fHigh) || !isFinite(fLow) || !isFinite(fHigh)) return null;
+    if (isNaN(fLow) || isNaN(fHigh) || !isFinite(fLow) || !isFinite(fHigh)) {return null;}
 
     // If signs are same, try expanding high
     let attempts = 0;
@@ -138,17 +138,17 @@ function StockProfitCalculator() {
       high *= 2;
       fHigh = npv(high);
       attempts += 1;
-      if (!isFinite(fHigh)) return null;
+      if (!isFinite(fHigh)) {return null;}
     }
 
-    if (fLow * fHigh > 0) return null;
+    if (fLow * fHigh > 0) {return null;}
 
     // Bisection with tighter tolerance for financial accuracy
     let mid = 0;
     for (let i = 0; i < 100; i++) {
       mid = (low + high) / 2;
       const fMid = npv(mid);
-      if (Math.abs(fMid) < 1e-12) break; // Tighter tolerance
+      if (Math.abs(fMid) < 1e-12) {break;} // Tighter tolerance
       if (fLow * fMid <= 0) {
         high = mid;
         fHigh = fMid;
@@ -186,7 +186,12 @@ function StockProfitCalculator() {
                 <button
                   className="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors flex items-center gap-1 border border-blue-200 px-2 py-1 rounded"
                   title="Simulate Profit"
-                  onClick={() => setSimModal({ open: true, price: parseFloat(group.pricePerStock) || 0, profit: (parseFloat(group.totalProfit) || 0) / (parseFloat(group.numStocks) || 1) })}
+                  onClick={() => {
+                    const price = safeParseNumber(group.pricePerStock, 0);
+                    const profit = safeParseNumber(group.totalProfit, 0);
+                    const numStocks = Math.max(safeParseNumber(group.numStocks, 1), 1);
+                    setSimModal({ open: true, price, profit: Money.divide(profit, numStocks) });
+                  }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M12 20c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8z" /></svg>
                   Simulate Profit
@@ -322,7 +327,12 @@ function StockProfitCalculator() {
               <div className="bg-white rounded-lg shadow-lg p-4 border-2 border-gray-300 relative">
                 <button
                   className="absolute top-2 right-2 flex items-center text-blue-600 hover:text-blue-800 font-semibold text-sm px-3 py-1 rounded border border-blue-200 bg-white shadow transition-colors duration-150 z-10"
-                  onClick={() => setSimModal({ open: true, price: parseFloat(group.pricePerStock) || 0, profit: (parseFloat(group.totalProfit) || 0) / (parseFloat(group.numStocks) || 1) })}
+                  onClick={() => {
+                    const price = safeParseNumber(group.pricePerStock, 0);
+                    const profit = safeParseNumber(group.totalProfit, 0);
+                    const numStocks = Math.max(safeParseNumber(group.numStocks, 1), 1);
+                    setSimModal({ open: true, price, profit: Money.divide(profit, numStocks) });
+                  }}
                   title="Simulate Profit"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M12 20c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8z" /></svg>

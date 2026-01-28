@@ -41,6 +41,11 @@ export function formatCurrency(
   amount: number,
   options: CurrencyFormatOptions = {},
 ): string {
+  // Guard against invalid numbers
+  if (!isFinite(amount) || isNaN(amount)) {
+    return options.showSymbol !== false ? '₹0.00' : '0.00';
+  }
+
   const {
     decimals = 2,
     compact = false,

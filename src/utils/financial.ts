@@ -21,6 +21,9 @@ export class Money {
    * Add two numbers with precision
    */
   static add(a: number, b: number): number {
+    if (!isFinite(a) || !isFinite(b)) {
+      throw new Error('Invalid number in addition');
+    }
     return new Decimal(a).plus(b).toNumber();
   }
 
@@ -28,6 +31,9 @@ export class Money {
    * Subtract b from a with precision
    */
   static subtract(a: number, b: number): number {
+    if (!isFinite(a) || !isFinite(b)) {
+      throw new Error('Invalid number in subtraction');
+    }
     return new Decimal(a).minus(b).toNumber();
   }
 
@@ -35,6 +41,9 @@ export class Money {
    * Multiply two numbers with precision
    */
   static multiply(a: number, b: number): number {
+    if (!isFinite(a) || !isFinite(b)) {
+      throw new Error('Invalid number in multiplication');
+    }
     return new Decimal(a).times(b).toNumber();
   }
 
@@ -43,8 +52,11 @@ export class Money {
    * @throws Error if b is zero
    */
   static divide(a: number, b: number): number {
-    if (b === 0) {
-      throw new Error('Division by zero');
+    if (b === 0 || !isFinite(b)) {
+      throw new Error('Division by zero or invalid divisor');
+    }
+    if (!isFinite(a)) {
+      throw new Error('Invalid dividend');
     }
     return new Decimal(a).div(b).toNumber();
   }
