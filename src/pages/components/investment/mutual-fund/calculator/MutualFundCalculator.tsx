@@ -1,6 +1,8 @@
 import { useState, useMemo, useRef } from 'react';
 import Breadcrumbs from '../../../../navigation/Breadcrumbs';
 import { Link } from 'react-router-dom';
+import { Money, safeParseNumber } from '../../../../../utils/financial';
+import { formatCurrency } from '../../../../../utils/currency';
 
 interface CalculationResult {
   corpusAfterInvestment: number;
@@ -42,24 +44,19 @@ function MutualFundCalculator() {
   const [breakdownView, setBreakdownView] = useState<BreakdownView>('yearly');
 
   const calculateCompoundInterest = (principal: number, rate: number, time: number): number => {
-    return principal * Math.pow(1 + rate / 100, time);
+    return Money.compoundInterest(principal, rate, time);
   };
 
   // SIP calculation using annuity due formula (payment at beginning of period)
   // FV = P × [(1 + r)^n - 1] / r × (1 + r) where r = monthly rate, n = months, P = monthly investment
   const calculateSIPFutureValue = (monthlyInvestment: number, annualRate: number, years: number): number => {
-    const monthlyRate = annualRate / 12 / 100;
-    const months = years * 12;
-    const futureValue = monthlyInvestment * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
-    return futureValue;
+    return Money.sipFutureValue(monthlyInvestment, annualRate, years);
   };
 
   // Yearly SIP calculation using annuity due formula (payment at beginning of period)
   // FV = P × [(1 + r)^n - 1] / r × (1 + r) where r = annual rate, n = years, P = yearly investment
   const calculateYearlySIPFutureValue = (yearlyInvestment: number, annualRate: number, years: number): number => {
-    const yearlyRate = annualRate / 100;
-    const futureValue = yearlyInvestment * ((Math.pow(1 + yearlyRate, years) - 1) / yearlyRate) * (1 + yearlyRate);
-    return futureValue;
+    return Money.yearlySipFutureValue(yearlyInvestment, annualRate, years);
   };
 
   const calculateMonthsToZero = (
@@ -73,24 +70,31 @@ function MutualFundCalculator() {
       return { years: null, months: null };
     }
 
-    const monthlyRate = annualReturn / 12 / 100;
-    const annualInflationRate = inflationRate / 100;
+    const monthlyRate = Money.divide(annualReturn, 1200); // annualReturn / 12 / 100
+    const annualInflationRate = Money.divide(inflationRate, 100);
     let balance = initialAmount;
     let totalMonths = 0;
     let currentWithdrawal = monthlyWithdrawal;
     
     // If inflation starts from SIP start, apply initial inflation
     if (applyInflationYears > 0 && inflationRate > 0) {
-      currentWithdrawal = monthlyWithdrawal * Math.pow(1 + annualInflationRate, applyInflationYears);
+      currentWithdrawal = Money.multiply(
+        monthlyWithdrawal, 
+        Money.pow(Money.add(1, annualInflationRate), applyInflationYears)
+      );
     }
 
     while (balance > 0 && totalMonths < 1200) {
-      // Apply annual inflation at the start of each year
-      if (inflationRate > 0 && totalMonths > 0 && totalMonths % 12 === 0) {
-        currentWithdrawal = currentWithdrawal * (1 + annualInflationRate);
+      // Apply annual inflation AFTER first 12 months, then every 12 months
+      // FIX: Changed from totalMonths % 12 === 0 to (totalMonths - 1) % 12 === 0 && totalMonths > 12
+      if (inflationRate > 0 && totalMonths > 12 && (totalMonths - 1) % 12 === 0) {
+        currentWithdrawal = Money.multiply(currentWithdrawal, Money.add(1, annualInflationRate));
       }
       
-      balance = balance * (1 + monthlyRate) - currentWithdrawal;
+      // balance = balance * (1 + monthlyRate) - currentWithdrawal
+      const interest = Money.multiply(balance, monthlyRate);
+      balance = Money.add(balance, interest);
+      balance = Money.subtract(balance, currentWithdrawal);
       totalMonths++;
 
       if (balance <= 0) {
@@ -109,20 +113,20 @@ function MutualFundCalculator() {
   };
 
   const calculateMinSWP = (initialAmount: number, annualReturn: number): number => {
-    const monthlyRate = annualReturn / 12 / 100;
-    return initialAmount * monthlyRate;
+    const monthlyRate = Money.divide(annualReturn, 1200); // annualReturn / 12 / 100
+    return Money.multiply(initialAmount, monthlyRate);
   };
 
   // Compute result automatically using useMemo
   const result = useMemo<CalculationResult | null>(() => {
-    const returnRate = parseFloat(annualReturn);
-    const investYears = parseFloat(investmentPeriod);
-    const holdingYears = parseFloat(postInvestmentHoldingPeriod) || 0;
-    const withdrawal = parseFloat(oneTimeWithdrawal) || 0;
-    const swp = parseFloat(swpAmount) || 0;
-    const swpYears = parseFloat(swpPeriod) || 0;
+    const returnRate = safeParseNumber(annualReturn, 0);
+    const investYears = safeParseNumber(investmentPeriod, 0);
+    const holdingYears = safeParseNumber(postInvestmentHoldingPeriod, 0);
+    const withdrawal = safeParseNumber(oneTimeWithdrawal, 0);
+    const swp = safeParseNumber(swpAmount, 0);
+    const swpYears = safeParseNumber(swpPeriod, 0);
 
-    if (isNaN(returnRate) || isNaN(investYears) || returnRate < 0 || investYears <= 0) {
+    if (returnRate < 0 || investYears <= 0) {
       return null;
     }
 
@@ -131,22 +135,22 @@ function MutualFundCalculator() {
 
     // Step 1: Calculate corpus after investment period
     if (investmentType === 'sip') {
-      const sip = parseFloat(sipAmount);
-      if (isNaN(sip) || sip <= 0) {
+      const sip = safeParseNumber(sipAmount, 0);
+      if (sip <= 0) {
         return null;
       }
       accumulatedAmount = calculateSIPFutureValue(sip, returnRate, investYears);
-      totalInvested = sip * investYears * 12;
+      totalInvested = Money.multiply(Money.multiply(sip, investYears), 12);
     } else if (investmentType === 'yearly-sip') {
-      const yearlySip = parseFloat(sipAmount);
-      if (isNaN(yearlySip) || yearlySip <= 0) {
+      const yearlySip = safeParseNumber(sipAmount, 0);
+      if (yearlySip <= 0) {
         return null;
       }
       accumulatedAmount = calculateYearlySIPFutureValue(yearlySip, returnRate, investYears);
-      totalInvested = yearlySip * investYears;
+      totalInvested = Money.multiply(yearlySip, investYears);
     } else {
-      const lumpsum = parseFloat(lumpsumAmount);
-      if (isNaN(lumpsum) || lumpsum <= 0) {
+      const lumpsum = safeParseNumber(lumpsumAmount, 0);
+      if (lumpsum <= 0) {
         return null;
       }
       accumulatedAmount = calculateCompoundInterest(lumpsum, returnRate, investYears);
@@ -164,7 +168,7 @@ function MutualFundCalculator() {
 
     // Step 3: Apply one-time withdrawal if specified
     if (withdrawal > 0) {
-      currentBalance = Math.max(0, currentBalance - withdrawal);
+      currentBalance = Money.max(Money.subtract(currentBalance, withdrawal), 0);
     }
 
     // For SWP Analysis: use balance after holding and withdrawal, but before SWP
@@ -176,14 +180,17 @@ function MutualFundCalculator() {
     let monthsToZero: number | null = null;
 
     if (swp > 0 && balanceForSWPCalc > 0) {
-      const inflation = parseFloat(inflationRate) || 0;
-      const annualInflationRate = inflation / 100;
-      const yearsFromSipStart = inflationStartFrom === 'sip-start' ? investYears + holdingYears : 0;
+      const inflation = safeParseNumber(inflationRate, 0);
+      const annualInflationRate = Money.divide(inflation, 100);
+      const yearsFromSipStart = inflationStartFrom === 'sip-start' ? Money.add(investYears, holdingYears) : 0;
       
       // Calculate the initial SWP amount (after applying inflation from SIP start if needed)
       let initialSwpAmount = swp;
       if (inflationStartFrom === 'sip-start' && yearsFromSipStart > 0 && inflation > 0) {
-        initialSwpAmount = swp * Math.pow(1 + annualInflationRate, yearsFromSipStart);
+        initialSwpAmount = Money.multiply(
+          swp, 
+          Money.pow(Money.add(1, annualInflationRate), yearsFromSipStart)
+        );
       }
       
       // Compare initial SWP amount with minimum sustainable amount
@@ -200,27 +207,35 @@ function MutualFundCalculator() {
     // Step 4: Apply SWP withdrawals for final balance (with inflation adjustment)
     let finalBalance = currentBalance;
     if (swp > 0 && swpYears > 0 && currentBalance > 0) {
-      const monthlyRate = returnRate / 12 / 100;
-      const inflation = parseFloat(inflationRate) || 0;
-      const annualInflationRate = inflation / 100;
-      const totalSwpMonths = Math.min(swpYears * 12, 600);
+      const monthlyRate = Money.divide(returnRate, 1200); // returnRate / 12 / 100
+      const inflation = safeParseNumber(inflationRate, 0);
+      const annualInflationRate = Money.divide(inflation, 100);
+      const totalSwpMonths = Math.min(Money.multiply(swpYears, 12), 600);
       
       // Calculate total years passed from SIP start to SWP start (for inflation calculation)
-      const yearsFromSipStart = inflationStartFrom === 'sip-start' ? investYears + holdingYears : 0;
+      const yearsFromSipStart = inflationStartFrom === 'sip-start' ? Money.add(investYears, holdingYears) : 0;
       
       let currentSwpAmount = swp;
       // If calculating from SIP start, apply inflation for years already passed
       if (inflationStartFrom === 'sip-start' && yearsFromSipStart > 0 && inflation > 0) {
-        currentSwpAmount = swp * Math.pow(1 + annualInflationRate, yearsFromSipStart);
+        currentSwpAmount = Money.multiply(
+          swp, 
+          Money.pow(Money.add(1, annualInflationRate), yearsFromSipStart)
+        );
       }
       
       for (let month = 1; month <= totalSwpMonths; month++) {
-        // Apply annual inflation at the start of each year
-        if (inflation > 0 && month > 1 && (month - 1) % 12 === 0) {
-          currentSwpAmount = currentSwpAmount * (1 + annualInflationRate);
+        // Apply annual inflation AFTER first 12 months (at month 13, 25, 37...)
+        // FIX: Changed from month > 1 && (month - 1) % 12 === 0 to month > 12 && (month - 1) % 12 === 0
+        if (inflation > 0 && month > 12 && (month - 1) % 12 === 0) {
+          currentSwpAmount = Money.multiply(currentSwpAmount, Money.add(1, annualInflationRate));
         }
         
-        finalBalance = finalBalance * (1 + monthlyRate) - currentSwpAmount;
+        // finalBalance = finalBalance * (1 + monthlyRate) - currentSwpAmount
+        const interest = Money.multiply(finalBalance, monthlyRate);
+        finalBalance = Money.add(finalBalance, interest);
+        finalBalance = Money.subtract(finalBalance, currentSwpAmount);
+        
         if (finalBalance <= 0) {
           finalBalance = 0;
           break;
@@ -229,14 +244,14 @@ function MutualFundCalculator() {
     }
 
     return {
-      corpusAfterInvestment: Math.max(0, accumulatedAmount),
-      corpusAfterHoldingPeriod: Math.max(0, corpusAfterHoldingPeriod),
-      finalBalance: Math.max(0, finalBalance),
-      totalInvested: Math.max(0, totalInvested),
-      totalReturns: accumulatedAmount - totalInvested,
+      corpusAfterInvestment: Money.max(accumulatedAmount, 0),
+      corpusAfterHoldingPeriod: Money.max(corpusAfterHoldingPeriod, 0),
+      finalBalance: Money.max(finalBalance, 0),
+      totalInvested: Money.max(totalInvested, 0),
+      totalReturns: Money.subtract(accumulatedAmount, totalInvested),
       yearsToZero,
       monthsToZero,
-      minSWPToSustain: Math.max(0, minSWP),
+      minSWPToSustain: Money.max(minSWP, 0),
     };
   }, [investmentType, sipAmount, lumpsumAmount, annualReturn, investmentPeriod, postInvestmentHoldingPeriod, oneTimeWithdrawal, swpAmount, swpPeriod, inflationRate, inflationStartFrom]);
 
@@ -267,29 +282,29 @@ function MutualFundCalculator() {
 
   // Calculate breakdown for table based on selected view
   const yearlyBreakdown = useMemo<YearlyBreakdown[]>(() => {
-    const returnRate = parseFloat(annualReturn);
-    const investYears = parseFloat(investmentPeriod);
-    const holdingYears = parseFloat(postInvestmentHoldingPeriod) || 0;
-    const withdrawal = parseFloat(oneTimeWithdrawal) || 0;
-    const swp = parseFloat(swpAmount) || 0;
-    const swpYears = parseFloat(swpPeriod) || 0;
+    const returnRate = safeParseNumber(annualReturn, 0);
+    const investYears = safeParseNumber(investmentPeriod, 0);
+    const holdingYears = safeParseNumber(postInvestmentHoldingPeriod, 0);
+    const withdrawal = safeParseNumber(oneTimeWithdrawal, 0);
+    const swp = safeParseNumber(swpAmount, 0);
+    const swpYears = safeParseNumber(swpPeriod, 0);
 
-    if (isNaN(returnRate) || isNaN(investYears) || returnRate < 0 || investYears <= 0) {
+    if (returnRate < 0 || investYears <= 0) {
       return [];
     }
 
-    const monthlyRate = returnRate / 12 / 100;
+    const monthlyRate = Money.divide(returnRate, 1200); // returnRate / 12 / 100
     const breakdown: YearlyBreakdown[] = [];
 
     // Determine period increment based on view
     const monthsPerPeriod = breakdownView === 'monthly' ? 1 : breakdownView === 'quarterly' ? 3 : 12;
-    const periodsPerYear = 12 / monthsPerPeriod;
+    const periodsPerYear = Money.divide(12, monthsPerPeriod);
     const maxMonths = 600;
-    const maxPeriods = Math.floor(maxMonths / monthsPerPeriod);
+    const maxPeriods = Math.floor(Money.divide(maxMonths, monthsPerPeriod));
 
     if (investmentType === 'sip') {
-      const sip = parseFloat(sipAmount);
-      if (isNaN(sip) || sip <= 0) {
+      const sip = safeParseNumber(sipAmount, 0);
+      if (sip <= 0) {
         return [];
       }
 
@@ -299,20 +314,23 @@ function MutualFundCalculator() {
       let periodCounter = 1;
 
       // Investment phase
-      const totalInvestmentPeriods = investYears * periodsPerYear;
+      const totalInvestmentPeriods = Money.multiply(investYears, periodsPerYear);
       for (let i = 1; i <= totalInvestmentPeriods; i++) {
         const openingBalance = balance;
         let periodInvestment = 0;
         const startingBalance = balance;
 
         for (let month = 1; month <= monthsPerPeriod; month++) {
-          balance = (balance + sip) * (1 + monthlyRate);
-          totalInvested += sip;
-          periodInvestment += sip;
+          // balance = (balance + sip) * (1 + monthlyRate)
+          balance = Money.add(balance, sip);
+          const interest = Money.multiply(balance, monthlyRate);
+          balance = Money.add(balance, interest);
+          totalInvested = Money.add(totalInvested, sip);
+          periodInvestment = Money.add(periodInvestment, sip);
         }
 
-        const periodInterest = balance - startingBalance - periodInvestment;
-        cumulativeInterest += periodInterest;
+        const periodInterest = Money.subtract(Money.subtract(balance, startingBalance), periodInvestment);
+        cumulativeInterest = Money.add(cumulativeInterest, periodInterest);
 
         breakdown.push({
           year: periodCounter++,
@@ -727,14 +745,6 @@ function MutualFundCalculator() {
   // Ref for SWP start row (must be after yearlyBreakdown is defined)
   const swpStartRowRef = useRef<HTMLTableRowElement | null>(null);
   const swpStartIndex = yearlyBreakdown.findIndex(row => row.withdrawal !== undefined);
-
-  const formatCurrency = (amount: number): string => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
 
   return (
     <div className="p-4 sm:p-6 md:p-8 lg:p-10">

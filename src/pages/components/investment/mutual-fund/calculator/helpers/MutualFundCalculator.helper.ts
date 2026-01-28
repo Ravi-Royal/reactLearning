@@ -1,3 +1,5 @@
+import { Money } from '../../../../../utils/financial';
+
 /**
  * Calculates compound interest for lumpsum investments
  * @param principal - Initial investment amount
@@ -10,12 +12,12 @@ export const calculateCompoundInterest = (
   rate: number,
   time: number,
 ): number => {
-  return principal * Math.pow(1 + rate / 100, time);
+  return Money.compoundInterest(principal, rate, time);
 };
 
 /**
  * Calculates future value of SIP (Systematic Investment Plan)
- * Uses month-by-month compounding
+ * Uses month-by-month compounding with precise decimal arithmetic
  * @param monthlyInvestment - Monthly SIP amount
  * @param annualRate - Expected annual return rate (percentage)
  * @param years - Investment period in years
@@ -26,17 +28,12 @@ export const calculateSIPFutureValue = (
   annualRate: number,
   years: number,
 ): number => {
-  const monthlyRate = annualRate / 12 / 100;
-  const months = years * 12;
-  const futureValue =
-    monthlyInvestment *
-    ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) *
-    (1 + monthlyRate);
-  return futureValue;
+  return Money.sipFutureValue(monthlyInvestment, annualRate, years);
 };
 
 /**
  * Calculates how many months until balance reaches zero with SWP
+ * Uses precise decimal arithmetic to avoid floating-point errors
  * @param initialAmount - Starting corpus amount
  * @param monthlyWithdrawal - Monthly withdrawal amount
  * @param annualReturn - Expected annual return rate (percentage)
@@ -51,13 +48,16 @@ export const calculateMonthsToZero = (
     return { years: null, months: null };
   }
 
-  const monthlyRate = annualReturn / 12 / 100;
+  const monthlyRate = Money.divide(annualReturn, 1200); // annualReturn / 12 / 100
   let balance = initialAmount;
   let totalMonths = 0;
 
   // Limit to 100 years (1200 months) to avoid infinite loops
   while (balance > 0 && totalMonths < 1200) {
-    balance = balance * (1 + monthlyRate) - monthlyWithdrawal;
+    // balance = balance * (1 + monthlyRate) - monthlyWithdrawal
+    const interest = Money.multiply(balance, monthlyRate);
+    balance = Money.add(balance, interest);
+    balance = Money.subtract(balance, monthlyWithdrawal);
     totalMonths++;
 
     if (balance <= 0) {
@@ -78,6 +78,7 @@ export const calculateMonthsToZero = (
 /**
  * Calculates minimum sustainable monthly SWP amount
  * This is the amount that can be withdrawn indefinitely without depleting principal
+ * Uses precise decimal arithmetic
  * @param initialAmount - Starting corpus amount
  * @param annualReturn - Expected annual return rate (percentage)
  * @returns Minimum sustainable monthly withdrawal amount
@@ -86,6 +87,6 @@ export const calculateMinSWP = (
   initialAmount: number,
   annualReturn: number,
 ): number => {
-  const monthlyRate = annualReturn / 12 / 100;
-  return initialAmount * monthlyRate;
+  const monthlyRate = Money.divide(annualReturn, 1200); // annualReturn / 12 / 100
+  return Money.multiply(initialAmount, monthlyRate);
 };

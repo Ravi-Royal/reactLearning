@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import ProfitSimulatorModal from './ProfitSimulatorModal';
 import Breadcrumbs from '../../../../navigation/Breadcrumbs';
 import { RESPONSIVE_PATTERNS } from '../../../../../constants/responsive.constants';
+import { Money, safeParseNumber } from '../../../../../utils/financial';
 
 interface StockGroup {
   id: number;
@@ -42,32 +43,34 @@ function StockProfitCalculator() {
   };
 
   const calculateProfit = (group: StockGroup) => {
-    const numStocks = parseFloat(group.numStocks) || 0;
-    const pricePerStock = parseFloat(group.pricePerStock) || 0;
-    const currentPricePerShare = parseFloat(group.currentPricePerShare || '') || 0;
-    const totalProfitInput = parseFloat(group.totalProfit) || 0;
-    const profitPerShareInput = parseFloat(group.profitPerShare) || 0;
+    const numStocks = safeParseNumber(group.numStocks, 0);
+    const pricePerStock = safeParseNumber(group.pricePerStock, 0);
+    const currentPricePerShare = safeParseNumber(group.currentPricePerShare || '', 0);
+    const totalProfitInput = safeParseNumber(group.totalProfit, 0);
+    const profitPerShareInput = safeParseNumber(group.profitPerShare, 0);
     let totalProfit = 0;
     // Use only the selected input type
     if (group.profitInputType === 'currentPrice' && currentPricePerShare > 0) {
-      totalProfit = (currentPricePerShare - pricePerStock) * numStocks;
+      // totalProfit = (currentPricePerShare - pricePerStock) * numStocks
+      const profitPerShare = Money.subtract(currentPricePerShare, pricePerStock);
+      totalProfit = Money.multiply(profitPerShare, numStocks);
     } else if (group.profitInputType === 'total' && totalProfitInput !== 0) {
       totalProfit = totalProfitInput;
     } else if (group.profitInputType === 'perShare' && profitPerShareInput !== 0) {
-      totalProfit = profitPerShareInput * numStocks;
+      totalProfit = Money.multiply(profitPerShareInput, numStocks);
     } else {
       totalProfit = 0;
     }
-    const age = parseFloat(group.age) || 0;
+    const age = safeParseNumber(group.age, 0);
 
-    const totalInvested = numStocks * pricePerStock;
-    const profitPercentage = totalInvested > 0 ? (totalProfit / totalInvested) * 100 : 0;
+    const totalInvested = Money.multiply(numStocks, pricePerStock);
+    const profitPercentage = totalInvested > 0 ? Money.multiply(Money.divide(totalProfit, totalInvested), 100) : 0;
 
     let annualizedReturn: number | null = null;
     if (age > 0 && totalInvested > 0) {
-      const years = group.ageUnit === 'days' ? age / 365 : age / 12;
-      const totalReturn = totalProfit / totalInvested;
-      annualizedReturn = (Math.pow(1 + totalReturn, 1 / years) - 1) * 100;
+      const years = group.ageUnit === 'days' ? Money.divide(age, 365) : Money.divide(age, 12);
+      const totalReturn = Money.divide(totalProfit, totalInvested);
+      annualizedReturn = Money.multiply(Money.annualizedReturn(totalReturn, years), 100);
     }
 
     return {
@@ -79,48 +82,55 @@ function StockProfitCalculator() {
     };
   };
 
-  // Calculate overall totals
-  const overallTotals = stockGroups.reduce((acc, group) => {
-    const result = calculateProfit(group);
-    if (result.isValid) {
-      acc.totalInvested += result.totalInvested;
-      acc.totalProfit += result.totalProfit;
-    }
-    return acc;
-  }, { totalInvested: 0, totalProfit: 0 });
+  // Calculate overall totals with useMemo for performance
+  const overallTotals = useMemo(() => {
+    return stockGroups.reduce((acc, group) => {
+      const result = calculateProfit(group);
+      if (result.isValid) {
+        acc.totalInvested = Money.add(acc.totalInvested, result.totalInvested);
+        acc.totalProfit = Money.add(acc.totalProfit, result.totalProfit);
+      }
+      return acc;
+    }, { totalInvested: 0, totalProfit: 0 });
+  }, [stockGroups]);
 
   const overallProfitPercentage = overallTotals.totalInvested > 0
-    ? (overallTotals.totalProfit / overallTotals.totalInvested) * 100
+    ? Money.multiply(Money.divide(overallTotals.totalProfit, overallTotals.totalInvested), 100)
     : 0;
 
   // Compute XIRR (money-weighted IRR) across groups when age is provided
-  const computeXIRR = (groups: StockGroup[]): number | null => {
+  const computeXIRR = useMemo(() => {
     const flows: { amount: number; years: number }[] = [];
 
-    groups.forEach(group => {
-      const numStocks = parseFloat(group.numStocks) || 0;
-      const pricePerStock = parseFloat(group.pricePerStock) || 0;
-      const totalProfit = parseFloat(group.totalProfit) || 0;
-      const age = parseFloat(group.age) || 0;
+    stockGroups.forEach(group => {
+      const numStocks = safeParseNumber(group.numStocks, 0);
+      const pricePerStock = safeParseNumber(group.pricePerStock, 0);
+      const totalProfit = safeParseNumber(group.totalProfit, 0);
+      const age = safeParseNumber(group.age, 0);
 
-      const invested = numStocks * pricePerStock;
+      const invested = Money.multiply(numStocks, pricePerStock);
       if (invested > 0 && age > 0) {
-        const years = group.ageUnit === 'days' ? age / 365 : age / 12;
+        const years = group.ageUnit === 'days' ? Money.divide(age, 365) : Money.divide(age, 12);
         flows.push({ amount: -invested, years: 0 });
-        flows.push({ amount: invested + totalProfit, years });
+        flows.push({ amount: Money.add(invested, totalProfit), years });
       }
     });
 
-    if (flows.length === 0) {return null;}
+    if (flows.length === 0) return null;
+    
+    // Validate: must have both inflow and outflow
+    const hasOutflow = flows.some(f => f.amount < 0);
+    const hasInflow = flows.some(f => f.amount > 0);
+    if (!hasOutflow || !hasInflow) return null;
 
-    const npv = (rate: number) => flows.reduce((s, f) => s + f.amount / Math.pow(1 + rate, f.years), 0);
+    const npv = (rate: number) => flows.reduce((s, f) => Money.add(s, Money.divide(f.amount, Money.pow(1 + rate, f.years))), 0);
 
     let low = -0.9999;
     let high = 10;
     let fLow = npv(low);
     let fHigh = npv(high);
 
-    if (isNaN(fLow) || isNaN(fHigh)) {return null;}
+    if (isNaN(fLow) || isNaN(fHigh) || !isFinite(fLow) || !isFinite(fHigh)) return null;
 
     // If signs are same, try expanding high
     let attempts = 0;
@@ -128,16 +138,17 @@ function StockProfitCalculator() {
       high *= 2;
       fHigh = npv(high);
       attempts += 1;
+      if (!isFinite(fHigh)) return null;
     }
 
-    if (fLow * fHigh > 0) {return null;}
+    if (fLow * fHigh > 0) return null;
 
-    // Bisection
+    // Bisection with tighter tolerance for financial accuracy
     let mid = 0;
-    for (let i = 0; i < 80; i++) {
+    for (let i = 0; i < 100; i++) {
       mid = (low + high) / 2;
       const fMid = npv(mid);
-      if (Math.abs(fMid) < 1e-8) {break;}
+      if (Math.abs(fMid) < 1e-12) break; // Tighter tolerance
       if (fLow * fMid <= 0) {
         high = mid;
         fHigh = fMid;
@@ -148,9 +159,9 @@ function StockProfitCalculator() {
     }
 
     return mid * 100; // percentage
-  };
+  }, [stockGroups]);
 
-  const overallXIRR = computeXIRR(stockGroups);
+  const overallXIRR = computeXIRR;
 
   return (
     <div className={`bg-white rounded-lg shadow-md ${RESPONSIVE_PATTERNS.padding.cardLg} border border-gray-200`}>

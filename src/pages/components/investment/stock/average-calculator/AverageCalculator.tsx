@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Breadcrumbs from '../../../../navigation/Breadcrumbs';
 import { RESPONSIVE_PATTERNS } from '../../../../../constants/responsive.constants';
+import { Money, safeParseNumber } from '../../../../../utils/financial';
+import { formatCurrency } from '../../../../../utils/currency';
 
 interface CalculationResult {
   newAvgPrice: number | null;
@@ -21,28 +23,41 @@ function AverageCalculator() {
   const [targetAvgPrice, setTargetAvgPrice] = useState<string>('');
   const [currentMarketPrice, setCurrentMarketPrice] = useState<string>('');
 
-  // Calculate result using useMemo to avoid cascading renders
+  // Computed total price (never rounded in calculation)
+  const computedCurrentTotal = useMemo(() => {
+    const qty = safeParseNumber(currentQuantity, 0);
+    const price = safeParseNumber(currentAvgPrice, 0);
+    return qty > 0 && price > 0 ? Money.multiply(qty, price) : null;
+  }, [currentQuantity, currentAvgPrice]);
+
+  const computedBuyTotal = useMemo(() => {
+    const qty = safeParseNumber(buyQuantity, 0);
+    const price = safeParseNumber(buyPrice, 0);
+    return qty > 0 && price > 0 ? Money.multiply(qty, price) : null;
+  }, [buyQuantity, buyPrice]);
+
+  // Calculate result using useMemo with precise decimal arithmetic
   const calculationResult = useMemo<CalculationResult>(() => {
-    const currQty = parseFloat(currentQuantity) || 0;
-    const addQty = parseFloat(buyQuantity) || 0;
+    const currQty = safeParseNumber(currentQuantity, 0);
+    const addQty = safeParseNumber(buyQuantity, 0);
 
     let currPrice = 0;
 
     if (currentInputMode === 'price') {
-      currPrice = parseFloat(currentAvgPrice) || 0;
+      currPrice = safeParseNumber(currentAvgPrice, 0);
     } else {
-      const currTotal = parseFloat(currentTotalPrice) || 0;
-      currPrice = currQty > 0 ? currTotal / currQty : 0;
+      const currTotal = safeParseNumber(currentTotalPrice, 0);
+      currPrice = currQty > 0 ? Money.divide(currTotal, currQty) : 0;
     }
 
     if (calculationMode === 'purchase') {
       let addPrice = 0;
 
       if (buyInputMode === 'price') {
-        addPrice = parseFloat(buyPrice) || 0;
+        addPrice = safeParseNumber(buyPrice, 0);
       } else {
-        const addTotal = parseFloat(buyTotalPrice) || 0;
-        addPrice = addQty > 0 ? addTotal / addQty : 0;
+        const addTotal = safeParseNumber(buyTotalPrice, 0);
+        addPrice = addQty > 0 ? Money.divide(addTotal, addQty) : 0;
       }
 
       const hasCurrentData = currentInputMode === 'price'
@@ -54,26 +69,31 @@ function AverageCalculator() {
         : buyQuantity && buyTotalPrice;
 
       if (hasCurrentData && hasBuyData && currQty >= 0 && currPrice >= 0 && addQty > 0 && addPrice > 0) {
-        const totalCost = (currQty * currPrice) + (addQty * addPrice);
-        const totalQuantity = currQty + addQty;
-        const newAvg = totalQuantity > 0 ? totalCost / totalQuantity : 0;
+        // totalCost = (currQty * currPrice) + (addQty * addPrice)
+        const currentCost = Money.multiply(currQty, currPrice);
+        const addCost = Money.multiply(addQty, addPrice);
+        const totalCost = Money.add(currentCost, addCost);
+        const totalQuantity = Money.add(currQty, addQty);
+        const newAvg = totalQuantity > 0 ? Money.divide(totalCost, totalQuantity) : 0;
         return { newAvgPrice: newAvg, requiredQuantity: null };
       } else {
         return { newAvgPrice: null, requiredQuantity: null };
       }
     } else {
-      const targetAvg = parseFloat(targetAvgPrice) || 0;
-      const marketPrice = parseFloat(currentMarketPrice) || 0;
+      const targetAvg = safeParseNumber(targetAvgPrice, 0);
+      const marketPrice = safeParseNumber(currentMarketPrice, 0);
 
       const hasCurrentData = currentInputMode === 'price'
         ? currentQuantity && currentAvgPrice
         : currentQuantity && currentTotalPrice;
 
       if (hasCurrentData && targetAvgPrice && currentMarketPrice && currQty >= 0 && currPrice >= 0 && targetAvg > 0 && marketPrice > 0) {
-        const denominator = targetAvg - marketPrice;
+        const denominator = Money.subtract(targetAvg, marketPrice);
 
         if (Math.abs(denominator) > 0.01) {
-          const requiredQty = currQty * (currPrice - targetAvg) / denominator;
+          // requiredQty = currQty * (currPrice - targetAvg) / denominator
+          const numerator = Money.multiply(currQty, Money.subtract(currPrice, targetAvg));
+          const requiredQty = Money.divide(numerator, denominator);
 
           if (requiredQty > 0) {
             return { newAvgPrice: targetAvg, requiredQuantity: requiredQty };
@@ -91,61 +111,59 @@ function AverageCalculator() {
 
   const handleCurrentQuantityChange = (value: string) => {
     setCurrentQuantity(value);
-    // Update total price if in price mode
-    if (currentInputMode === 'price' && currentAvgPrice) {
-      const qty = parseFloat(value) || 0;
-      const price = parseFloat(currentAvgPrice) || 0;
-      setCurrentTotalPrice((qty * price).toFixed(2));
+    // In total mode, update total automatically
+    if (currentInputMode === 'total' && currentAvgPrice) {
+      const qty = safeParseNumber(value, 0);
+      const total = safeParseNumber(currentTotalPrice, 0);
+      if (qty > 0 && total > 0) {
+        setCurrentAvgPrice((Money.divide(total, qty)).toString());
+      }
     }
   };
 
   const handleCurrentPriceChange = (value: string) => {
     setCurrentAvgPrice(value);
-    // Update total price
-    if (currentQuantity) {
-      const qty = parseFloat(currentQuantity) || 0;
-      const price = parseFloat(value) || 0;
-      setCurrentTotalPrice((qty * price).toFixed(2));
-    }
+    // Just store the value, computedCurrentTotal will handle calculation
   };
 
   const handleCurrentTotalPriceChange = (value: string) => {
     setCurrentTotalPrice(value);
-    // Update average price
+    // Update average price when in total mode
     if (currentQuantity) {
-      const qty = parseFloat(currentQuantity) || 0;
-      const total = parseFloat(value) || 0;
-      setCurrentAvgPrice(qty > 0 ? (total / qty).toFixed(2) : '0');
+      const qty = safeParseNumber(currentQuantity, 0);
+      const total = safeParseNumber(value, 0);
+      if (qty > 0) {
+        setCurrentAvgPrice((Money.divide(total, qty)).toString());
+      }
     }
   };
 
   const handleBuyQuantityChange = (value: string) => {
     setBuyQuantity(value);
-    // Update total price if in price mode
-    if (buyInputMode === 'price' && buyPrice) {
-      const qty = parseFloat(value) || 0;
-      const price = parseFloat(buyPrice) || 0;
-      setBuyTotalPrice((qty * price).toFixed(2));
+    // In total mode, update total automatically
+    if (buyInputMode === 'total' && buyPrice) {
+      const qty = safeParseNumber(value, 0);
+      const total = safeParseNumber(buyTotalPrice, 0);
+      if (qty > 0 && total > 0) {
+        setBuyPrice((Money.divide(total, qty)).toString());
+      }
     }
   };
 
   const handleBuyPriceChange = (value: string) => {
     setBuyPrice(value);
-    // Update total price
-    if (buyQuantity) {
-      const qty = parseFloat(buyQuantity) || 0;
-      const price = parseFloat(value) || 0;
-      setBuyTotalPrice((qty * price).toFixed(2));
-    }
+    // Just store the value, computedBuyTotal will handle calculation
   };
 
   const handleBuyTotalPriceChange = (value: string) => {
     setBuyTotalPrice(value);
-    // Update average price
+    // Update average price when in total mode
     if (buyQuantity) {
-      const qty = parseFloat(buyQuantity) || 0;
-      const total = parseFloat(value) || 0;
-      setBuyPrice(qty > 0 ? (total / qty).toFixed(2) : '0');
+      const qty = safeParseNumber(buyQuantity, 0);
+      const total = safeParseNumber(value, 0);
+      if (qty > 0) {
+        setBuyPrice((Money.divide(total, qty)).toString());
+      }
     }
   };
 

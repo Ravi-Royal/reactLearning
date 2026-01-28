@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Money, safeParseNumber } from '../../../../../utils/financial';
 
 interface ProfitSimulatorModalProps {
   isOpen: boolean;
@@ -14,15 +15,21 @@ const ProfitSimulatorModal: React.FC<ProfitSimulatorModalProps> = ({ isOpen, onC
 
 
   let qty = 0;
+  let usedAmount = 0;
+  let unusedAmount = 0;
+  
   if (inputType === 'amount') {
-    const amt = Math.floor(Number(amount));
-    qty = Math.floor(amt / pricePerStock);
+    const amt = safeParseNumber(amount, 0); // Don't floor - keep decimals
+    qty = Math.floor(Money.divide(amt, pricePerStock)); // Only floor the quantity
+    usedAmount = Money.multiply(qty, pricePerStock);
+    unusedAmount = Money.subtract(amt, usedAmount);
   } else {
-    qty = Math.floor(Number(quantity));
+    qty = Math.floor(safeParseNumber(quantity, 0));
+    usedAmount = Money.multiply(qty, pricePerStock);
   }
-  const invest = qty * pricePerStock;
-  const profit = qty * profitPerStock;
-  const result = (qty > 0) ? { invest, qty, profit } : null;
+  
+  const profit = Money.multiply(qty, profitPerStock);
+  const result = (qty > 0) ? { invest: usedAmount, qty, profit, unusedAmount } : null;
 
   if (!isOpen) {return null;}
 
@@ -81,11 +88,8 @@ const ProfitSimulatorModal: React.FC<ProfitSimulatorModalProps> = ({ isOpen, onC
                 <span className="text-2xl font-bold text-green-600">₹{result.profit}</span>
               </div>
             </div>
-            {inputType === 'amount' && Number(amount) > 0 && (Number(amount) < pricePerStock) && (
-              <div className="text-xs text-red-500 mt-4">Entered amount is less than price per stock.</div>
-            )}
-            {inputType === 'amount' && Number(amount) > 0 && (Number(amount) > 0 && Number(amount) % pricePerStock !== 0) && (
-              <div className="text-xs text-gray-500 mt-2">Only ₹{result.qty * pricePerStock} used, ₹{Number(amount) - result.qty * pricePerStock} left unused.</div>
+            {inputType === 'amount' && result && result.unusedAmount > 0.01 && (
+              <div className="text-xs text-gray-500 mt-2">Only ₹{result.invest.toFixed(2)} used, ₹{result.unusedAmount.toFixed(2)} left unused.</div>
             )}
           </div>
         )}
