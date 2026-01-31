@@ -192,7 +192,7 @@ export async function fetchStockPrices(symbols: string[]): Promise<Record<string
 
     // Update the price map with fallback results (only if primary was null)
     fallbackResults.forEach(({ symbol, ...priceInfo }) => {
-      if (priceMap[symbol].price === null && priceInfo.price !== null) {
+      if (priceMap[symbol]?.price === null && priceInfo.price !== null) {
         priceMap[symbol] = priceInfo;
       }
     });
@@ -546,12 +546,12 @@ export function calculateColumnTotals(stockData: StockData[], priceMap: PriceMap
 
   // Calculate percentage values
   if (totalBuyValue > 0 && totals[StockColumnKey.RealizedPL]) {
-    totals[StockColumnKey.RealizedPLPct] = (totals[StockColumnKey.RealizedPL] / totalBuyValue) * 100;
+    totals[StockColumnKey.RealizedPLPct] = ((totals[StockColumnKey.RealizedPL] ?? 0) / totalBuyValue) * 100;
   }
 
   if (totalCurrentValueOfOpenPositions > 0 && totals[StockColumnKey.UnrealizedPL]) {
     totals[StockColumnKey.UnrealizedPLPct] =
-      (totals[StockColumnKey.UnrealizedPL] / totalCurrentValueOfOpenPositions) * 100;
+      ((totals[StockColumnKey.UnrealizedPL] ?? 0) / totalCurrentValueOfOpenPositions) * 100;
   }
 
   return totals;
