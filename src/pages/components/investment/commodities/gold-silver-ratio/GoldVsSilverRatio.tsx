@@ -63,26 +63,55 @@ function GoldVsSilverRatio() {
     };
 
     try {
-      // Execute in order of preference (Free/Reliable first)
-      // 1. CoinPaprika (Generous free tier, reliable)
-      let data = await tryCoinPaprika();
+      // Execute all fetches in parallel
+      const results = await Promise.all([
+        tryCoinPaprika(),
+        tryCurrencyApi(),
+        tryCoinGecko(),
+      ]);
 
-      // 2. Currency API (Very reliable, fallback)
-      if (!data) {data = await tryCurrencyApi();}
+      // Filter out failed requests
+      const validResults = results.filter((r): r is { g: number; s: number; source: string } => r !== null);
 
-      // 3. CoinGecko (Good but frequent 429s)
-      if (!data) {data = await tryCoinGecko();}
+      if (validResults.length === 0) {
+        throw new Error('All APIs failed');
+      }
 
-      if (data) {
-        gPrice = data.g;
-        sPrice = data.s;
-        usedSource = data.source;
+      // Helper to calculate consensus price
+      const getConsensus = (prices: number[]): number => {
+        if (prices.length === 0) {return 0;}
+        if (prices.length === 1) {return prices[0];}
+        if (prices.length === 2) {return (prices[0] + prices[1]) / 2;}
 
+        // For 3 prices, find the pair with the smallest difference
+        prices.sort((a, b) => a - b);
+        const diff1 = prices[1] - prices[0];
+        const diff2 = prices[2] - prices[1];
+
+        if (diff1 < diff2) {
+          // First two are closer
+          return (prices[0] + prices[1]) / 2;
+        } else {
+          // Last two are closer (or equal diff)
+          return (prices[1] + prices[2]) / 2;
+        }
+      };
+
+      const goldPrices = validResults.map(r => r.g);
+      const silverPrices = validResults.map(r => r.s);
+
+      gPrice = getConsensus(goldPrices);
+      sPrice = getConsensus(silverPrices);
+
+      const sourcesList = validResults.map(r => r.source).join(', ');
+      usedSource = validResults.length > 1 ? `Avg of ${validResults.length}: ${sourcesList}` : sourcesList;
+
+      if (gPrice && sPrice) {
         setGoldPrice(gPrice.toFixed(2));
         setSilverPrice(sPrice.toFixed(2));
         setLastUpdated(`${new Date().toLocaleTimeString()} (${usedSource})`);
       } else {
-        throw new Error('All APIs failed');
+        throw new Error('Data format invalid');
       }
 
     } catch (err) {
