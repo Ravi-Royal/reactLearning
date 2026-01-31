@@ -3,6 +3,9 @@ export { CategoryBadge } from './CategoryBadge';
 export { PageHeader } from './PageHeader';
 export { SelectionModal } from './SelectionModal';
 export { ToastContainer } from './ToastContainer';
+export { ChecklistItem } from './ChecklistItem';
+export { NavigationCard } from './NavigationCard';
+export { ModalItem } from './ModalItem';
 export { useChecklist } from './hooks/useChecklist';
 
 // Type exports
@@ -14,4 +17,4 @@ export type {
   SelectionItem,
   SelectionModalProps,
 } from './types';
-export type { ChecklistItem, CategoryStats, UseChecklistReturn } from './hooks/useChecklist';
+export type { ChecklistItem as ChecklistItemType, CategoryStats, UseChecklistReturn } from './hooks/useChecklist';
