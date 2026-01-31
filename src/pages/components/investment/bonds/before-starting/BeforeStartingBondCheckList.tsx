@@ -129,10 +129,16 @@ function BeforeStartingBondCheckList() {
             {mineItems.map((item) => (
               <div
                 key={item.id}
-                className={`p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${
-                  item.checked ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200 hover:border-gray-300'
-                }`}
+                className={`p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${item.checked ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200 hover:border-gray-300'}`}
+                role="button"
+                tabIndex={0}
                 onClick={() => toggleItem(item.id)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleItem(item.id);
+                  }
+                }}
               >
                 <div className="flex items-center gap-3">
                   <input
@@ -184,10 +190,16 @@ function BeforeStartingBondCheckList() {
                 {educationItems.map((item) => (
                   <div
                     key={item.id}
-                    className={`p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${
-                      item.checked ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200 hover:border-gray-300'
-                    }`}
+                    className={`p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${item.checked ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200 hover:border-gray-300'}`}
+                    role="button"
+                    tabIndex={0}
                     onClick={() => toggleItem(item.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleItem(item.id);
+                      }
+                    }}
                   >
                     <div className="flex items-center gap-3">
                       <input
@@ -239,7 +251,15 @@ function BeforeStartingBondCheckList() {
                     className={`p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${
                       item.checked ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200 hover:border-gray-300'
                     }`}
+                    role="button"
+                    tabIndex={0}
                     onClick={() => toggleItem(item.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleItem(item.id);
+                      }
+                    }}
                   >
                     <div className="flex items-center gap-3">
                       <input

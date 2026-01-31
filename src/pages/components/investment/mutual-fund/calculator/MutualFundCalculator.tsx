@@ -771,47 +771,50 @@ function MutualFundCalculator() {
           </h2>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-purple-700 mb-2">Investment Type</label>
-            <div className="flex gap-4">
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  value="sip"
-                  checked={investmentType === 'sip'}
-                  onChange={() => handleInvestmentTypeChange('sip')}
-                  className="mr-2"
-                />
-                <span className="text-sm">SIP (Monthly)</span>
-              </label>
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  value="yearly-sip"
-                  checked={investmentType === 'yearly-sip'}
-                  onChange={() => handleInvestmentTypeChange('yearly-sip')}
-                  className="mr-2"
-                />
-                <span className="text-sm">SIP (Yearly)</span>
-              </label>
-              <label className="flex items-center">
-                <input
-                  type="radio"
-                  value="lumpsum"
-                  checked={investmentType === 'lumpsum'}
-                  onChange={() => handleInvestmentTypeChange('lumpsum')}
-                  className="mr-2"
-                />
-                <span className="text-sm">Lumpsum</span>
-              </label>
-            </div>
+            <fieldset>
+              <legend className="block text-sm font-medium text-purple-700 mb-2">Investment Type</legend>
+              <div className="flex gap-4">
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    value="sip"
+                    checked={investmentType === 'sip'}
+                    onChange={() => handleInvestmentTypeChange('sip')}
+                    className="mr-2"
+                  />
+                  <span className="text-sm">SIP (Monthly)</span>
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    value="yearly-sip"
+                    checked={investmentType === 'yearly-sip'}
+                    onChange={() => handleInvestmentTypeChange('yearly-sip')}
+                    className="mr-2"
+                  />
+                  <span className="text-sm">SIP (Yearly)</span>
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    value="lumpsum"
+                    checked={investmentType === 'lumpsum'}
+                    onChange={() => handleInvestmentTypeChange('lumpsum')}
+                    className="mr-2"
+                  />
+                  <span className="text-sm">Lumpsum</span>
+                </label>
+              </div>
+            </fieldset>
           </div>
 
           {investmentType === 'sip' || investmentType === 'yearly-sip' ? (
             <div className="mb-4">
-              <label className="block text-sm font-medium text-purple-700 mb-2">
+              <label htmlFor="sip-amount" className="block text-sm font-medium text-purple-700 mb-2">
                 💵 {investmentType === 'sip' ? 'Monthly' : 'Yearly'} SIP Amount (₹)
               </label>
               <input
+                id="sip-amount"
                 type="number"
                 value={sipAmount}
                 onChange={(e) => setSipAmount(e.target.value)}
@@ -827,8 +830,11 @@ function MutualFundCalculator() {
             </div>
           ) : (
             <div className="mb-4">
-              <label className="block text-sm font-medium text-purple-700 mb-2">💰 Lumpsum Amount (₹)</label>
+              <label htmlFor="lumpsum-amount" className="block text-sm font-medium text-purple-700 mb-2">
+                💰 Lumpsum Amount (₹)
+              </label>
               <input
+                id="lumpsum-amount"
                 type="number"
                 value={lumpsumAmount}
                 onChange={(e) => setLumpsumAmount(e.target.value)}
@@ -841,8 +847,11 @@ function MutualFundCalculator() {
           )}
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-purple-700 mb-2">📈 Expected Annual Return (%)</label>
+            <label htmlFor="annual-return" className="block text-sm font-medium text-purple-700 mb-2">
+              📈 Expected Annual Return (%)
+            </label>
             <input
+              id="annual-return"
               type="number"
               value={annualReturn}
               onChange={(e) => setAnnualReturn(e.target.value)}
@@ -854,8 +863,11 @@ function MutualFundCalculator() {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium text-purple-700 mb-2">⏱️ Investment Period (Years)</label>
+            <label htmlFor="investment-period" className="block text-sm font-medium text-purple-700 mb-2">
+              ⏱️ Investment Period (Years)
+            </label>
             <input
+              id="investment-period"
               type="number"
               value={investmentPeriod}
               onChange={(e) => setInvestmentPeriod(e.target.value)}
@@ -873,10 +885,11 @@ function MutualFundCalculator() {
             </p>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-teal-700 mb-2">
+              <label htmlFor="post-holding-period" className="block text-sm font-medium text-teal-700 mb-2">
                 Post-Investment Holding Period (Years)
               </label>
               <input
+                id="post-holding-period"
                 type="number"
                 value={postInvestmentHoldingPeriod}
                 onChange={(e) => setPostInvestmentHoldingPeriod(e.target.value)}
@@ -896,8 +909,11 @@ function MutualFundCalculator() {
             <p className="text-xs text-indigo-600 mb-3">Withdraw a lump sum amount before starting SWP</p>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-indigo-700 mb-2">One-Time Withdrawal Amount (₹)</label>
+              <label htmlFor="one-time-withdrawal" className="block text-sm font-medium text-indigo-700 mb-2">
+                One-Time Withdrawal Amount (₹)
+              </label>
               <input
+                id="one-time-withdrawal"
                 type="number"
                 value={oneTimeWithdrawal}
                 onChange={(e) => setOneTimeWithdrawal(e.target.value)}
@@ -919,8 +935,11 @@ function MutualFundCalculator() {
             <p className="text-xs text-orange-600 mb-3">Set up regular monthly withdrawals after holding period</p>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-orange-700 mb-2">Monthly SWP Amount (₹)</label>
+              <label htmlFor="swp-amount" className="block text-sm font-medium text-orange-700 mb-2">
+                Monthly SWP Amount (₹)
+              </label>
               <input
+                id="swp-amount"
                 type="number"
                 value={swpAmount}
                 onChange={(e) => setSwpAmount(e.target.value)}
@@ -932,8 +951,11 @@ function MutualFundCalculator() {
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-orange-700 mb-2">SWP Duration (Years)</label>
+              <label htmlFor="swp-period" className="block text-sm font-medium text-orange-700 mb-2">
+                SWP Duration (Years)
+              </label>
               <input
+                id="swp-period"
                 type="number"
                 value={swpPeriod}
                 onChange={(e) => setSwpPeriod(e.target.value)}
@@ -946,8 +968,11 @@ function MutualFundCalculator() {
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-orange-700 mb-2">📊 Inflation Rate (%) - Optional</label>
+              <label htmlFor="inflation-rate" className="block text-sm font-medium text-orange-700 mb-2">
+                📊 Inflation Rate (%) - Optional
+              </label>
               <input
+                id="inflation-rate"
                 type="number"
                 value={inflationRate}
                 onChange={(e) => setInflationRate(e.target.value)}
@@ -960,29 +985,33 @@ function MutualFundCalculator() {
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-orange-700 mb-2">Inflation Calculation Start From</label>
-              <div className="flex gap-4">
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    value="current-year"
-                    checked={inflationStartFrom === 'current-year'}
-                    onChange={(e) => setInflationStartFrom(e.target.value as 'current-year' | 'sip-start')}
-                    className="mr-2"
-                  />
-                  <span className="text-sm">Current Year (SWP Start)</span>
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    value="sip-start"
-                    checked={inflationStartFrom === 'sip-start'}
-                    onChange={(e) => setInflationStartFrom(e.target.value as 'current-year' | 'sip-start')}
-                    className="mr-2"
-                  />
-                  <span className="text-sm">SIP Start Year</span>
-                </label>
-              </div>
+              <fieldset>
+                <legend className="block text-sm font-medium text-orange-700 mb-2">
+                  Inflation Calculation Start From
+                </legend>
+                <div className="flex gap-4">
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      value="current-year"
+                      checked={inflationStartFrom === 'current-year'}
+                      onChange={(e) => setInflationStartFrom(e.target.value as 'current-year' | 'sip-start')}
+                      className="mr-2"
+                    />
+                    <span className="text-sm">Current Year (SWP Start)</span>
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      value="sip-start"
+                      checked={inflationStartFrom === 'sip-start'}
+                      onChange={(e) => setInflationStartFrom(e.target.value as 'current-year' | 'sip-start')}
+                      className="mr-2"
+                    />
+                    <span className="text-sm">SIP Start Year</span>
+                  </label>
+                </div>
+              </fieldset>
               <p className="text-xs text-orange-600 mt-1">
                 Choose when to start calculating inflation: from when SWP begins or from when SIP investment started
               </p>

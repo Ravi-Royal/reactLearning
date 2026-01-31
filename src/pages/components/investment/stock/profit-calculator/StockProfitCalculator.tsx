@@ -261,8 +261,11 @@ function StockProfitCalculator() {
 
             <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Number of Stocks Purchased</label>
+                <label htmlFor={`num-stocks-${group.id}`} className="block text-sm font-medium text-gray-700 mb-2">
+                  Number of Stocks Purchased
+                </label>
                 <input
+                  id={`num-stocks-${group.id}`}
                   type="number"
                   min="0"
                   value={group.numStocks}
@@ -272,8 +275,11 @@ function StockProfitCalculator() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Average Price per Stock (₹)</label>
+                <label htmlFor={`price-per-stock-${group.id}`} className="block text-sm font-medium text-gray-700 mb-2">
+                  Average Price per Stock (₹)
+                </label>
                 <input
+                  id={`price-per-stock-${group.id}`}
                   type="number"
                   min="0"
                   value={group.pricePerStock}
@@ -283,8 +289,10 @@ function StockProfitCalculator() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Profit Input</label>
-                <div className="flex flex-wrap gap-1.5 mb-3">
+                <label htmlFor={`profit-input-${group.id}`} className="block text-sm font-medium text-gray-700 mb-2">
+                  Profit Input
+                </label>
+                <div id={`profit-input-${group.id}`} className="flex flex-wrap gap-1.5 mb-3">
                   <button
                     type="button"
                     className={`flex-1 min-w-[110px] px-3 py-2 rounded-lg transition-all duration-200 ${
@@ -348,8 +356,11 @@ function StockProfitCalculator() {
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Age</label>
+                <label htmlFor={`age-${group.id}`} className="block text-sm font-medium text-gray-700 mb-2">
+                  Age
+                </label>
                 <input
+                  id={`age-${group.id}`}
                   type="number"
                   min="0"
                   value={group.age}
@@ -359,8 +370,11 @@ function StockProfitCalculator() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Unit</label>
+                <label htmlFor={`age-unit-${group.id}`} className="block text-sm font-medium text-gray-700 mb-2">
+                  Unit
+                </label>
                 <select
+                  id={`age-unit-${group.id}`}
                   value={group.ageUnit}
                   onChange={(e) => updateStockGroup(group.id, 'ageUnit', e.target.value as 'days' | 'months')}
                   className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"

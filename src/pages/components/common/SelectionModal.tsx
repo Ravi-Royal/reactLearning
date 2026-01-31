@@ -59,7 +59,15 @@ export function SelectionModal<T extends SelectionItem>({
             {items.map((item, index) => (
               <div
                 key={index}
+                role="button"
+                tabIndex={0}
                 onClick={() => onSelect(item)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onSelect(item);
+                  }
+                }}
                 className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 cursor-pointer transition-all duration-200"
               >
                 <div className="flex items-center gap-3">

@@ -23,9 +23,9 @@ export const ExpensiveComponent = memo<ExpensiveComponentProps>(({ data, onItemC
   return (
     <div>
       {data.map((item) => (
-        <div key={item.id} onClick={() => onItemClick(item.id)}>
+        <button key={item.id} type="button" onClick={() => onItemClick(item.id)} className="item-button">
           {item.name}
-        </div>
+        </button>
       ))}
     </div>
   );

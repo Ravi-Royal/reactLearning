@@ -1,4 +1,6 @@
+/* eslint-disable react-refresh/only-export-components */
 import DOMPurify from 'dompurify';
+import { ALLOWED_TAGS, ALLOWED_ATTR } from '../config/sanitizeConfig';
 
 /**
  * Sanitizes HTML content to prevent XSS attacks
@@ -7,8 +9,8 @@ import DOMPurify from 'dompurify';
  */
 export function sanitizeHTML(dirty: string): string {
   return DOMPurify.sanitize(dirty, {
-    ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'p', 'br', 'ul', 'ol', 'li', 'span', 'div'],
-    ALLOWED_ATTR: ['href', 'target', 'rel', 'class'],
+    ALLOWED_TAGS,
+    ALLOWED_ATTR,
   });
 }
 

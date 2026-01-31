@@ -43,47 +43,50 @@ export const InvestmentInputForm: React.FC<InvestmentInputFormProps> = ({
       </h2>
 
       <div className="mb-4">
-        <label className="block text-sm font-medium text-purple-700 mb-2">Investment Type</label>
-        <div className="flex gap-4">
-          <label className="flex items-center">
-            <input
-              type="radio"
-              value="sip"
-              checked={investmentType === 'sip'}
-              onChange={(e) => setInvestmentType(e.target.value as InvestmentType)}
-              className="mr-2"
-            />
-            <span className="text-sm">SIP (Monthly)</span>
-          </label>
-          <label className="flex items-center">
-            <input
-              type="radio"
-              value="yearly-sip"
-              checked={investmentType === 'yearly-sip'}
-              onChange={(e) => setInvestmentType(e.target.value as InvestmentType)}
-              className="mr-2"
-            />
-            <span className="text-sm">SIP (Yearly)</span>
-          </label>
-          <label className="flex items-center">
-            <input
-              type="radio"
-              value="lumpsum"
-              checked={investmentType === 'lumpsum'}
-              onChange={(e) => setInvestmentType(e.target.value as InvestmentType)}
-              className="mr-2"
-            />
-            <span className="text-sm">Lumpsum</span>
-          </label>
-        </div>
+        <fieldset>
+          <legend className="block text-sm font-medium text-purple-700 mb-2">Investment Type</legend>
+          <div className="flex gap-4">
+            <label className="flex items-center">
+              <input
+                type="radio"
+                value="sip"
+                checked={investmentType === 'sip'}
+                onChange={(e) => setInvestmentType(e.target.value as InvestmentType)}
+                className="mr-2"
+              />
+              <span className="text-sm">SIP (Monthly)</span>
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                value="yearly-sip"
+                checked={investmentType === 'yearly-sip'}
+                onChange={(e) => setInvestmentType(e.target.value as InvestmentType)}
+                className="mr-2"
+              />
+              <span className="text-sm">SIP (Yearly)</span>
+            </label>
+            <label className="flex items-center">
+              <input
+                type="radio"
+                value="lumpsum"
+                checked={investmentType === 'lumpsum'}
+                onChange={(e) => setInvestmentType(e.target.value as InvestmentType)}
+                className="mr-2"
+              />
+              <span className="text-sm">Lumpsum</span>
+            </label>
+          </div>
+        </fieldset>
       </div>
 
       {investmentType === 'sip' || investmentType === 'yearly-sip' ? (
         <div className="mb-4">
-          <label className="block text-sm font-medium text-purple-700 mb-2">
+          <label htmlFor="form-sip-amount" className="block text-sm font-medium text-purple-700 mb-2">
             💵 {investmentType === 'sip' ? 'Monthly' : 'Yearly'} SIP Amount (₹)
           </label>
           <input
+            id="form-sip-amount"
             type="number"
             value={sipAmount}
             onChange={(e) => setSipAmount(e.target.value)}
@@ -95,8 +98,11 @@ export const InvestmentInputForm: React.FC<InvestmentInputFormProps> = ({
         </div>
       ) : (
         <div className="mb-4">
-          <label className="block text-sm font-medium text-purple-700 mb-2">💰 Lumpsum Amount (₹)</label>
+          <label htmlFor="form-lumpsum-amount" className="block text-sm font-medium text-purple-700 mb-2">
+            💰 Lumpsum Amount (₹)
+          </label>
           <input
+            id="form-lumpsum-amount"
             type="number"
             value={lumpsumAmount}
             onChange={(e) => setLumpsumAmount(e.target.value)}
@@ -109,8 +115,11 @@ export const InvestmentInputForm: React.FC<InvestmentInputFormProps> = ({
       )}
 
       <div className="mb-4">
-        <label className="block text-sm font-medium text-purple-700 mb-2">📈 Expected Annual Return (%)</label>
+        <label htmlFor="form-annual-return" className="block text-sm font-medium text-purple-700 mb-2">
+          📈 Expected Annual Return (%)
+        </label>
         <input
+          id="form-annual-return"
           type="number"
           value={annualReturn}
           onChange={(e) => setAnnualReturn(e.target.value)}
@@ -122,8 +131,11 @@ export const InvestmentInputForm: React.FC<InvestmentInputFormProps> = ({
       </div>
 
       <div className="mb-4">
-        <label className="block text-sm font-medium text-purple-700 mb-2">⏱️ Investment Period (Years)</label>
+        <label htmlFor="form-investment-period" className="block text-sm font-medium text-purple-700 mb-2">
+          ⏱️ Investment Period (Years)
+        </label>
         <input
+          id="form-investment-period"
           type="number"
           value={investmentPeriod}
           onChange={(e) => setInvestmentPeriod(e.target.value)}
@@ -138,8 +150,11 @@ export const InvestmentInputForm: React.FC<InvestmentInputFormProps> = ({
         <h3 className="text-md font-semibold text-orange-700 mb-3">💸 Systematic Withdrawal Plan (SWP) - Optional</h3>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-orange-700 mb-2">Monthly SWP Amount (₹)</label>
+          <label htmlFor="form-swp-amount" className="block text-sm font-medium text-orange-700 mb-2">
+            Monthly SWP Amount (₹)
+          </label>
           <input
+            id="form-swp-amount"
             type="number"
             value={swpAmount}
             onChange={(e) => setSwpAmount(e.target.value)}
@@ -151,8 +166,11 @@ export const InvestmentInputForm: React.FC<InvestmentInputFormProps> = ({
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-orange-700 mb-2">SWP Period (Years)</label>
+          <label htmlFor="form-swp-period" className="block text-sm font-medium text-orange-700 mb-2">
+            SWP Period (Years)
+          </label>
           <input
+            id="form-swp-period"
             type="number"
             value={swpPeriod}
             onChange={(e) => setSwpPeriod(e.target.value)}
