@@ -53,7 +53,7 @@ export default defineConfig({
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https:",
               "font-src 'self' data:",
-              "connect-src 'self' https://query1.finance.yahoo.com",
+              "connect-src 'self' https://query1.finance.yahoo.com https://api.coinpaprika.com https://api.coingecko.com https://latest.currency-api.pages.dev",
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",
