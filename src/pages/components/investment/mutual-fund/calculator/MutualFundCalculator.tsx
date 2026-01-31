@@ -71,11 +71,9 @@ function MutualFundCalculator() {
   // Enhanced reset handler with feedback
   const handleResetWithFeedback = () => {
     setIsResetting(true);
-    setTimeout(() => {
-      handleReset();
-      feedback.success.reset();
-      setIsResetting(false);
-    }, 300);
+    handleReset();
+    feedback.success.reset();
+    setIsResetting(false);
   };
 
   return (
