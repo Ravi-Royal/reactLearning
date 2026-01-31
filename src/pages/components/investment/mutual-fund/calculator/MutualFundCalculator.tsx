@@ -733,7 +733,7 @@ function MutualFundCalculator() {
         >
           ← Back to Mutual Funds
         </Link>
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">Mutual Fund Calculator</h1>
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">{MUTUAL_FUND_CALCULATOR_TEXTS.PAGE_TITLE}</h1>
         <p className="text-sm sm:text-base text-gray-600 mt-1">Calculate SIP/Lumpsum returns and SWP sustainability</p>
       </div>
 

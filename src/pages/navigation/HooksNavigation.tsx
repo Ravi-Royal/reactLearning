@@ -9,8 +9,8 @@ function HooksNavigation() {
     <div className="p-4 sm:p-6 md:p-8 lg:p-10">
       <Breadcrumbs />
       <div className="mb-6">
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">React Hooks Explorer</h1>
-        <p className="text-sm sm:text-base text-gray-600 mt-1">Learn and experiment with React's built-in hooks</p>
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">{HOOKS_NAVIGATION.HEADING}</h1>
+        <p className="text-sm sm:text-base text-gray-600 mt-1">{HOOKS_NAVIGATION.SUBTITLE}</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
@@ -40,7 +40,7 @@ function HooksNavigation() {
       </div>
 
       <div className="mt-6 sm:mt-8 bg-blue-50 rounded-lg p-4 sm:p-6">
-        <h4 className="font-semibold text-gray-800 mb-2 text-sm sm:text-base">About React Hooks</h4>
+        <h4 className="font-semibold text-gray-800 mb-2 text-sm sm:text-base">{HOOKS_NAVIGATION.ABOUT_TITLE}</h4>
         <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
           Hooks are functions that let you "hook into" React state and lifecycle features from function components.
           They let you use state and other React features without writing a class component.

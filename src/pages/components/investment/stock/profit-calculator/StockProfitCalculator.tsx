@@ -3,6 +3,7 @@ import ProfitSimulatorModal from './ProfitSimulatorModal';
 import { PROFIT_CALCULATOR_TEXTS } from './constants/profitCalculator.constants';
 import Breadcrumbs from '../../../../navigation/Breadcrumbs';
 import { RESPONSIVE_PATTERNS } from '../../../../../constants/responsive.constants';
+import { STOCK_PROFIT_CALCULATOR } from './constants/stockProfitCalculator.constants';
 import { Money, safeParseNumber } from '../../../../../utils/financial';
 import type { StockGroup } from './types/StockProfitCalculator.types';
 
@@ -157,8 +158,8 @@ function StockProfitCalculator() {
     <div className={`bg-white rounded-lg shadow-md ${RESPONSIVE_PATTERNS.padding.cardLg} border border-gray-200`}>
       <Breadcrumbs />
 
-      <h1 className={`${RESPONSIVE_PATTERNS.text.xl} font-bold text-gray-800 mb-2`}>Stock Profit Percentage Calculator</h1>
-      <p className={`text-gray-600 ${RESPONSIVE_PATTERNS.text.sm} mb-6`}>Calculate profit percentage for your stock investments. Add multiple stock groups to track different purchases.</p>
+      <h1 className={`${RESPONSIVE_PATTERNS.text.xl} font-bold text-gray-800 mb-2`}>{STOCK_PROFIT_CALCULATOR.HEADING}</h1>
+      <p className={`text-gray-600 ${RESPONSIVE_PATTERNS.text.sm} mb-6`}>{STOCK_PROFIT_CALCULATOR.SUBTITLE}</p>
 
       {stockGroups.map((group, index) => {
         const result = calculateProfit(group);

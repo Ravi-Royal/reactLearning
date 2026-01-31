@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { INVESTMENT_NAVIGATION_ITEMS, INVESTMENT_QUICK_STATS } from '../../constants/investmentNavigation.constants';
+import { INVESTMENT_NAVIGATION } from './constants/navigationPage.constants';
 import Breadcrumbs from './Breadcrumbs';
 
 function InvestmentNavigation() {
@@ -9,8 +10,8 @@ function InvestmentNavigation() {
     <div className="p-4 sm:p-6 md:p-8 lg:p-10">
       <Breadcrumbs />
       <div className="mb-6">
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">Investment Dashboard</h1>
-        <p className="text-sm sm:text-base text-gray-600 mt-1">Manage and analyze your investment portfolio</p>
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">{INVESTMENT_NAVIGATION.HEADING}</h1>
+        <p className="text-sm sm:text-base text-gray-600 mt-1">{INVESTMENT_NAVIGATION.SUBTITLE}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
@@ -43,7 +44,7 @@ function InvestmentNavigation() {
       </div>
 
       <div className="mt-6 sm:mt-8 bg-gray-50 rounded-lg p-4 sm:p-6">
-        <h4 className="font-semibold text-gray-800 mb-3 sm:mb-4 text-sm sm:text-base">Quick Stats</h4>
+        <h4 className="font-semibold text-gray-800 mb-3 sm:mb-4 text-sm sm:text-base">{INVESTMENT_NAVIGATION.QUICK_STATS_TITLE}</h4>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-xs sm:text-sm">
           {INVESTMENT_QUICK_STATS.map((stat) => (
             <div key={stat.id} className="text-center p-3 bg-white rounded-lg">

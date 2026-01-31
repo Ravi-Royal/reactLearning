@@ -12,104 +12,10 @@ import {
   MUTUAL_FUND_LIST, 
   MUTUAL_FUND_CHECKLIST_PAGE_HEADER,
   MUTUAL_FUND_CHECKLIST_MODAL,
+  CHECKLIST_INFO,
+  INITIAL_CHECKLIST_ITEMS,
   type MutualFundItem 
 } from './mutualFundChecklist.constants';
-
-const CHECKLIST_INFO = {
-  sharpeRatiomine: {
-    title: 'Sharpe Ratio',
-    info: 'Measures risk-adjusted return. >2 is excellent, 1-2 is good, <1 is poor.',
-  },
-  alpha: {
-    title: 'Alpha',
-    info: 'Measures excess return over benchmark. Positive alpha (>0) is good, negative is bad.',
-  },
-  beta: {
-    title: 'Beta',
-    info: 'Measures volatility vs market. <1 is less volatile (good for conservative), >1 is more volatile.',
-  },
-  expenseRatio: {
-    title: 'Expense Ratio',
-    info: 'Annual fund management cost. <1% for equity, <0.5% for index funds is good. Lower is better.',
-  },
-  aum: {
-    title: 'AUM',
-    info: 'Assets Under Management. >₹1000 crores is considered stable.',
-  },
-  fundHouse: {
-    title: 'Fund House',
-    info: 'Reputed, established fund houses are preferred for stability and governance.',
-  },
-  returns5y: {
-    title: '5Y Returns',
-    info: 'Consistent returns over 5 years show good performance. Compare with peers/benchmark.',
-  },
-  manager: {
-    title: 'Fund Manager',
-    info: 'Experienced manager (>5 years) is a positive sign.',
-  },
-  category: {
-    title: 'Fund Category',
-    info: 'Should match your investment goal (e.g., equity for growth, debt for safety).',
-  },
-  risk: {
-    title: 'Risk Level',
-    info: 'Should match your risk profile. High risk for aggressive, low for conservative.',
-  },
-  exitLoad: {
-    title: 'Exit Load',
-    info: 'Fee for early withdrawal. Lower or zero exit load is better.',
-  },
-  rating: {
-    title: 'Fund Rating',
-    info: '4-star or 5-star by CRISIL/Morningstar is good. Lower ratings indicate higher risk.',
-  },
-  consistency: {
-    title: 'Consistency',
-    info: 'Fund should beat its benchmark regularly, not just in one year.',
-  },
-  portfolio: {
-    title: 'Portfolio Diversification',
-    info: 'More than 30 stocks is well-diversified. Less is riskier.',
-  },
-  volatility: {
-    title: 'Volatility',
-    info: 'Lower volatility than peers is preferred for stability.',
-  },
-  sharpeRatio: {
-    title: 'Sharpe Ratio',
-    info: 'Risk-adjusted return. >1.5 is good, <1 is poor.',
-  },
-  downside: {
-    title: 'Downside Capture',
-    info: 'Lower downside capture ratio means less loss in market falls. <100% is good.',
-  },
-  upsideDownsideCapture: {
-    title: 'Upside and Downside Capture Ratios',
-    info: 'Upside capture >100% means fund gains more than market in uptrends. Downside capture <100% means fund loses less than market in downtrends. Both are desirable.',
-  },
-};
-
-const INITIAL_CHECKLIST_ITEMS = [
-  { id: 'sharpeRatiomine', label: 'Good Sharpe ratio (>2)', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-  { id: 'alpha', label: 'Positive alpha', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-  { id: 'beta', label: 'Low beta (<1)', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-  { id: 'expenseRatio', label: 'Low expense ratio (<1% for equity, <0.5% for index)', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-  { id: 'upsideDownsideCapture', label: 'Good upside (>100%) and downside (<100%) capture ratios', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-  { id: 'aum', label: 'Adequate AUM (>₹1000 crores)', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'fundHouse', label: 'Reputed and established fund house', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'returns5y', label: 'Consistent returns over 5 years', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'manager', label: 'Experienced fund manager (>5 years)', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'category', label: 'Fund category matches investment goal', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'risk', label: 'Risk level suitable for my profile', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'exitLoad', label: 'Reasonable exit load structure', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'rating', label: '4-star or 5-star rating by CRISIL/Morningstar', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'consistency', label: 'Beats benchmark consistently', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'portfolio', label: 'Well-diversified portfolio (>30 stocks)', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'volatility', label: 'Lower volatility than peers', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'sharpeRatio', label: 'Good Sharpe ratio (>1.5)', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'downside', label: 'Limited downside capture ratio', checked: false, category: CHECKLIST_CATEGORIES.AI },
-];
 
 function MutualFundChecklist() {
   const {

@@ -1,6 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { CALCULATOR_NAVIGATION_ITEMS, CALCULATOR_QUICK_STATS } from '../../constants/calculatorNavigation.constants';
-import Breadcrumbs from './Breadcrumbs';
+import { CALCULATOR_NAVIGATION_ITEMS, CALCULATOR_QUICK_STATS } from '../../constants/calculatorNavigation.constants';import { CALCULATOR_NAVIGATION } from './constants/navigationPage.constants';import Breadcrumbs from './Breadcrumbs';
 
 function CalculatorNavigation() {
   const location = useLocation();
@@ -15,8 +14,8 @@ function CalculatorNavigation() {
         >
           ← Back to Investment
         </Link>
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">Investment Calculators</h1>
-        <p className="text-sm sm:text-base text-gray-600 mt-1">Calculate returns, averages, and plan your investments</p>
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">{CALCULATOR_NAVIGATION.HEADING}</h1>
+        <p className="text-sm sm:text-base text-gray-600 mt-1">{CALCULATOR_NAVIGATION.SUBTITLE}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
@@ -49,7 +48,7 @@ function CalculatorNavigation() {
       </div>
 
       <div className="mt-6 sm:mt-8 bg-gray-50 rounded-lg p-4 sm:p-6">
-        <h4 className="font-semibold text-gray-800 mb-3 sm:mb-4 text-sm sm:text-base">Quick Info</h4>
+        <h4 className="font-semibold text-gray-800 mb-3 sm:mb-4 text-sm sm:text-base">{CALCULATOR_NAVIGATION.QUICK_INFO_TITLE}</h4>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-xs sm:text-sm">
           {CALCULATOR_QUICK_STATS.map((stat) => (
             <div key={stat.id} className="text-center p-3 bg-white rounded-lg">

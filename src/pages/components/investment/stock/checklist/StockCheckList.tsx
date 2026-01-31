@@ -11,27 +11,9 @@ import {
   MY_STOCK_LIST, 
   STOCK_CHECKLIST_PAGE_HEADER, 
   STOCK_CHECKLIST_MODAL,
+  INITIAL_CHECKLIST_ITEMS,
   type MyStockItem 
 } from './stockChecklist.constants';
-
-const INITIAL_CHECKLIST_ITEMS = [
-  { id: 'debt', label: 'Low debt-to-equity ratio (<1.0)', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-  { id: 'yearOveryearDebt', label: 'Decreasing debt over the past 3 years', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-  { id: 'yearOnyearSales', label: 'Increasing year-on-year sales', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-  { id: 'netProfit', label: 'Positive net profit in last 5 years', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-  { id: 'ROE', label: 'Return on Equity (ROE) > 20%', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-  { id: 'netproitYearOnyear', label: 'Increasing net profit year-on-year', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-  { id: 'revenue', label: 'Consistent revenue growth (>10% YoY)', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-  { id: 'pedata', label: 'Less PE (<10)', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-  { id: 'PBratio', label: 'Less price to book', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-  { id: 'PEAdPBratio', label: 'Lower PE and lower Price to Book is for sure better stock', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-  { id: 'profit', label: 'Strong profit margins (>15%)', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'pe', label: 'Reasonable P/E ratio (<25)', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'dividend', label: 'Consistent dividend payments', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'competition', label: 'Strong competitive advantage', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'management', label: 'Experienced management team', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'growth', label: 'Clear growth strategy', checked: false, category: CHECKLIST_CATEGORIES.AI },
-];
 
 function StockCheckList() {
   const {

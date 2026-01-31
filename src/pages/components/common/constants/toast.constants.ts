@@ -25,5 +25,5 @@ export const TOAST_ARIA_LABELS = {
   CLOSE: 'Close notification',
 } as const;
 
-export const TOAST_BASE_STYLES = 
+export const TOAST_BASE_STYLES =
   'flex items-center justify-between px-4 py-3 rounded-lg shadow-lg text-sm min-w-[250px] max-w-[400px] mb-3 transition-all duration-300 ease-in-out' as const;

@@ -1,4 +1,5 @@
 import Breadcrumbs from './navigation/Breadcrumbs';
+import { ABOUT_PAGE } from './constants/page.constants';
 
 function AboutPage() {
   return (
@@ -6,10 +7,10 @@ function AboutPage() {
       <div className="max-w-7xl mx-auto">
         <Breadcrumbs />
         <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-4">
-          About Us
+          {ABOUT_PAGE.HEADING}
         </h1>
         <p className="text-base sm:text-lg md:text-xl text-gray-600 leading-relaxed">
-          This page contains information about our application and team.
+          {ABOUT_PAGE.DESCRIPTION}
         </p>
       </div>
     </div>

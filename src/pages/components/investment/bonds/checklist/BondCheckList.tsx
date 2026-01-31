@@ -10,22 +10,10 @@ import {
   MY_BOND_LIST, 
   BOND_CHECKLIST_PAGE_HEADER,
   BOND_CHECKLIST_MODAL,
+  INITIAL_CHECKLIST_ITEMS,
   type MyBondItem 
 } from './bondChecklist.constants';
 import { useState } from 'react';
-
-const INITIAL_CHECKLIST_ITEMS = [
-  { id: 'repaymentPriority', label: 'Repayment Priority - senior', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-  { id: 'creditRating', label: 'Investment grade credit rating', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'issuer', label: 'Reputable issuer', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'maturity', label: 'Suitable maturity period', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'coupon', label: 'Attractive coupon rate', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'liquidity', label: 'Good liquidity', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'tax', label: 'Tax efficiency', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'personalRisk', label: 'Matches my risk tolerance', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'personalDuration', label: 'Fits my investment timeline', checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'personalIncome', label: 'Provides desired income stream', checked: false, category: CHECKLIST_CATEGORIES.AI },
-];
 
 function BondCheckList() {
   const {

@@ -1,4 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
+import {
+  BREADCRUMB_LABELS,
+  BREADCRUMB_PATHS,
+  BREADCRUMB_ARIA_LABELS,
+  PATH_SEGMENTS,
+} from './constants/breadcrumbs.constants';
 
 interface BreadcrumbItem {
   label: string;
@@ -12,69 +18,69 @@ function Breadcrumbs() {
     const pathnames = location.pathname.split('/').filter(x => x);
 
     const breadcrumbItems: BreadcrumbItem[] = [
-      { label: 'Home', path: '/' },
+      { label: BREADCRUMB_LABELS.HOME, path: BREADCRUMB_PATHS.HOME },
     ];
 
-    if (pathnames.includes('investment')) {
-      breadcrumbItems.push({ label: 'Investment', path: '/investment' });
+    if (pathnames.includes(PATH_SEGMENTS.INVESTMENT)) {
+      breadcrumbItems.push({ label: BREADCRUMB_LABELS.INVESTMENT, path: BREADCRUMB_PATHS.INVESTMENT });
 
-      if (pathnames.includes('stock')) {
-        breadcrumbItems.push({ label: 'Stock', path: '/investment/stock' });
+      if (pathnames.includes(PATH_SEGMENTS.STOCK)) {
+        breadcrumbItems.push({ label: BREADCRUMB_LABELS.STOCK, path: BREADCRUMB_PATHS.STOCK });
 
-        if (pathnames.includes('analysis')) {
-          breadcrumbItems.push({ label: 'P&L Analysis', path: '/investment/stock/analysis' });
+        if (pathnames.includes(PATH_SEGMENTS.ANALYSIS)) {
+          breadcrumbItems.push({ label: BREADCRUMB_LABELS.STOCK_ANALYSIS, path: BREADCRUMB_PATHS.STOCK_ANALYSIS });
 
-          if (pathnames.includes('zerodha')) {
-            breadcrumbItems.push({ label: 'Zerodha', path: '/investment/stock/analysis/zerodha' });
+          if (pathnames.includes(PATH_SEGMENTS.ZERODHA)) {
+            breadcrumbItems.push({ label: BREADCRUMB_LABELS.STOCK_ZERODHA, path: BREADCRUMB_PATHS.STOCK_ZERODHA });
           }
-        } else if (pathnames.includes('favorites')) {
-          breadcrumbItems.push({ label: 'My Favorites', path: '/investment/stock/favorites' });
-        } else if (pathnames.includes('checklist')) {
-          breadcrumbItems.push({ label: 'Stock Checklist', path: '/investment/stock/checklist' });
-        } else if (pathnames.includes('average-calculator')) {
-          breadcrumbItems.push({ label: 'Average Calculator', path: '/investment/stock/average-calculator' });
-        } else if (pathnames.includes('profit-calculator')) {
-          breadcrumbItems.push({ label: 'Stock Profit Calculator', path: '/investment/stock/profit-calculator' });
+        } else if (pathnames.includes(PATH_SEGMENTS.FAVORITES)) {
+          breadcrumbItems.push({ label: BREADCRUMB_LABELS.STOCK_FAVORITES, path: BREADCRUMB_PATHS.STOCK_FAVORITES });
+        } else if (pathnames.includes(PATH_SEGMENTS.CHECKLIST)) {
+          breadcrumbItems.push({ label: BREADCRUMB_LABELS.STOCK_CHECKLIST, path: BREADCRUMB_PATHS.STOCK_CHECKLIST });
+        } else if (pathnames.includes(PATH_SEGMENTS.AVERAGE_CALCULATOR)) {
+          breadcrumbItems.push({ label: BREADCRUMB_LABELS.STOCK_AVERAGE_CALCULATOR, path: BREADCRUMB_PATHS.STOCK_AVERAGE_CALCULATOR });
+        } else if (pathnames.includes(PATH_SEGMENTS.PROFIT_CALCULATOR)) {
+          breadcrumbItems.push({ label: BREADCRUMB_LABELS.STOCK_PROFIT_CALCULATOR, path: BREADCRUMB_PATHS.STOCK_PROFIT_CALCULATOR });
         }
-      } else if (pathnames.includes('mutual-fund')) {
-        breadcrumbItems.push({ label: 'Mutual Fund', path: '/investment/mutual-fund' });
+      } else if (pathnames.includes(PATH_SEGMENTS.MUTUAL_FUND)) {
+        breadcrumbItems.push({ label: BREADCRUMB_LABELS.MUTUAL_FUND, path: BREADCRUMB_PATHS.MUTUAL_FUND });
 
-        if (pathnames.includes('checklist')) {
-          breadcrumbItems.push({ label: 'Mutual Fund Checklist', path: '/investment/mutual-fund/checklist' });
-        } else if (pathnames.includes('calculator')) {
-          breadcrumbItems.push({ label: 'Mutual Fund Calculator', path: '/investment/mutual-fund/calculator' });
+        if (pathnames.includes(PATH_SEGMENTS.CHECKLIST)) {
+          breadcrumbItems.push({ label: BREADCRUMB_LABELS.MUTUAL_FUND_CHECKLIST, path: BREADCRUMB_PATHS.MUTUAL_FUND_CHECKLIST });
+        } else if (pathnames.includes(PATH_SEGMENTS.CALCULATOR)) {
+          breadcrumbItems.push({ label: BREADCRUMB_LABELS.MUTUAL_FUND_CALCULATOR, path: BREADCRUMB_PATHS.MUTUAL_FUND_CALCULATOR });
         }
-      } else if (pathnames.includes('bonds')) {
-        breadcrumbItems.push({ label: 'Bonds & Fixed Income', path: '/investment/bonds' });
+      } else if (pathnames.includes(PATH_SEGMENTS.BONDS)) {
+        breadcrumbItems.push({ label: BREADCRUMB_LABELS.BONDS, path: BREADCRUMB_PATHS.BONDS });
         // Add child breadcrumb for before-starting
-        if (pathnames.includes('before-starting')) {
-          breadcrumbItems.push({ label: 'Before Starting Checklist', path: '/investment/bonds/before-starting' });
-        } else if (pathnames.includes('checklist')) {
-          breadcrumbItems.push({ label: 'Bond Investment Checklist', path: '/investment/bonds/checklist' });
+        if (pathnames.includes(PATH_SEGMENTS.BEFORE_STARTING)) {
+          breadcrumbItems.push({ label: BREADCRUMB_LABELS.BONDS_BEFORE_STARTING, path: BREADCRUMB_PATHS.BONDS_BEFORE_STARTING });
+        } else if (pathnames.includes(PATH_SEGMENTS.CHECKLIST)) {
+          breadcrumbItems.push({ label: BREADCRUMB_LABELS.BONDS_CHECKLIST, path: BREADCRUMB_PATHS.BONDS_CHECKLIST });
         }
-      } else if (pathnames.includes('commodities')) {
-        breadcrumbItems.push({ label: 'Commodities', path: '/investment/commodities' });
+      } else if (pathnames.includes(PATH_SEGMENTS.COMMODITIES)) {
+        breadcrumbItems.push({ label: BREADCRUMB_LABELS.COMMODITIES, path: BREADCRUMB_PATHS.COMMODITIES });
 
-        if (pathnames.includes('gold-silver-ratio')) {
-          breadcrumbItems.push({ label: 'Gold vs Silver Ratio', path: '/investment/commodities/gold-silver-ratio' });
+        if (pathnames.includes(PATH_SEGMENTS.GOLD_SILVER_RATIO)) {
+          breadcrumbItems.push({ label: BREADCRUMB_LABELS.GOLD_SILVER_RATIO, path: BREADCRUMB_PATHS.GOLD_SILVER_RATIO });
         }
-      } else if (pathnames.includes('calculator')) {
-        breadcrumbItems.push({ label: 'Calculator', path: '/investment/calculator' });
-        if (pathnames.includes('stock-average')) {
-          breadcrumbItems.push({ label: 'Stock Average Calculator', path: '/investment/calculator/stock-average' });
-        } else if (pathnames.includes('stock-profit')) {
-          breadcrumbItems.push({ label: 'Stock Profit Calculator', path: '/investment/calculator/stock-profit' });
-        } else if (pathnames.includes('mutual-fund')) {
-          breadcrumbItems.push({ label: 'Mutual Fund Calculator', path: '/investment/mutual-fund/calculator' });
+      } else if (pathnames.includes(PATH_SEGMENTS.CALCULATOR)) {
+        breadcrumbItems.push({ label: BREADCRUMB_LABELS.CALCULATOR, path: BREADCRUMB_PATHS.CALCULATOR });
+        if (pathnames.includes(PATH_SEGMENTS.STOCK_AVERAGE)) {
+          breadcrumbItems.push({ label: BREADCRUMB_LABELS.STOCK_AVERAGE_CALCULATOR, path: BREADCRUMB_PATHS.CALCULATOR_STOCK_AVERAGE });
+        } else if (pathnames.includes(PATH_SEGMENTS.STOCK_PROFIT)) {
+          breadcrumbItems.push({ label: BREADCRUMB_LABELS.STOCK_PROFIT_CALCULATOR, path: BREADCRUMB_PATHS.CALCULATOR_STOCK_PROFIT });
+        } else if (pathnames.includes(PATH_SEGMENTS.MUTUAL_FUND)) {
+          breadcrumbItems.push({ label: BREADCRUMB_LABELS.MUTUAL_FUND_CALCULATOR, path: BREADCRUMB_PATHS.CALCULATOR_MUTUAL_FUND });
         }
       }
-    } else if (pathnames.includes('hooks')) {
-      breadcrumbItems.push({ label: 'React Hooks', path: '/hooks' });
+    } else if (pathnames.includes(PATH_SEGMENTS.HOOKS)) {
+      breadcrumbItems.push({ label: BREADCRUMB_LABELS.HOOKS, path: BREADCRUMB_PATHS.HOOKS });
 
-      const hookName = pathnames.find(p => p.startsWith('use'));
+      const hookName = pathnames.find(p => p.startsWith(PATH_SEGMENTS.USE));
       if (hookName) {
         const capitalizedHook = hookName.charAt(0).toUpperCase() + hookName.slice(1);
-        breadcrumbItems.push({ label: capitalizedHook, path: `/hooks/${hookName}` });
+        breadcrumbItems.push({ label: capitalizedHook, path: `${BREADCRUMB_PATHS.HOOKS}/${hookName}` });
       }
     }
 
@@ -84,7 +90,7 @@ function Breadcrumbs() {
   const breadcrumbs = getBreadcrumbs();
 
   return (
-    <nav className="flex mb-2 sm:mb-3 overflow-x-auto" aria-label="Breadcrumb">
+    <nav className="flex mb-2 sm:mb-3 overflow-x-auto" aria-label={BREADCRUMB_ARIA_LABELS.NAVIGATION}>
       <ol className="inline-flex items-center space-x-0.5 sm:space-x-1 md:space-x-2 flex-nowrap">
         {breadcrumbs.map((crumb, index) => (
           <li key={crumb.path} className="flex items-center flex-shrink-0">

@@ -188,8 +188,8 @@ function AverageCalculator() {
         >
           ← Back to Stock
         </Link>
-        <h1 className={`${RESPONSIVE_PATTERNS.text['3xl']} font-bold text-gray-800`}>Average Price Calculator</h1>
-        <p className={`${RESPONSIVE_PATTERNS.text.base} text-gray-600 mt-1`}>Calculate your new average price after accumulating more shares</p>
+        <h1 className={`${RESPONSIVE_PATTERNS.text['3xl']} font-bold text-gray-800`}>{AVERAGE_CALCULATOR_TEXTS.PAGE_TITLE}</h1>
+        <p className={`${RESPONSIVE_PATTERNS.text.base} text-gray-600 mt-1`}>{AVERAGE_CALCULATOR_TEXTS.PAGE_SUBTITLE}</p>
       </div>
 
       <div className="max-w-4xl mx-auto">

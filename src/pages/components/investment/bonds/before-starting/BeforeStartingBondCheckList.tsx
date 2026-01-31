@@ -3,22 +3,12 @@ import ProgressBar from '../../../ProgressBar';
 import { Button, CategoryBadge, PageHeader, useChecklist } from '../../../common';
 import { copyAllChecklistItems, copyChecklistCategory } from '../../helpers/checklistCopy.helper';
 import { CopyAllIcon, CopyIcon } from '../../helpers/CopyIcons';
-import { \n  CHECKLIST_CATEGORIES, \n  BEFORE_STARTING_BOND_PAGE_HEADER \n} from './beforeStartingBondChecklist.constants';
+import { 
+  CHECKLIST_CATEGORIES, 
+  BEFORE_STARTING_BOND_PAGE_HEADER,
+  INITIAL_CHECKLIST_ITEMS 
+} from './beforeStartingBondChecklist.constants';
 import { RESPONSIVE_PATTERNS } from '../../../../../constants/responsive.constants';
-
-const INITIAL_CHECKLIST_ITEMS = [
-  { id: 'howToComeOut', label: 'How to come out ahead in bond investments', checked: false, category: CHECKLIST_CATEGORIES.MINE },
-  { id: 'understandBasics', label: 'Understand bond basics (fixed income, coupons, maturity)', checked: false, category: CHECKLIST_CATEGORIES.EDUCATION },
-  { id: 'riskTolerance', label: 'Assess my risk tolerance for bonds', checked: false, category: CHECKLIST_CATEGORIES.PREPARATION },
-  { id: 'investmentGoals', label: 'Define investment goals and timeline', checked: false, category: CHECKLIST_CATEGORIES.PREPARATION },
-  { id: 'researchIssuers', label: 'Research reputable bond issuers', checked: false, category: CHECKLIST_CATEGORIES.EDUCATION },
-  { id: 'creditRatings', label: 'Learn about credit ratings and their importance', checked: false, category: CHECKLIST_CATEGORIES.EDUCATION },
-  { id: 'taxImplications', label: 'Understand tax implications of bond investments', checked: false, category: CHECKLIST_CATEGORIES.EDUCATION },
-  { id: 'diversification', label: 'Plan for diversification in bond portfolio', checked: false, category: CHECKLIST_CATEGORIES.PREPARATION },
-  { id: 'brokerAccount', label: 'Set up or review brokerage account for bonds', checked: false, category: CHECKLIST_CATEGORIES.PREPARATION },
-  { id: 'marketConditions', label: 'Review current market conditions for bonds', checked: false, category: CHECKLIST_CATEGORIES.PREPARATION },
-  { id: 'professionalAdvice', label: 'Consider consulting a financial advisor', checked: false, category: CHECKLIST_CATEGORIES.PREPARATION },
-];
 
 function BeforeStartingBondCheckList() {
   const {

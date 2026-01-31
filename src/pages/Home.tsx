@@ -1,4 +1,5 @@
 import Breadcrumbs from './navigation/Breadcrumbs';
+import { HOME_PAGE } from './constants/page.constants';
 
 function HomePage() {
   return (
@@ -6,10 +7,10 @@ function HomePage() {
       <div className="max-w-7xl mx-auto">
         <Breadcrumbs />
         <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-4">
-          Welcome to the Home Page
+          {HOME_PAGE.HEADING}
         </h1>
         <p className="mt-2 text-base sm:text-lg md:text-xl text-gray-600 leading-relaxed">
-          This is the main landing page of the application.
+          {HOME_PAGE.DESCRIPTION}
         </p>
       </div>
     </div>

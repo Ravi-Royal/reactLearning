@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { STOCK_NAVIGATION_ITEMS, STOCK_QUICK_STATS } from '../../constants/stockNavigation.constants';
+import { STOCK_NAVIGATION } from './constants/navigationPage.constants';
 import Breadcrumbs from './Breadcrumbs';
 
 function StockNavigation() {
@@ -15,8 +16,8 @@ function StockNavigation() {
         >
           ← Back to Investment
         </Link>
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">Stock Dashboard</h1>
-        <p className="text-sm sm:text-base text-gray-600 mt-1">Manage and analyze your stock portfolio</p>
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">{STOCK_NAVIGATION.HEADING}</h1>
+        <p className="text-sm sm:text-base text-gray-600 mt-1">{STOCK_NAVIGATION.SUBTITLE}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
@@ -49,7 +50,7 @@ function StockNavigation() {
       </div>
 
       <div className="mt-6 sm:mt-8 bg-gray-50 rounded-lg p-4 sm:p-6">
-        <h4 className="font-semibold text-gray-800 mb-3 sm:mb-4 text-sm sm:text-base">Quick Stats</h4>
+        <h4 className="font-semibold text-gray-800 mb-3 sm:mb-4 text-sm sm:text-base">{STOCK_NAVIGATION.QUICK_STATS_TITLE}</h4>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-xs sm:text-sm">
           {STOCK_QUICK_STATS.map((stat) => (
             <div key={stat.id} className="text-center p-3 bg-white rounded-lg">

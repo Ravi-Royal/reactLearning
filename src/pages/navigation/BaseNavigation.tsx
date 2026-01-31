@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { NAVIGATION_BRAND, NAVIGATION_ITEMS, NAVIGATION_TAGLINE, type NavigationItem } from './constants/navigation.constants';
+import { BASE_NAVIGATION } from './constants/navigationPage.constants';
 
 function BaseNavigation() {
   const location = useLocation();
@@ -60,7 +61,7 @@ function BaseNavigation() {
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
               aria-expanded={isMobileMenuOpen}
             >
-              <span className="sr-only">Open main menu</span>
+              <span className="sr-only">{BASE_NAVIGATION.OPEN_MENU_LABEL}</span>
               {!isMobileMenuOpen ? (
                 <svg className="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
