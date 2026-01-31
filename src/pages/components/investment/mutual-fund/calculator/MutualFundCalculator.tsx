@@ -85,7 +85,7 @@ function MutualFundCalculator() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <InvestmentInputs formState={formState} isResetting={isResetting} onReset={handleResetWithFeedback} />
-        {result && <InvestmentResult result={result} />}
+        {result && <InvestmentResult result={result} formState={formState} />}
       </div>
 
       {result && (
