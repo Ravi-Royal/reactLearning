@@ -50,6 +50,7 @@ export default defineConfig({
             [
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // unsafe-eval needed for Vite HMR
+              "worker-src 'self' blob:", // Allow workers for Vite HMR
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https:",
               "font-src 'self' data:",

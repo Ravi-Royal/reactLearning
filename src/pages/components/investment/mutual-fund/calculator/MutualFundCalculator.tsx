@@ -1,5 +1,7 @@
 import Breadcrumbs from '@pages/navigation/Breadcrumbs';
 import { Link } from 'react-router-dom';
+import { useRef, useMemo } from 'react';
+import { formatCurrency } from '@utils/currency';
 import { MUTUAL_FUND_CALCULATOR_TEXTS } from './constants/mutualFundCalculator.constants';
 import { useMutualFundForm } from './hooks/useMutualFundForm';
 import { useYearlyBreakdown, useBreakdownView } from './hooks/useYearlyBreakdown';
@@ -7,7 +9,36 @@ import { useYearlyBreakdown, useBreakdownView } from './hooks/useYearlyBreakdown
 function MutualFundCalculator() {
   // Use custom hooks for form state and calculations
   const formState = useMutualFundForm();
+  const {
+    investmentType,
+    handleInvestmentTypeChange,
+    sipAmount,
+    setSipAmount,
+    lumpsumAmount,
+    setLumpsumAmount,
+    annualReturn,
+    setAnnualReturn,
+    investmentPeriod,
+    setInvestmentPeriod,
+    postInvestmentHoldingPeriod,
+    setPostInvestmentHoldingPeriod,
+    oneTimeWithdrawal,
+    setOneTimeWithdrawal,
+    swpAmount,
+    setSwpAmount,
+    swpPeriod,
+    setSwpPeriod,
+    inflationRate,
+    setInflationRate,
+    inflationStartFrom,
+    setInflationStartFrom,
+    handleReset,
+    result,
+  } = formState;
   const [breakdownView, setBreakdownView] = useBreakdownView();
+
+  // Ref for scrolling to SWP start row
+  const swpStartRowRef = useRef<HTMLTableRowElement>(null);
 
   // Calculate breakdown for table based on selected view
   const yearlyBreakdown = useYearlyBreakdown(
@@ -24,6 +55,16 @@ function MutualFundCalculator() {
     formState.inflationStartFrom,
     breakdownView,
   );
+
+  // Calculate SWP start index for scrolling
+  const swpStartIndex = useMemo(() => {
+    if (!result || parseFloat(swpAmount) <= 0) {
+      return -1;
+    }
+    const investYears = parseInt(investmentPeriod || '0', 10);
+    const holdingYears = parseInt(postInvestmentHoldingPeriod || '0', 10);
+    return investYears + holdingYears;
+  }, [result, swpAmount, investmentPeriod, postInvestmentHoldingPeriod]);
 
   return (
     <div className="p-4 sm:p-6 md:p-8 lg:p-10">
