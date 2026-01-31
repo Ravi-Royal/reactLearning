@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom';
-import { PageSkeleton } from '@/components/LoadingStates';
+import { PageLoader } from '@pages/components/common/Loader';
 import BaseNavigation from '@pages/navigation/BaseNavigation';
 
 const HomePage = lazy(() => import('../Home'));
@@ -40,7 +40,7 @@ const GoldVsSilverRatio = lazy(
   () => import('../components/investment/commodities/gold-silver-ratio/GoldVsSilverRatio'),
 );
 
-const RouteFallback = (): React.ReactElement => <PageSkeleton />;
+const RouteFallback = (): React.ReactElement => <PageLoader message="Loading page..." />;
 
 function Routing(): React.ReactElement {
   return (
