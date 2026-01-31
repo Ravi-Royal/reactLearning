@@ -9,6 +9,7 @@ const HooksNavigation = lazy(() => import('../navigation/HooksNavigation'));
 const InvestmentNavigation = lazy(() => import('../navigation/InvestmentNavigation'));
 const StockNavigation = lazy(() => import('../navigation/StockNavigation'));
 const MutualFundNavigation = lazy(() => import('../navigation/MutualFundNavigation'));
+const CommoditiesNavigation = lazy(() => import('../navigation/CommoditiesNavigation'));
 const CalculatorNavigation = lazy(() => import('../navigation/CalculatorNavigation'));
 
 const UseStateHook = lazy(() => import('../components/hookRef/UseStateHook'));
@@ -30,6 +31,7 @@ const AverageCalculator = lazy(() => import('../components/investment/stock/aver
 const StockProfitCalculator = lazy(() => import('../components/investment/stock/profit-calculator/StockProfitCalculator'));
 const MutualFundCalculator = lazy(() => import('../components/investment/mutual-fund/calculator/MutualFundCalculator'));
 const MutualFundChecklist = lazy(() => import('../components/investment/mutual-fund/checklist/MutualFundChecklist'));
+const GoldVsSilverRatio = lazy(() => import('../components/investment/commodities/gold-silver-ratio/GoldVsSilverRatio'));
 
 const RouteFallback = (): React.ReactElement => (
   <div className="p-6">
@@ -77,6 +79,10 @@ function Routing(): React.ReactElement {
               <Route index element={<Bonds />} />
               <Route path="before-starting" element={<BeforeStartingBondCheckList />} />
               <Route path="checklist" element={<BondCheckList />} />
+            </Route>
+            <Route path="commodities" element={<Outlet />}>
+              <Route index element={<CommoditiesNavigation />} />
+              <Route path="gold-silver-ratio" element={<GoldVsSilverRatio />} />
             </Route>
             <Route path="calculator" element={<Outlet />}>
               <Route index element={<CalculatorNavigation />} />

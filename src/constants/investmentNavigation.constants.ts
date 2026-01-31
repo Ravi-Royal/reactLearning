@@ -48,6 +48,22 @@ export const INVESTMENT_NAVIGATION_ITEMS = [
     },
   },
   {
+    id: 'commodities',
+    title: 'Commodities',
+    description: 'Track and analyze precious metals like gold and silver with ratio analysis.',
+    icon: {
+      path: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4',
+      bgColor: 'bg-orange-100',
+      color: 'text-orange-600',
+    },
+    route: 'commodities',
+    buttonText: 'Explore Commodities',
+    buttonColors: {
+      active: 'bg-orange-600 text-white',
+      inactive: 'bg-orange-50 text-orange-600 hover:bg-orange-100',
+    },
+  },
+  {
     id: 'calculator',
     title: 'Calculator',
     description: 'Financial calculators for stock average and mutual fund SIP/SWP calculations.',
@@ -68,7 +84,7 @@ export const INVESTMENT_NAVIGATION_ITEMS = [
 export const INVESTMENT_QUICK_STATS = [
   {
     id: 'tools',
-    value: '4',
+    value: '5',
     label: 'Investment Types',
     color: 'text-blue-600',
   },
