@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Breadcrumbs from '../../../../../navigation/Breadcrumbs';
+import Breadcrumbs from '@pages/navigation/Breadcrumbs';
 import StockControls from './excelBasedResult/components/StockControls';
 import StockMetadata from './excelBasedResult/components/StockMetadata';
 import StockTable from './excelBasedResult/components/StockTable';
@@ -18,8 +18,8 @@ import {
   EXCEL_FILE_NAMES,
   STOCK_RESULT_ERROR_PREFIXES,
 } from './constants/stockResult.constants';
-import { logger, logSuccess } from '../../../../../../utils/logger';
-import { toast } from '../../../../../../utils/toast';
+import { logger, logSuccess } from '@utils/logger';
+import { toast } from '@utils/toast';
 
 /**
  * Main Stock Result component - orchestrates data loading and state management

@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { HOOKS_DATA } from '../../constants/hooksNavigation.constants';
+import { HOOKS_DATA } from '@constants/hooksNavigation.constants';
 import Breadcrumbs from './Breadcrumbs';
 
 const HOOKS_NAVIGATION = {

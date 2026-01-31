@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { PriceResult } from '../types';
 import { GOLD_SILVER_TEXTS } from '../constants/goldSilver.constants';
-import { logApiFailure, logger } from '../../../../../../utils/logger';
+import { logApiFailure, logger } from '@utils/logger';
 
 export const useGoldSilverPrices = () => {
   const [goldPrice, setGoldPrice] = useState<string>('2050');

@@ -1,10 +1,10 @@
-import Breadcrumbs from '../../../../navigation/Breadcrumbs';
-import ProgressBar from '../../../ProgressBar';
-import { copyAllChecklistItems, copyChecklistCategory } from '../../helpers/checklistCopy.helper';
-import { CopyAllIcon, CopyIcon } from '../../helpers/CopyIcons';
-import { Button, CategoryBadge, PageHeader, SelectionModal } from '../../../common';
-import { useChecklist } from '../../../common/hooks/useChecklist';
-import { RESPONSIVE_PATTERNS } from '../../../../../constants/responsive.constants';
+import Breadcrumbs from '@pages/navigation/Breadcrumbs';
+import ProgressBar from '@components/ProgressBar';
+import { copyAllChecklistItems, copyChecklistCategory } from '@components/investment/helpers/checklistCopy.helper';
+import { CopyAllIcon, CopyIcon } from '@components/investment/helpers/CopyIcons';
+import { Button, CategoryBadge, PageHeader, SelectionModal } from '@components/common';
+import { useChecklist } from '@components/common/hooks/useChecklist';
+import { RESPONSIVE_PATTERNS } from '@constants/responsive.constants';
 import {
   CHECKLIST_CATEGORIES,
   MY_BOND_LIST,

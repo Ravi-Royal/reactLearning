@@ -8,10 +8,16 @@ export default defineConfig({
   base: '/',
   resolve: {
     alias: {
-      '@constants': path.resolve(__dirname, './src/constants'),
-      '@pages': path.resolve(__dirname, './src/pages'),
+      '@': path.resolve(__dirname, './src'),
       '@components': path.resolve(__dirname, './src/pages/components'),
+      '@pages': path.resolve(__dirname, './src/pages'),
+      '@constants': path.resolve(__dirname, './src/constants'),
       '@assets': path.resolve(__dirname, './src/assets'),
+      '@utils': path.resolve(__dirname, './src/utils'),
+      '@hooks': path.resolve(__dirname, './src/hooks'),
+      '@stores': path.resolve(__dirname, './src/stores'),
+      '@providers': path.resolve(__dirname, './src/providers'),
+      '@config': path.resolve(__dirname, './src/config'),
     },
   },
   plugins: [

@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { MUTUAL_FUND_NAVIGATION_ITEMS, MUTUAL_FUND_QUICK_STATS } from '../../constants/mutualFundNavigation.constants';
+import { MUTUAL_FUND_NAVIGATION_ITEMS, MUTUAL_FUND_QUICK_STATS } from '@constants/mutualFundNavigation.constants';
 import { MUTUAL_FUND_NAVIGATION } from './constants/navigationPage.constants';
 import Breadcrumbs from './Breadcrumbs';
 

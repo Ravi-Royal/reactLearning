@@ -1,8 +1,8 @@
 import { useState, useMemo, useRef } from 'react';
-import Breadcrumbs from '../../../../navigation/Breadcrumbs';
+import Breadcrumbs from '@pages/navigation/Breadcrumbs';
 import { Link } from 'react-router-dom';
-import { Money, safeParseNumber } from '../../../../../utils/financial';
-import { formatCurrency } from '../../../../../utils/currency';
+import { Money, safeParseNumber } from '@utils/financial';
+import { formatCurrency } from '@utils/currency';
 import { MUTUAL_FUND_CALCULATOR_TEXTS } from './constants/mutualFundCalculator.constants';
 import type { CalculationResult, YearlyBreakdown, BreakdownView } from './types/MutualFundCalculator.types';
 

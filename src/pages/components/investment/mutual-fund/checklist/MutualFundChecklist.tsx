@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import Breadcrumbs from '../../../../navigation/Breadcrumbs';
-import ProgressBar from '../../../ProgressBar';
-import { Button, CategoryBadge, PageHeader, SelectionModal } from '../../../common';
+import Breadcrumbs from '@pages/navigation/Breadcrumbs';
+import ProgressBar from '@components/ProgressBar';
+import { Button, CategoryBadge, PageHeader, SelectionModal } from '@components/common';
 import { AiOutlineInfoCircle } from 'react-icons/ai';
-import { copyAllChecklistItems, copyChecklistCategory } from '../../helpers/checklistCopy.helper';
-import { CopyAllIcon, CopyIcon } from '../../helpers/CopyIcons';
-import { useChecklist } from '../../../common/hooks/useChecklist';
-import { RESPONSIVE_PATTERNS } from '../../../../../constants/responsive.constants';
+import { copyAllChecklistItems, copyChecklistCategory } from '@components/investment/helpers/checklistCopy.helper';
+import { CopyAllIcon, CopyIcon } from '@components/investment/helpers/CopyIcons';
+import { useChecklist } from '@components/common/hooks/useChecklist';
+import { RESPONSIVE_PATTERNS } from '@constants/responsive.constants';
 import {
   CHECKLIST_CATEGORIES,
   MUTUAL_FUND_LIST,

@@ -1,5 +1,5 @@
-import { Button } from '../../../../common';
-import { CopyIcon } from '../../../helpers/CopyIcons';
+import { Button } from '@components/common';
+import { CopyIcon } from '@components/investment/helpers/CopyIcons';
 
 interface SectionHeaderProps {
   title: string;

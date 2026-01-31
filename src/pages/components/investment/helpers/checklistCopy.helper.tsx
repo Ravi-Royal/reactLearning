@@ -1,5 +1,5 @@
-import { logSuccess, logger } from '../../../../utils/logger';
-import { toast } from '../../../../utils/toast';
+import { logSuccess, logger } from '@utils/logger';
+import { toast } from '@utils/toast';
 import type { ChecklistItem, CategoryGroup } from './types/checklist.types';
 
 /**

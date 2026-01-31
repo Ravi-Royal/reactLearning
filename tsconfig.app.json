@@ -3,16 +3,9 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "ES2022",
     "useDefineForClassFields": true,
-    "lib": [
-      "ES2022",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    "types": [
-      "vite/client",
-      "node"
-    ],
+    "types": ["vite/client", "node"],
     "skipLibCheck": true,
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -24,18 +17,16 @@
     /* Path aliases */
     "baseUrl": ".",
     "paths": {
-      "@constants/*": [
-        "src/constants/*"
-      ],
-      "@pages/*": [
-        "src/pages/*"
-      ],
-      "@components/*": [
-        "src/pages/components/*"
-      ],
-      "@assets/*": [
-        "src/assets/*"
-      ]
+      "@/*": ["src/*"],
+      "@components/*": ["src/pages/components/*"],
+      "@pages/*": ["src/pages/*"],
+      "@constants/*": ["src/constants/*"],
+      "@assets/*": ["src/assets/*"],
+      "@utils/*": ["src/utils/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@stores/*": ["src/stores/*"],
+      "@providers/*": ["src/providers/*"],
+      "@config/*": ["src/config/*"]
     },
     /* Linting */
     "strict": true,
@@ -51,7 +42,5 @@
     "allowUnusedLabels": false,
     "allowUnreachableCode": false
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

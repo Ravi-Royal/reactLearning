@@ -1,4 +1,4 @@
-import { YAHOO_FINANCE_CONFIG } from '../../../../../../../../constants/apiConfig';
+import { YAHOO_FINANCE_CONFIG } from '@constants/apiConfig';
 import {
   StockColumnKey,
   type PriceFetchResult,
@@ -9,7 +9,7 @@ import {
   type StoredStockData,
   type YahooFinanceResponse,
 } from '../types/StockResult.types';
-import { logger, logSuccess } from '../../../../../../../../utils/logger';
+import { logger, logSuccess } from '@utils/logger';
 
 /**
  * Parse an Excel ArrayBuffer and return normalized stock data.

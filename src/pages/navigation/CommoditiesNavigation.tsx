@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { COMMODITIES_NAVIGATION_ITEMS, COMMODITIES_QUICK_STATS } from '../../constants/commoditiesNavigation.constants';
+import { COMMODITIES_NAVIGATION_ITEMS, COMMODITIES_QUICK_STATS } from '@constants/commoditiesNavigation.constants';
 import { COMMODITIES_NAVIGATION } from './constants/navigationPage.constants';
 import Breadcrumbs from './Breadcrumbs';
 

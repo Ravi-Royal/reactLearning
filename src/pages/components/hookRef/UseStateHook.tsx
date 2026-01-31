@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Breadcrumbs from '../../navigation/Breadcrumbs';
+import Breadcrumbs from '@pages/navigation/Breadcrumbs';
 
 function UseStateHook(): React.ReactElement {
   const [count, setCount] = useState<number>(0);

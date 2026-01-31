@@ -1,5 +1,5 @@
 import React from 'react';
-import { CATEGORY_COLORS } from '../../../constants/responsive.constants';
+import { CATEGORY_COLORS } from '@constants/responsive.constants';
 import type { CategoryBadgeProps } from './types';
 
 /**

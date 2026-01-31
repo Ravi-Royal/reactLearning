@@ -1,6 +1,6 @@
 import React from 'react';
-import Breadcrumbs from '../../../../navigation/Breadcrumbs';
-import { RESPONSIVE_PATTERNS } from '../../../../../constants/responsive.constants';
+import Breadcrumbs from '@pages/navigation/Breadcrumbs';
+import { RESPONSIVE_PATTERNS } from '@constants/responsive.constants';
 
 const MyFavList: React.FC = () => {
   // Simple placeholder — show instructions and a small empty table placeholder.

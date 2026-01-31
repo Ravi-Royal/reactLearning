@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { INVESTMENT_NAVIGATION_ITEMS, INVESTMENT_QUICK_STATS } from '../../constants/investmentNavigation.constants';
+import { INVESTMENT_NAVIGATION_ITEMS, INVESTMENT_QUICK_STATS } from '@constants/investmentNavigation.constants';
 import { INVESTMENT_NAVIGATION } from './constants/navigationPage.constants';
 import Breadcrumbs from './Breadcrumbs';
 

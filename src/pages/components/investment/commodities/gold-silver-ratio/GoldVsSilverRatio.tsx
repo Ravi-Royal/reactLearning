@@ -1,4 +1,4 @@
-import Breadcrumbs from '../../../../navigation/Breadcrumbs';
+import Breadcrumbs from '@pages/navigation/Breadcrumbs';
 import { useGoldSilverPrices } from './hooks/useGoldSilverPrices';
 import {
   HISTORICAL_CONTEXT,

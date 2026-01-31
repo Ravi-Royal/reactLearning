@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/refs */
 import { useEffect, useRef, useState } from 'react';
-import Breadcrumbs from '../../navigation/Breadcrumbs';
-import { logger } from '../../../utils/logger';
+import Breadcrumbs from '@pages/navigation/Breadcrumbs';
+import { logger } from '@utils/logger';
 
 function UseRefHook() {
   const [count, setCount] = useState(0);

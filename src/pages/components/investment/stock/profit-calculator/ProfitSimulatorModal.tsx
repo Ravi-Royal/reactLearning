@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Money, safeParseNumber } from '../../../../../utils/financial';
+import { Money, safeParseNumber } from '@utils/financial';
 import { PROFIT_CALCULATOR_TEXTS } from './constants/profitCalculator.constants';
 import type { ProfitSimulatorModalProps } from './types/StockProfitCalculator.types';
 

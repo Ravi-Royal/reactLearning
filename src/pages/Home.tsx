@@ -1,5 +1,5 @@
-import Breadcrumbs from './navigation/Breadcrumbs';
-import { HOME_PAGE } from './constants/page.constants';
+import Breadcrumbs from '@pages/navigation/Breadcrumbs';
+import { HOME_PAGE } from '@pages/constants/page.constants';
 
 function HomePage() {
   return (

@@ -1,5 +1,5 @@
 import { useReducer } from 'react';
-import Breadcrumbs from '../../navigation/Breadcrumbs';
+import Breadcrumbs from '@pages/navigation/Breadcrumbs';
 
 type ReducerAction = { type: 'increment' | 'decrement'; payload: number };
 

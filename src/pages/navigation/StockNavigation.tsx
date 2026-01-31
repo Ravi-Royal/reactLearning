@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { STOCK_NAVIGATION_ITEMS, STOCK_QUICK_STATS } from '../../constants/stockNavigation.constants';
+import { STOCK_NAVIGATION_ITEMS, STOCK_QUICK_STATS } from '@constants/stockNavigation.constants';
 import { STOCK_NAVIGATION } from './constants/navigationPage.constants';
 import Breadcrumbs from './Breadcrumbs';
 

@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom';
-import { PageSkeleton } from '../../components/LoadingStates';
-import BaseNavigation from '../navigation/BaseNavigation';
+import { PageSkeleton } from '@/components/LoadingStates';
+import BaseNavigation from '@pages/navigation/BaseNavigation';
 
 const HomePage = lazy(() => import('../Home'));
 const AboutPage = lazy(() => import('../About'));

@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import Breadcrumbs from '../../navigation/Breadcrumbs';
+import Breadcrumbs from '@pages/navigation/Breadcrumbs';
 
 const MyContext = createContext<{ test: string } | null>(null);
 

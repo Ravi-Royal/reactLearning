@@ -1,5 +1,5 @@
 import React from 'react';
-import { RESPONSIVE_PATTERNS } from '../../../constants/responsive.constants';
+import { RESPONSIVE_PATTERNS } from '@constants/responsive.constants';
 import type { PageHeaderProps } from './types';
 
 /**

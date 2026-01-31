@@ -1,14 +1,14 @@
-import Breadcrumbs from '../../../../navigation/Breadcrumbs';
-import ProgressBar from '../../../ProgressBar';
-import { Button, CategoryBadge, PageHeader, useChecklist } from '../../../common';
-import { copyAllChecklistItems, copyChecklistCategory } from '../../helpers/checklistCopy.helper';
-import { CopyAllIcon, CopyIcon } from '../../helpers/CopyIcons';
+import Breadcrumbs from '@pages/navigation/Breadcrumbs';
+import ProgressBar from '@components/ProgressBar';
+import { Button, CategoryBadge, PageHeader, useChecklist } from '@components/common';
+import { copyAllChecklistItems, copyChecklistCategory } from '@components/investment/helpers/checklistCopy.helper';
+import { CopyAllIcon, CopyIcon } from '@components/investment/helpers/CopyIcons';
 import {
   CHECKLIST_CATEGORIES,
   BEFORE_STARTING_BOND_PAGE_HEADER,
   INITIAL_CHECKLIST_ITEMS,
 } from './beforeStartingBondChecklist.constants';
-import { RESPONSIVE_PATTERNS } from '../../../../../constants/responsive.constants';
+import { RESPONSIVE_PATTERNS } from '@constants/responsive.constants';
 
 function BeforeStartingBondCheckList() {
   const {

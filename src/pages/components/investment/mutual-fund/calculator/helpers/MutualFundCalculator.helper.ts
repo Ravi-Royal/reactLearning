@@ -1,4 +1,4 @@
-import { Money } from '../../../../../utils/financial';
+import { Money } from '@utils/financial';
 
 /**
  * Calculates compound interest for lumpsum investments

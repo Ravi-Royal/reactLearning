@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import Breadcrumbs from '../../navigation/Breadcrumbs';
-import { logger } from '../../../utils/logger';
+import Breadcrumbs from '@pages/navigation/Breadcrumbs';
+import { logger } from '@utils/logger';
 
 function UseEffectHook() {
   const [count, setCount] = useState(0);

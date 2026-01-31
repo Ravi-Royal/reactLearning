@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import DOMPurify from 'dompurify';
-import { ALLOWED_TAGS, ALLOWED_ATTR } from '../config/sanitizeConfig';
+import { ALLOWED_TAGS, ALLOWED_ATTR } from '@config/sanitizeConfig';
 
 /**
  * Sanitizes HTML content to prevent XSS attacks

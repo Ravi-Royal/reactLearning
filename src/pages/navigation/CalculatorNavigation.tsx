@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { CALCULATOR_NAVIGATION_ITEMS, CALCULATOR_QUICK_STATS } from '../../constants/calculatorNavigation.constants';
+import { CALCULATOR_NAVIGATION_ITEMS, CALCULATOR_QUICK_STATS } from '@constants/calculatorNavigation.constants';
 import { CALCULATOR_NAVIGATION } from './constants/navigationPage.constants';
 import Breadcrumbs from './Breadcrumbs';
 

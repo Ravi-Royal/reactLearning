@@ -1,10 +1,10 @@
 import { useState, useMemo } from 'react';
 import ProfitSimulatorModal from './ProfitSimulatorModal';
 import { PROFIT_CALCULATOR_TEXTS } from './constants/profitCalculator.constants';
-import Breadcrumbs from '../../../../navigation/Breadcrumbs';
-import { RESPONSIVE_PATTERNS } from '../../../../../constants/responsive.constants';
+import Breadcrumbs from '@pages/navigation/Breadcrumbs';
+import { RESPONSIVE_PATTERNS } from '@constants/responsive.constants';
 import { STOCK_PROFIT_CALCULATOR } from './constants/stockProfitCalculator.constants';
-import { Money, safeParseNumber } from '../../../../../utils/financial';
+import { Money, safeParseNumber } from '@utils/financial';
 import type { StockGroup } from './types/StockProfitCalculator.types';
 
 function StockProfitCalculator() {

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
-import Breadcrumbs from '../../../navigation/Breadcrumbs';
-import { RESPONSIVE_PATTERNS } from '../../../../constants/responsive.constants';
+import Breadcrumbs from '@pages/navigation/Breadcrumbs';
+import { RESPONSIVE_PATTERNS } from '@constants/responsive.constants';
 
 function Bonds() {
   return (

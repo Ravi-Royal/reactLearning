@@ -1,4 +1,4 @@
-import { useToast, toast as toastAPI, type Toast } from '../../../utils/toast';
+import { useToast, toast as toastAPI, type Toast } from '@utils/toast';
 import {
   TOAST_TYPES,
   TOAST_STYLES,

@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Breadcrumbs from '../../../../navigation/Breadcrumbs';
-import { RESPONSIVE_PATTERNS } from '../../../../../constants/responsive.constants';
+import Breadcrumbs from '@pages/navigation/Breadcrumbs';
+import { RESPONSIVE_PATTERNS } from '@constants/responsive.constants';
 import { AVERAGE_CALCULATOR_TEXTS } from './constants/averageCalculator.constants';
-import { Money, safeParseNumber } from '../../../../../utils/financial';
+import { Money, safeParseNumber } from '@utils/financial';
 import type { CalculationResult } from './types/AverageCalculator.types';
 
 function AverageCalculator() {
