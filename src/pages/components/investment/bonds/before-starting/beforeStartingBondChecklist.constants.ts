@@ -13,6 +13,11 @@ export const BOND_LIST_CATEGORIES = {
   AVOID_BOND: 'Avoid Bond',
 } as const;
 
+export const BEFORE_STARTING_BOND_PAGE_HEADER = {
+  TITLE: 'Before Starting Bond Checklist',
+  SUBTITLE: 'Complete this checklist before starting your bond investment journey.',
+} as const;
+
 export interface MyBondItem {
     name: string;
     category: string;

@@ -1,15 +1,6 @@
-interface ChecklistItem {
-  id: string;
-  label: string;
-  checked: boolean;
-  category: string;
-}
-
-interface CategoryGroup {
-  name: string;
-  items: ChecklistItem[];
-  checkedCount: number;
-}
+import { logSuccess, logger } from '../../../../utils/logger';
+import { toast } from '../../../../utils/toast';
+import type { ChecklistItem, CategoryGroup } from './types/checklist.types';
 
 /**
  * Copies a specific category of checklist items to clipboard
@@ -27,9 +18,11 @@ export const copyChecklistCategory = (
     `\n\nTotal: ${checkedCount}/${categoryItems.length} completed`;
 
   navigator.clipboard.writeText(text).then(() => {
-    console.warn('Checklist copied to clipboard!');
+    logSuccess('Checklist copied to clipboard!');
+    toast.success('Checklist copied to clipboard!');
   }).catch(err => {
-    console.error('Failed to copy:', err);
+    logger.error('Failed to copy:', err);
+    toast.error('Failed to copy checklist');
   });
 };
 
@@ -55,8 +48,10 @@ export const copyAllChecklistItems = (
   text += `\n\nTotal: ${totalChecked}/${totalItems} completed`;
 
   navigator.clipboard.writeText(text).then(() => {
-    console.warn('All checklist items copied to clipboard!');
+    logSuccess('All checklist items copied to clipboard!');
+    toast.success('All checklist items copied!');
   }).catch(err => {
-    console.error('Failed to copy:', err);
+    logger.error('Failed to copy:', err);
+    toast.error('Failed to copy checklist');
   });
 };

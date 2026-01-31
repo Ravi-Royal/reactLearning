@@ -1,20 +1,10 @@
 import { useState, useMemo } from 'react';
 import ProfitSimulatorModal from './ProfitSimulatorModal';
+import { PROFIT_CALCULATOR_TEXTS } from './constants/profitCalculator.constants';
 import Breadcrumbs from '../../../../navigation/Breadcrumbs';
 import { RESPONSIVE_PATTERNS } from '../../../../../constants/responsive.constants';
 import { Money, safeParseNumber } from '../../../../../utils/financial';
-
-interface StockGroup {
-  id: number;
-  numStocks: string;
-  pricePerStock: string;
-  profitInputType: 'total' | 'perShare' | 'currentPrice';
-  totalProfit: string; // used if profitInputType === 'total'
-  profitPerShare: string; // used if profitInputType === 'perShare'
-  currentPricePerShare?: string; // used if profitInputType === 'currentPrice'
-  age: string;
-  ageUnit: 'days' | 'months';
-}
+import type { StockGroup } from './types/StockProfitCalculator.types';
 
 function StockProfitCalculator() {
   const [stockGroups, setStockGroups] = useState<StockGroup[]>([
@@ -220,7 +210,7 @@ function StockProfitCalculator() {
                   value={group.numStocks}
                   onChange={e => updateStockGroup(group.id, 'numStocks', e.target.value)}
                   className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
-                  placeholder="e.g., 100"
+                  placeholder={PROFIT_CALCULATOR_TEXTS.PURCHASE_DETAILS.QUANTITY_PLACEHOLDER}
                 />
               </div>
               <div>
@@ -231,7 +221,7 @@ function StockProfitCalculator() {
                   value={group.pricePerStock}
                   onChange={e => updateStockGroup(group.id, 'pricePerStock', e.target.value)}
                   className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
-                  placeholder="e.g., 250.50"
+                  placeholder={PROFIT_CALCULATOR_TEXTS.PURCHASE_DETAILS.PURCHASE_PRICE_PLACEHOLDER}
                 />
               </div>
               <div>
@@ -277,7 +267,7 @@ function StockProfitCalculator() {
                     value={group.totalProfit}
                     onChange={e => updateStockGroup(group.id, 'totalProfit', e.target.value)}
                     className="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white transition-all"
-                    placeholder="e.g., 5000"
+                    placeholder={PROFIT_CALCULATOR_TEXTS.CURRENT_DETAILS.INVESTED_AMOUNT_PLACEHOLDER}
                   />
                 )}
                 {group.profitInputType === 'perShare' && (
@@ -286,7 +276,7 @@ function StockProfitCalculator() {
                     value={group.profitPerShare}
                     onChange={e => updateStockGroup(group.id, 'profitPerShare', e.target.value)}
                     className="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white transition-all"
-                    placeholder="e.g., 10"
+                    placeholder={PROFIT_CALCULATOR_TEXTS.CURRENT_DETAILS.CURRENT_QUANTITY_PLACEHOLDER}
                   />
                 )}
                 {group.profitInputType === 'currentPrice' && (
@@ -295,7 +285,7 @@ function StockProfitCalculator() {
                     value={group.currentPricePerShare || ''}
                     onChange={e => updateStockGroup(group.id, 'currentPricePerShare', e.target.value)}
                     className="w-full px-3 py-2.5 border-2 border-blue-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-blue-50 transition-all"
-                    placeholder="e.g., 405.8"
+                    placeholder={PROFIT_CALCULATOR_TEXTS.CURRENT_DETAILS.SELLING_PRICE_PLACEHOLDER}
                   />
                 )}
               </div>
@@ -307,7 +297,7 @@ function StockProfitCalculator() {
                   value={group.age}
                   onChange={e => updateStockGroup(group.id, 'age', e.target.value)}
                   className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
-                  placeholder="e.g., 365"
+                  placeholder={PROFIT_CALCULATOR_TEXTS.CURRENT_DETAILS.HOLDING_DAYS_PLACEHOLDER}
                 />
               </div>
               <div>

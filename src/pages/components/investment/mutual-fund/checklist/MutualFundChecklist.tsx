@@ -7,7 +7,13 @@ import { copyAllChecklistItems, copyChecklistCategory } from '../../helpers/chec
 import { CopyAllIcon, CopyIcon } from '../../helpers/CopyIcons';
 import { useChecklist } from '../../../common/hooks/useChecklist';
 import { RESPONSIVE_PATTERNS } from '../../../../../constants/responsive.constants';
-import { CHECKLIST_CATEGORIES, MUTUAL_FUND_LIST, type MutualFundItem } from './mutualFundChecklist.constants';
+import { 
+  CHECKLIST_CATEGORIES, 
+  MUTUAL_FUND_LIST, 
+  MUTUAL_FUND_CHECKLIST_PAGE_HEADER,
+  MUTUAL_FUND_CHECKLIST_MODAL,
+  type MutualFundItem 
+} from './mutualFundChecklist.constants';
 
 const CHECKLIST_INFO = {
   sharpeRatiomine: {
@@ -154,8 +160,8 @@ function MutualFundChecklist() {
       <Breadcrumbs />
 
       <PageHeader
-        title="Mutual Fund Investment Checklist"
-        subtitle="Use this checklist to evaluate potential mutual fund investments systematically."
+        title={MUTUAL_FUND_CHECKLIST_PAGE_HEADER.TITLE}
+        subtitle={MUTUAL_FUND_CHECKLIST_PAGE_HEADER.SUBTITLE}
         actions={
           <Button onClick={handleCopyAll} variant="secondary" icon={<CopyAllIcon />}>
             Copy All
@@ -360,7 +366,7 @@ function MutualFundChecklist() {
         onClose={handleCloseModal}
         onSelect={handleSelectFund}
         items={MUTUAL_FUND_LIST}
-        title="Select Mutual Fund"
+        title={MUTUAL_FUND_CHECKLIST_MODAL.TITLE}
       />
     </div>
   );

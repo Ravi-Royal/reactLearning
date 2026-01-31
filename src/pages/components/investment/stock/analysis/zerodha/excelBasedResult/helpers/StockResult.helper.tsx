@@ -1,6 +1,7 @@
 
 import { YAHOO_FINANCE_CONFIG } from '../../../../../../../../constants/apiConfig';
 import { StockColumnKey, type PriceFetchResult, type PriceMap, type StockColumnKeyType, type StockData, type StockPriceInfo, type StoredStockData, type YahooFinanceResponse } from '../types/StockResult.types';
+import { logger, logSuccess } from '../../../../../../../../utils/logger';
 
 /**
  * Parse an Excel ArrayBuffer and return normalized stock data.
@@ -113,7 +114,7 @@ export async function yahooFinance(symbol: string, exchange: string = YAHOO_FINA
     const res = await fetch(url);
 
     if (!res.ok) {
-      console.warn(`Yahoo Finance API error for ${symbol}: ${res.status} ${res.statusText}`);
+      logger.warn(`Yahoo Finance API error for ${symbol}: ${res.status} ${res.statusText}`);
       return createEmptyPriceInfo();
     }
 
@@ -126,7 +127,7 @@ export async function yahooFinance(symbol: string, exchange: string = YAHOO_FINA
       fiftyTwoWeekLow: meta?.fiftyTwoWeekLow || null,
     };
   } catch (error) {
-    console.warn('Yahoo Finance API error for', symbol, error);
+    logger.warn('Yahoo Finance API error for', symbol, error);
     return createEmptyPriceInfo();
   }
 }
@@ -168,7 +169,7 @@ export async function fetchStockPrices(symbols: string[]): Promise<Record<string
     .filter(({ price }) => price === null)
     .map(({ symbol }) => symbol);
 
-  console.warn('Symbols with null prices from primary exchange:', failedSymbols);
+  logger.info('Symbols with null prices from primary exchange:', failedSymbols);
 
   // If there are failed symbols, try fallback exchange in parallel
   if (failedSymbols.length > 0) {
@@ -176,7 +177,7 @@ export async function fetchStockPrices(symbols: string[]): Promise<Record<string
       yahooFinance(symbol, YAHOO_FINANCE_CONFIG.exchanges.bse),
     );
 
-    console.warn('Fallback exchange results:', fallbackResults);
+    logger.info('Fallback exchange results:', fallbackResults);
 
     // Update the price map with fallback results (only if primary was null)
     fallbackResults.forEach(({ symbol, ...priceInfo }) => {
@@ -225,14 +226,14 @@ export async function loadStockDataFromJSON(): Promise<StoredStockData | null> {
   try {
     const response = await fetch('/src/privateDocument/stockData.json');
     if (!response.ok) {
-      console.warn('No stored data file found (stockData.json)');
+      logger.info('No stored data file found (stockData.json)');
       return null;
     }
     const data = await response.json() as StoredStockData;
-    console.warn(`Loaded ${data.stocks.length} stocks from stockData.json`);
+    logSuccess(`Loaded ${data.stocks.length} stocks from stockData.json`);
     return data;
   } catch (error) {
-    console.warn('Error loading JSON data from file:', error);
+    logger.warn('Error loading JSON data from file:', error);
     return null;
   }
 }
@@ -249,7 +250,7 @@ export async function saveStockDataToJSON(data: StockData[], sourceFile: string,
 
   // Fetch prices from Yahoo API if requested
   if (fetchPrices) {
-    console.warn('Fetching prices from Yahoo Finance API...');
+    logger.info('Fetching prices from Yahoo Finance API...');
     const symbols = data.map(stock => stock.Symbol);
     const priceMap = await fetchStockPrices(symbols);
 
@@ -261,7 +262,7 @@ export async function saveStockDataToJSON(data: StockData[], sourceFile: string,
       [StockColumnKey.FiftyTwoWeekLow]: priceMap[stock.Symbol]?.fiftyTwoWeekLow ?? null,
     }));
 
-    console.warn('Prices fetched and added to stock data');
+    logSuccess('Prices fetched and added to stock data');
   }
 
   const storedData: StoredStockData = {
@@ -288,8 +289,8 @@ export async function saveStockDataToJSON(data: StockData[], sourceFile: string,
   // Clean up
   URL.revokeObjectURL(url);
 
-  console.warn(`Stock data prepared for download: ${stocksWithPrices.length} records`);
-  console.warn('Please save the downloaded stockData.json file to: src/privateDocument/stockData.json');
+  logSuccess(`Stock data prepared for download: ${stocksWithPrices.length} records`);
+  logger.info('Please save the downloaded stockData.json file to: src/privateDocument/stockData.json');
 }
 
 /**
@@ -332,8 +333,8 @@ export async function updateStockPricesInJSON(storedData: StoredStockData): Prom
   // Clean up
   URL.revokeObjectURL(url);
 
-  console.warn('Updated stock data prepared for download');
-  console.warn('Please save the downloaded stockData.json file to: src/privateDocument/stockData.json');
+  logSuccess('Updated stock data prepared for download');
+  logger.info('Please save the downloaded stockData.json file to: src/privateDocument/stockData.json');
 
   return updatedData;
 }

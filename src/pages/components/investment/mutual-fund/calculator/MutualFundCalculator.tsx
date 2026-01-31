@@ -3,31 +3,8 @@ import Breadcrumbs from '../../../../navigation/Breadcrumbs';
 import { Link } from 'react-router-dom';
 import { Money, safeParseNumber } from '../../../../../utils/financial';
 import { formatCurrency } from '../../../../../utils/currency';
-
-interface CalculationResult {
-  corpusAfterInvestment: number;
-  corpusAfterHoldingPeriod: number;
-  finalBalance: number;
-  totalInvested: number;
-  totalReturns: number;
-  yearsToZero: number | null;
-  monthsToZero: number | null;
-  minSWPToSustain: number;
-}
-
-interface YearlyBreakdown {
-  year: number;
-  invested: number;
-  interest: number;
-  totalValue: number;
-  withdrawal?: number;
-  openingBalance: number;
-  periodInvestment: number;
-  periodInterest: number;
-  closingBalance: number;
-}
-
-type BreakdownView = 'monthly' | 'quarterly' | 'yearly';
+import { MUTUAL_FUND_CALCULATOR_TEXTS } from './constants/mutualFundCalculator.constants';
+import type { CalculationResult, YearlyBreakdown, BreakdownView } from './types/MutualFundCalculator.types';
 
 function MutualFundCalculator() {
   const [investmentType, setInvestmentType] = useState<'sip' | 'yearly-sip' | 'lumpsum'>('sip');
@@ -60,11 +37,11 @@ function MutualFundCalculator() {
   };
 
   const calculateMonthsToZero = (
-    initialAmount: number, 
-    monthlyWithdrawal: number, 
-    annualReturn: number, 
+    initialAmount: number,
+    monthlyWithdrawal: number,
+    annualReturn: number,
     inflationRate: number = 0,
-    applyInflationYears: number = 0
+    applyInflationYears: number = 0,
   ): { years: number | null; months: number | null } => {
     if (monthlyWithdrawal <= 0) {
       return { years: null, months: null };
@@ -75,12 +52,12 @@ function MutualFundCalculator() {
     let balance = initialAmount;
     let totalMonths = 0;
     let currentWithdrawal = monthlyWithdrawal;
-    
+
     // If inflation starts from SIP start, apply initial inflation
     if (applyInflationYears > 0 && inflationRate > 0) {
       currentWithdrawal = Money.multiply(
-        monthlyWithdrawal, 
-        Money.pow(Money.add(1, annualInflationRate), applyInflationYears)
+        monthlyWithdrawal,
+        Money.pow(Money.add(1, annualInflationRate), applyInflationYears),
       );
     }
 
@@ -90,7 +67,7 @@ function MutualFundCalculator() {
       if (inflationRate > 0 && totalMonths > 12 && (totalMonths - 1) % 12 === 0) {
         currentWithdrawal = Money.multiply(currentWithdrawal, Money.add(1, annualInflationRate));
       }
-      
+
       // balance = balance * (1 + monthlyRate) - currentWithdrawal
       const interest = Money.multiply(balance, monthlyRate);
       balance = Money.add(balance, interest);
@@ -183,16 +160,16 @@ function MutualFundCalculator() {
       const inflation = safeParseNumber(inflationRate, 0);
       const annualInflationRate = Money.divide(inflation, 100);
       const yearsFromSipStart = inflationStartFrom === 'sip-start' ? Money.add(investYears, holdingYears) : 0;
-      
+
       // Calculate the initial SWP amount (after applying inflation from SIP start if needed)
       let initialSwpAmount = swp;
       if (inflationStartFrom === 'sip-start' && yearsFromSipStart > 0 && inflation > 0) {
         initialSwpAmount = Money.multiply(
-          swp, 
-          Money.pow(Money.add(1, annualInflationRate), yearsFromSipStart)
+          swp,
+          Money.pow(Money.add(1, annualInflationRate), yearsFromSipStart),
         );
       }
-      
+
       // Compare initial SWP amount with minimum sustainable amount
       if (initialSwpAmount > minSWP || inflation > 0) {
         // When inflation is present, we need to calculate even if initial amount is below minSWP
@@ -211,31 +188,31 @@ function MutualFundCalculator() {
       const inflation = safeParseNumber(inflationRate, 0);
       const annualInflationRate = Money.divide(inflation, 100);
       const totalSwpMonths = Math.min(Money.multiply(swpYears, 12), 600);
-      
+
       // Calculate total years passed from SIP start to SWP start (for inflation calculation)
       const yearsFromSipStart = inflationStartFrom === 'sip-start' ? Money.add(investYears, holdingYears) : 0;
-      
+
       let currentSwpAmount = swp;
       // If calculating from SIP start, apply inflation for years already passed
       if (inflationStartFrom === 'sip-start' && yearsFromSipStart > 0 && inflation > 0) {
         currentSwpAmount = Money.multiply(
-          swp, 
-          Money.pow(Money.add(1, annualInflationRate), yearsFromSipStart)
+          swp,
+          Money.pow(Money.add(1, annualInflationRate), yearsFromSipStart),
         );
       }
-      
+
       for (let month = 1; month <= totalSwpMonths; month++) {
         // Apply annual inflation AFTER first 12 months (at month 13, 25, 37...)
         // FIX: Changed from month > 1 && (month - 1) % 12 === 0 to month > 12 && (month - 1) % 12 === 0
         if (inflation > 0 && month > 12 && (month - 1) % 12 === 0) {
           currentSwpAmount = Money.multiply(currentSwpAmount, Money.add(1, annualInflationRate));
         }
-        
+
         // finalBalance = finalBalance * (1 + monthlyRate) - currentSwpAmount
         const interest = Money.multiply(finalBalance, monthlyRate);
         finalBalance = Money.add(finalBalance, interest);
         finalBalance = Money.subtract(finalBalance, currentSwpAmount);
-        
+
         if (finalBalance <= 0) {
           finalBalance = 0;
           break;
@@ -394,20 +371,20 @@ function MutualFundCalculator() {
         const inflation = parseFloat(inflationRate) || 0;
         const annualInflationRate = inflation / 100;
         const yearsFromSipStart = inflationStartFrom === 'sip-start' ? investYears + holdingYears : 0;
-        
+
         let currentSwpAmount = swp;
         // If calculating from SIP start, apply inflation for years already passed
         if (inflationStartFrom === 'sip-start' && yearsFromSipStart > 0 && inflation > 0) {
           currentSwpAmount = swp * Math.pow(1 + annualInflationRate, yearsFromSipStart);
         }
-        
+
         const totalSwpPeriods = Math.min(swpYears * periodsPerYear, maxPeriods - breakdown.length);
         for (let i = 1; i <= totalSwpPeriods; i++) {
           // Apply annual inflation at the start of each year
           if (inflation > 0 && i > 1 && (i - 1) % periodsPerYear === 0) {
             currentSwpAmount = currentSwpAmount * (1 + annualInflationRate);
           }
-          
+
           const openingBalance = balance;
           const startingBalance = balance;
           let periodWithdrawal = 0;
@@ -536,20 +513,20 @@ function MutualFundCalculator() {
         const inflation = parseFloat(inflationRate) || 0;
         const annualInflationRate = inflation / 100;
         const yearsFromSipStart = inflationStartFrom === 'sip-start' ? investYears + holdingYears : 0;
-        
+
         let currentSwpAmount = swp;
         // If calculating from SIP start, apply inflation for years already passed
         if (inflationStartFrom === 'sip-start' && yearsFromSipStart > 0 && inflation > 0) {
           currentSwpAmount = swp * Math.pow(1 + annualInflationRate, yearsFromSipStart);
         }
-        
+
         const totalSwpPeriods = Math.min(swpYears * periodsPerYear, maxPeriods - breakdown.length);
         for (let i = 1; i <= totalSwpPeriods; i++) {
           // Apply annual inflation at the start of each year
           if (inflation > 0 && i > 1 && (i - 1) % periodsPerYear === 0) {
             currentSwpAmount = currentSwpAmount * (1 + annualInflationRate);
           }
-          
+
           const openingBalance = balance;
           const startingBalance = balance;
           let periodWithdrawal = 0;
@@ -692,20 +669,20 @@ function MutualFundCalculator() {
         const inflation = parseFloat(inflationRate) || 0;
         const annualInflationRate = inflation / 100;
         const yearsFromSipStart = inflationStartFrom === 'sip-start' ? investYears + holdingYears : 0;
-        
+
         let currentSwpAmount = swp;
         // If calculating from SIP start, apply inflation for years already passed
         if (inflationStartFrom === 'sip-start' && yearsFromSipStart > 0 && inflation > 0) {
           currentSwpAmount = swp * Math.pow(1 + annualInflationRate, yearsFromSipStart);
         }
-        
+
         const totalSwpPeriods = Math.min(swpYears * periodsPerYear, maxPeriods - breakdown.length);
         for (let i = 1; i <= totalSwpPeriods; i++) {
           // Apply annual inflation at the start of each year
           if (inflation > 0 && i > 1 && (i - 1) % periodsPerYear === 0) {
             currentSwpAmount = currentSwpAmount * (1 + annualInflationRate);
           }
-          
+
           const openingBalance = balance;
           const startingBalance = balance;
           let periodWithdrawal = 0;
@@ -807,7 +784,7 @@ function MutualFundCalculator() {
                 type="number"
                 value={sipAmount}
                 onChange={(e) => setSipAmount(e.target.value)}
-                placeholder={investmentType === 'sip' ? 'e.g., 10000' : 'e.g., 120000'}
+                placeholder={investmentType === 'sip' ? MUTUAL_FUND_CALCULATOR_TEXTS.SIP_INPUTS.MONTHLY_AMOUNT_PLACEHOLDER : MUTUAL_FUND_CALCULATOR_TEXTS.SIP_INPUTS.YEARLY_AMOUNT_PLACEHOLDER}
                 step="1"
                 min="0"
                 className="w-full px-3 py-2 border-2 border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white"
@@ -820,7 +797,7 @@ function MutualFundCalculator() {
                 type="number"
                 value={lumpsumAmount}
                 onChange={(e) => setLumpsumAmount(e.target.value)}
-                placeholder="e.g., 100000"
+                placeholder={MUTUAL_FUND_CALCULATOR_TEXTS.LUMPSUM_INPUTS.INVESTMENT_AMOUNT_PLACEHOLDER}
                 step="1"
                 min="0"
                 className="w-full px-3 py-2 border-2 border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white"
@@ -834,7 +811,7 @@ function MutualFundCalculator() {
               type="number"
               value={annualReturn}
               onChange={(e) => setAnnualReturn(e.target.value)}
-              placeholder="e.g., 12"
+              placeholder={MUTUAL_FUND_CALCULATOR_TEXTS.COMMON_INPUTS.ANNUAL_RETURN_PLACEHOLDER}
               step="1"
               min="0"
               className="w-full px-3 py-2 border-2 border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
@@ -847,7 +824,7 @@ function MutualFundCalculator() {
               type="number"
               value={investmentPeriod}
               onChange={(e) => setInvestmentPeriod(e.target.value)}
-              placeholder="e.g., 10"
+              placeholder={MUTUAL_FUND_CALCULATOR_TEXTS.COMMON_INPUTS.INVESTMENT_PERIOD_PLACEHOLDER}
               step="1"
               min="0"
               className="w-full px-3 py-2 border-2 border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
@@ -864,7 +841,7 @@ function MutualFundCalculator() {
                 type="number"
                 value={postInvestmentHoldingPeriod}
                 onChange={(e) => setPostInvestmentHoldingPeriod(e.target.value)}
-                placeholder="e.g., 3"
+                placeholder={MUTUAL_FUND_CALCULATOR_TEXTS.OPTIONAL_INPUTS.POST_INVESTMENT_HOLDING_PLACEHOLDER}
                 step="1"
                 min="0"
                 className="w-full px-3 py-2 border-2 border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 bg-white"
@@ -883,7 +860,7 @@ function MutualFundCalculator() {
                 type="number"
                 value={oneTimeWithdrawal}
                 onChange={(e) => setOneTimeWithdrawal(e.target.value)}
-                placeholder="e.g., 100000"
+                placeholder={MUTUAL_FUND_CALCULATOR_TEXTS.OPTIONAL_INPUTS.ONE_TIME_WITHDRAWAL_PLACEHOLDER}
                 step="1"
                 min="0"
                 className="w-full px-3 py-2 border-2 border-indigo-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
@@ -1036,13 +1013,13 @@ function MutualFundCalculator() {
                               const holdingYears = parseFloat(postInvestmentHoldingPeriod) || 0;
                               const swpYears = parseFloat(swpPeriod) || 0;
                               const yearsFromSipStart = inflationStartFrom === 'sip-start' ? investYears + holdingYears : 0;
-                              
+
                               const initialSwp = inflationStartFrom === 'sip-start' && yearsFromSipStart > 0
                                 ? swp * Math.pow(1 + inflation, yearsFromSipStart)
                                 : swp;
-                              
+
                               const finalSwp = initialSwp * Math.pow(1 + inflation, swpYears - 1);
-                              
+
                               return (
                                 <>
                                   {inflationStartFrom === 'sip-start' && yearsFromSipStart > 0 && (
@@ -1052,12 +1029,12 @@ function MutualFundCalculator() {
                                         <div>• Your input: <span className="font-semibold">{formatCurrency(swp)}/month</span> represents the value in <span className="font-semibold">today's money</span> (at SIP start)</div>
                                         <div>• After {yearsFromSipStart} years of {inflationRate}% inflation, this equals <span className="font-semibold">{formatCurrency(initialSwp)}/month</span> when SWP begins</div>
                                         <div>• This ensures your withdrawals maintain the same purchasing power throughout</div>
-                                        
+
                                         {(() => {
                                           const sustainableInTodaysTerms = result.minSWPToSustain / Math.pow(1 + inflation, yearsFromSipStart);
                                           const currentSwpValue = parseFloat(swpAmount);
                                           const isOverSustainable = currentSwpValue > sustainableInTodaysTerms;
-                                          
+
                                           return (
                                             <div className={`mt-2 pt-2 border-t ${isOverSustainable ? 'border-red-300 bg-red-50' : 'border-green-300 bg-green-50'} rounded p-2`}>
                                               <div className="text-xs font-bold">{isOverSustainable ? '⚠️ Current Entry' : '✅ Sustainable Entry'}:</div>
@@ -1104,9 +1081,9 @@ function MutualFundCalculator() {
                     <div className="text-sm text-gray-600 mb-2">Minimum Monthly SWP (To Sustain Forever)</div>
                     <div className="text-xl font-bold text-teal-600">{formatCurrency(result.minSWPToSustain)}</div>
                     <div className="text-xs text-gray-500 mt-2">
-                      {parseFloat(inflationRate) > 0 
-                        ? "This is the maximum initial monthly withdrawal that keeps your corpus stable (interest = withdrawal)."
-                        : "This is the maximum amount you can withdraw monthly without depleting your principal."
+                      {parseFloat(inflationRate) > 0
+                        ? 'This is the maximum initial monthly withdrawal that keeps your corpus stable (interest = withdrawal).'
+                        : 'This is the maximum amount you can withdraw monthly without depleting your principal.'
                       }
                     </div>
                     {parseFloat(inflationRate) > 0 && (
@@ -1121,7 +1098,7 @@ function MutualFundCalculator() {
                                 const holdingYears = parseFloat(postInvestmentHoldingPeriod) || 0;
                                 const yearsFromSipStart = investYears + holdingYears;
                                 const minSwpInTodaysTerms = result.minSWPToSustain / Math.pow(1 + inflation, yearsFromSipStart);
-                                
+
                                 return (
                                   <>
                                     <div>• Sustainable withdrawal in <span className="font-semibold">today's terms</span>: {formatCurrency(minSwpInTodaysTerms)}/month</div>

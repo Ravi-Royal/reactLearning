@@ -15,6 +15,15 @@ export const BOND_LIST_CATEGORIES = {
   AVOID_BOND: 'Avoid Bond',
 } as const;
 
+export const BOND_CHECKLIST_PAGE_HEADER = {
+  TITLE: 'Bond Investment Checklist',
+  SUBTITLE: 'Use this checklist to evaluate potential bond investments systematically.',
+} as const;
+
+export const BOND_CHECKLIST_MODAL = {
+  TITLE: 'Select Bond',
+} as const;
+
 export interface MyBondItem {
   name: string;
   category: string;

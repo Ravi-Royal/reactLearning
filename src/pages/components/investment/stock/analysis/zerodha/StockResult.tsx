@@ -5,6 +5,9 @@ import StockMetadata from './excelBasedResult/components/StockMetadata';
 import StockTable from './excelBasedResult/components/StockTable';
 import { fetchStockPrices, formatNormalizedStockData, loadStockDataFromJSON, parseStockExcel, saveStockDataToJSON, updateStockPricesInJSON } from './excelBasedResult/helpers/StockResult.helper';
 import type { PriceMap, StockData } from './excelBasedResult/types/StockResult.types';
+import { STOCK_RESULT_MESSAGES, EXCEL_SOURCE_TYPES, EXCEL_FILE_NAMES, STOCK_RESULT_ERROR_PREFIXES } from './constants/stockResult.constants';
+import { logger, logSuccess } from '../../../../../../utils/logger';
+import { toast } from '../../../../../../utils/toast';
 
 /**
  * Main Stock Result component - orchestrates data loading and state management
@@ -34,9 +37,9 @@ const StockResult: React.FC = () => {
       setExcelSource(null);
       setNeedsSourceSelection(true);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      const errorMessage = err instanceof Error ? err.message : STOCK_RESULT_MESSAGES.UNKNOWN_ERROR;
       setError(errorMessage);
-      console.error('Error loading data:', err);
+      logger.error(STOCK_RESULT_ERROR_PREFIXES.ERROR_LOADING_DATA, err);
     } finally {
       setLoading(false);
     }
@@ -83,7 +86,7 @@ const StockResult: React.FC = () => {
 
     applyLoadedStocks(enriched, prices);
     setNeedsSourceSelection(false);
-    console.warn(`Loaded data from: ${sourceFileName}`);
+    logger.info(`${STOCK_RESULT_ERROR_PREFIXES.DATA_LOADED}${sourceFileName}`);
   };
 
   const loadFromPrivateDocument = async () => {
@@ -98,7 +101,7 @@ const StockResult: React.FC = () => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
       setError(errorMessage);
-      console.error('Error loading private Excel:', err);
+      logger.error(STOCK_RESULT_ERROR_PREFIXES.ERROR_LOADING_PRIVATE_EXCEL, err);
     } finally {
       setLoading(false);
     }
@@ -150,11 +153,11 @@ const StockResult: React.FC = () => {
       });
       setPriceMap(storedPriceMap);
       setNeedsSourceSelection(false);
-      console.warn('Loaded older version from stockData.json with recalculated Custom Unrealised Stock Value');
+      logger.info(STOCK_RESULT_MESSAGES.OLDER_VERSION_LOADED);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
       setError(errorMessage);
-      console.error('Error loading older version:', err);
+      logger.error(STOCK_RESULT_ERROR_PREFIXES.ERROR_LOADING_OLDER_VERSION, err);
     } finally {
       setLoading(false);
     }
@@ -172,7 +175,7 @@ const StockResult: React.FC = () => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
       setError(errorMessage);
-      console.error('Error loading uploaded Excel:', err);
+      logger.error(STOCK_RESULT_ERROR_PREFIXES.ERROR_LOADING_UPLOADED_EXCEL, err);
     } finally {
       setLoading(false);
     }
@@ -184,7 +187,7 @@ const StockResult: React.FC = () => {
       setError(null);
 
       if (excelSource === 'private') {
-        console.warn('Refreshing data from privateDocument Excel and fetching fresh prices...');
+        logger.info(STOCK_RESULT_MESSAGES.REFRESHING_PRIVATE_DOC);
         const response = await fetch('/src/privateDocument/pnl-WAR042.xlsx');
         if (!response.ok) {
           throw new Error(`Failed to load Excel file: ${response.status} ${response.statusText}`);
@@ -198,7 +201,7 @@ const StockResult: React.FC = () => {
         if (!uploadedFile) {
           throw new Error('No uploaded Excel file found. Please upload the file again.');
         }
-        console.warn('Refreshing data from uploaded Excel and fetching fresh prices...');
+        logger.info(STOCK_RESULT_MESSAGES.REFRESHING_UPLOAD);
         const arrayBuffer = await uploadedFile.arrayBuffer();
         await loadFromArrayBuffer(arrayBuffer, uploadedFile.name);
         return;
@@ -206,16 +209,16 @@ const StockResult: React.FC = () => {
 
       if (excelSource === 'json') {
         // For JSON source, refresh by updating prices
-        console.warn('Refreshing prices from JSON source...');
+        logger.info(STOCK_RESULT_MESSAGES.REFRESHING_JSON_SOURCE);
         await updatePrices();
         return;
       }
 
-      console.warn('No data source available. Please reload from Excel.');
+      logger.warn(STOCK_RESULT_MESSAGES.NO_DATA_SOURCE);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
       setError(errorMessage);
-      console.error('Error refreshing data:', err);
+      logger.error(STOCK_RESULT_ERROR_PREFIXES.ERROR_REFRESHING_DATA, err);
     } finally {
       setLoading(false);
     }
@@ -230,7 +233,7 @@ const StockResult: React.FC = () => {
       // Load current stored data
       const storedData = await loadStockDataFromJSON();
       if (!storedData) {
-        console.warn('No stored data found to update');
+        logger.warn(STOCK_RESULT_MESSAGES.NO_STORED_DATA);
         return;
       }
 
@@ -252,9 +255,9 @@ const StockResult: React.FC = () => {
       });
       setPriceMap(updatedPriceMap);
 
-      console.warn('Prices updated successfully');
+      logSuccess(STOCK_RESULT_MESSAGES.PRICES_UPDATED);
     } catch (err) {
-      console.error('Error updating prices:', err);
+      logger.error(STOCK_RESULT_ERROR_PREFIXES.ERROR_UPDATING_PRICES, err);
       // Don't show error to user, just log it
     } finally {
       setUpdatingPrices(false);
@@ -263,22 +266,22 @@ const StockResult: React.FC = () => {
 
   const saveData = async () => {
     if (stockData.length === 0) {
-      console.warn('No data to save');
+      toast.warning(STOCK_RESULT_MESSAGES.NO_DATA_TO_SAVE);
       return;
     }
 
     try {
-      const sourceFile = excelSource === 'private' ? 'pnl-WAR042.xlsx' :
-        excelSource === 'upload' ? uploadedFile?.name ?? 'uploaded.xlsx' :
-          'stockData.json';
+      const sourceFile = excelSource === EXCEL_SOURCE_TYPES.PRIVATE ? EXCEL_FILE_NAMES.PRIVATE :
+        excelSource === EXCEL_SOURCE_TYPES.UPLOAD ? uploadedFile?.name ?? EXCEL_FILE_NAMES.UPLOAD_DEFAULT :
+          EXCEL_FILE_NAMES.JSON_OUTPUT;
 
       await saveStockDataToJSON(stockData, sourceFile, false);
-      console.warn('Data saved successfully to stockData.json');
-      alert('Data saved! Please place the downloaded stockData.json file in src/privateDocument/');
+      logSuccess(STOCK_RESULT_MESSAGES.SAVE_SUCCESS);
+      toast.success(STOCK_RESULT_MESSAGES.SAVE_SUCCESS_ALERT);
     } catch (err) {
-      console.error('Error saving data:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-      alert(`Error saving data: ${errorMessage}`);
+      logger.error(STOCK_RESULT_ERROR_PREFIXES.ERROR_SAVING_DATA, err);
+      const errorMessage = err instanceof Error ? err.message : STOCK_RESULT_MESSAGES.UNKNOWN_ERROR;
+      toast.error(`${STOCK_RESULT_MESSAGES.SAVE_ERROR_PREFIX}${errorMessage}`);
     }
   };
 

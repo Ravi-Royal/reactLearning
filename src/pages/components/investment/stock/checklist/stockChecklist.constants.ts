@@ -12,6 +12,15 @@ export const STOCK_LIST_CATEGORIES = {
   AVOID_STOCK: 'Avoid Stock',
 } as const;
 
+export const STOCK_CHECKLIST_PAGE_HEADER = {
+  TITLE: 'Stock Investment Checklist',
+  SUBTITLE: 'Use this checklist to evaluate potential stock investments systematically.',
+} as const;
+
+export const STOCK_CHECKLIST_MODAL = {
+  TITLE: 'Select Stock',
+} as const;
+
 export interface MyStockItem {
     name: string;
     category: string;

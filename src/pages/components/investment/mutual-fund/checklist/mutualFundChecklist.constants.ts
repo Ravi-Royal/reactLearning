@@ -14,6 +14,15 @@ export const MUTUAL_FUND_CATEGORIES = {
   ELSS: 'ELSS',
 } as const;
 
+export const MUTUAL_FUND_CHECKLIST_PAGE_HEADER = {
+  TITLE: 'Mutual Fund Investment Checklist',
+  SUBTITLE: 'Use this checklist to evaluate potential mutual fund investments systematically.',
+} as const;
+
+export const MUTUAL_FUND_CHECKLIST_MODAL = {
+  TITLE: 'Select Mutual Fund',
+} as const;
+
 export interface MutualFundItem {
   name: string;
   category: string;

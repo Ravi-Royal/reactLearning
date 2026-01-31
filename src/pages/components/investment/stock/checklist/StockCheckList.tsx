@@ -6,7 +6,13 @@ import { CopyAllIcon, CopyIcon } from '../../helpers/CopyIcons';
 import { Button, CategoryBadge, PageHeader, SelectionModal } from '../../../common';
 import { useChecklist } from '../../../common/hooks/useChecklist';
 import { RESPONSIVE_PATTERNS } from '../../../../../constants/responsive.constants';
-import { CHECKLIST_CATEGORIES, MY_STOCK_LIST, type MyStockItem } from './stockChecklist.constants';
+import { 
+  CHECKLIST_CATEGORIES, 
+  MY_STOCK_LIST, 
+  STOCK_CHECKLIST_PAGE_HEADER, 
+  STOCK_CHECKLIST_MODAL,
+  type MyStockItem 
+} from './stockChecklist.constants';
 
 const INITIAL_CHECKLIST_ITEMS = [
   { id: 'debt', label: 'Low debt-to-equity ratio (<1.0)', checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
@@ -75,8 +81,8 @@ function StockCheckList() {
       <Breadcrumbs />
 
       <PageHeader
-        title="Stock Investment Checklist"
-        subtitle="Use this checklist to evaluate potential stock investments systematically."
+        title={STOCK_CHECKLIST_PAGE_HEADER.TITLE}
+        subtitle={STOCK_CHECKLIST_PAGE_HEADER.SUBTITLE}
         actions={
           <Button onClick={handleCopyAll} variant="secondary" icon={<CopyAllIcon />}>
             Copy All
@@ -273,7 +279,7 @@ function StockCheckList() {
         onClose={handleCloseModal}
         onSelect={handleSelectStock}
         items={MY_STOCK_LIST}
-        title="Select Stock"
+        title={STOCK_CHECKLIST_MODAL.TITLE}
       />
     </div>
   );

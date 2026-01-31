@@ -3,7 +3,7 @@ import ProgressBar from '../../../ProgressBar';
 import { Button, CategoryBadge, PageHeader, useChecklist } from '../../../common';
 import { copyAllChecklistItems, copyChecklistCategory } from '../../helpers/checklistCopy.helper';
 import { CopyAllIcon, CopyIcon } from '../../helpers/CopyIcons';
-import { CHECKLIST_CATEGORIES } from './beforeStartingBondChecklist.constants';
+import { \n  CHECKLIST_CATEGORIES, \n  BEFORE_STARTING_BOND_PAGE_HEADER \n} from './beforeStartingBondChecklist.constants';
 import { RESPONSIVE_PATTERNS } from '../../../../../constants/responsive.constants';
 
 const INITIAL_CHECKLIST_ITEMS = [
@@ -62,8 +62,8 @@ function BeforeStartingBondCheckList() {
       <Breadcrumbs />
 
       <PageHeader
-        title="Before Starting Bond Checklist"
-        subtitle="Complete this checklist before starting your bond investment journey."
+        title={BEFORE_STARTING_BOND_PAGE_HEADER.TITLE}
+        subtitle={BEFORE_STARTING_BOND_PAGE_HEADER.SUBTITLE}
         actions={
           <Button onClick={handleCopyAll} variant="secondary" icon={<CopyAllIcon />}>
             Copy All

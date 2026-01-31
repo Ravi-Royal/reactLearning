@@ -1,12 +1,6 @@
 import React from 'react';
 import { RESPONSIVE_PATTERNS } from '../../../constants/responsive.constants';
-
-interface PageHeaderProps {
-  title: string;
-  subtitle?: string;
-  actions?: React.ReactNode;
-  className?: string;
-}
+import type { PageHeaderProps } from './types';
 
 /**
  * Standardized page header with title, optional subtitle and actions

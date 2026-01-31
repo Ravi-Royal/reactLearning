@@ -1,20 +1,21 @@
 /* eslint-disable react-hooks/refs */
 import { useEffect, useRef, useState } from 'react';
 import Breadcrumbs from '../../navigation/Breadcrumbs';
+import { logger } from '../../../utils/logger';
 
 function UseRefHook() {
   const [count, setCount] = useState(0);
   const previousCount = useRef<number>(0);
   const [, setDummy] = useState(0);
 
-  console.warn('use ref hooks function component called', count);
+  logger.info('use ref hooks function component called', count);
 
   useEffect(() => {
-    console.warn('use ref useEffect called', count);
+    logger.info('use ref useEffect called', count);
     previousCount.current = count;
   }, [count]);
 
-  console.warn('before return');
+  logger.info('before return');
   return (
     <div className="p-4 sm:p-6 md:p-8">
       <div className="max-w-6xl mx-auto">
@@ -76,7 +77,7 @@ function UseRefHook() {
           </button>
           <button
             className="px-3 sm:px-4 py-2 bg-gray-500 text-white rounded text-xs sm:text-sm hover:bg-gray-700 transition-colors"
-            onClick={() => console.warn('Current Count:', count, 'Previous Count:', previousCount.current)}
+            onClick={() => logger.info('Current Count:', count, 'Previous Count:', previousCount.current)}
           >
             Console use Ref
           </button>

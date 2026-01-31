@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
 import { Money, safeParseNumber } from '../../../../../utils/financial';
-
-interface ProfitSimulatorModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  pricePerStock: number;
-  profitPerStock: number;
-}
+import { PROFIT_CALCULATOR_TEXTS } from './constants/profitCalculator.constants';
+import type { ProfitSimulatorModalProps } from './types/StockProfitCalculator.types';
 
 const ProfitSimulatorModal: React.FC<ProfitSimulatorModalProps> = ({ isOpen, onClose, pricePerStock, profitPerStock }) => {
   const [inputType, setInputType] = useState<'amount' | 'quantity'>('amount');
@@ -17,7 +12,7 @@ const ProfitSimulatorModal: React.FC<ProfitSimulatorModalProps> = ({ isOpen, onC
   let qty = 0;
   let usedAmount = 0;
   let unusedAmount = 0;
-  
+
   if (inputType === 'amount') {
     const amt = safeParseNumber(amount, 0); // Don't floor - keep decimals
     qty = Math.floor(Money.divide(amt, pricePerStock)); // Only floor the quantity
@@ -27,7 +22,7 @@ const ProfitSimulatorModal: React.FC<ProfitSimulatorModalProps> = ({ isOpen, onC
     qty = Math.floor(safeParseNumber(quantity, 0));
     usedAmount = Money.multiply(qty, pricePerStock);
   }
-  
+
   const profit = Money.multiply(qty, profitPerStock);
   const result = (qty > 0) ? { invest: usedAmount, qty, profit, unusedAmount } : null;
 
@@ -56,7 +51,7 @@ const ProfitSimulatorModal: React.FC<ProfitSimulatorModalProps> = ({ isOpen, onC
             <input
               type="number"
               className="w-full border-2 border-blue-200 rounded-lg p-3 text-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-              placeholder="Enter amount (₹)"
+              placeholder={PROFIT_CALCULATOR_TEXTS.SIMULATOR.AMOUNT_PLACEHOLDER}
               value={amount}
               onChange={e => setAmount(e.target.value)}
               min={0}
@@ -65,7 +60,7 @@ const ProfitSimulatorModal: React.FC<ProfitSimulatorModalProps> = ({ isOpen, onC
             <input
               type="number"
               className="w-full border-2 border-blue-200 rounded-lg p-3 text-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-              placeholder="Enter quantity"
+              placeholder={PROFIT_CALCULATOR_TEXTS.SIMULATOR.QUANTITY_PLACEHOLDER}
               value={quantity}
               onChange={e => setQuantity(e.target.value)}
               min={0}

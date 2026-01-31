@@ -1,16 +1,6 @@
 import React from 'react';
 import { RESPONSIVE_PATTERNS, ANIMATIONS } from '../../../constants/responsive.constants';
-
-interface ButtonProps {
-  onClick: () => void;
-  children: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning' | 'info';
-  size?: 'xs' | 'sm' | 'md';
-  disabled?: boolean;
-  icon?: React.ReactNode;
-  className?: string;
-  type?: 'button' | 'submit' | 'reset';
-}
+import type { ButtonProps } from './types';
 
 /**
  * Standardized button component with consistent responsive behavior

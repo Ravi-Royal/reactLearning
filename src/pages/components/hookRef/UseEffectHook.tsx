@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import Breadcrumbs from '../../navigation/Breadcrumbs';
+import { logger } from '../../../utils/logger';
 
 function UseEffectHook() {
 
@@ -7,11 +8,11 @@ function UseEffectHook() {
   const [timerStarted, setTimerStarted] = useState(false);
 
   useEffect(() => {
-    console.warn('useEffect called');
+    logger.info('useEffect called');
     // Side effect logic here
     if (timerStarted) {
       const intervalRef = setInterval(() => {
-        console.warn('set timeout called');
+        logger.info('set timeout called');
         setCount((prevCount) => prevCount + 1);
       }, 1000);
 

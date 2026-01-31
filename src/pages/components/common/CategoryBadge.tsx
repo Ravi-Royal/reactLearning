@@ -1,11 +1,6 @@
 import React from 'react';
 import { CATEGORY_COLORS } from '../../../constants/responsive.constants';
-
-interface CategoryBadgeProps {
-  category: string;
-  variant?: 'default' | 'compact';
-  className?: string;
-}
+import type { CategoryBadgeProps } from './types';
 
 /**
  * Standardized category badge component

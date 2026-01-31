@@ -52,6 +52,12 @@ function Breadcrumbs() {
         } else if (pathnames.includes('checklist')) {
           breadcrumbItems.push({ label: 'Bond Investment Checklist', path: '/investment/bonds/checklist' });
         }
+      } else if (pathnames.includes('commodities')) {
+        breadcrumbItems.push({ label: 'Commodities', path: '/investment/commodities' });
+
+        if (pathnames.includes('gold-silver-ratio')) {
+          breadcrumbItems.push({ label: 'Gold vs Silver Ratio', path: '/investment/commodities/gold-silver-ratio' });
+        }
       } else if (pathnames.includes('calculator')) {
         breadcrumbItems.push({ label: 'Calculator', path: '/investment/calculator' });
         if (pathnames.includes('stock-average')) {

@@ -1,5 +1,6 @@
 export interface CalculationResult {
   corpusAfterInvestment: number;
+  corpusAfterHoldingPeriod: number;
   finalBalance: number;
   totalInvested: number;
   totalReturns: number;

@@ -1,4 +1,9 @@
 import React from 'react';
+import { 
+  STOCK_CONTROLS_TITLES, 
+  STOCK_CONTROLS_ARIA_LABELS, 
+  STOCK_CONTROLS_BUTTON_TEXT 
+} from '../constants/stockControls.constants';
 
 interface StockControlsProps {
   onUpdatePrices: () => void;
@@ -21,27 +26,27 @@ const StockControls: React.FC<StockControlsProps> = ({
       <button
         onClick={onUpdatePrices}
         disabled={updatingPrices}
-        title={updatingPrices ? 'Fetching latest prices from Yahoo Finance' : 'Fetch latest Current Price and 52W High/Low'}
-        aria-label={updatingPrices ? 'Updating prices' : 'Update prices'}
+        title={updatingPrices ? STOCK_CONTROLS_TITLES.UPDATE_PRICES_ACTIVE : STOCK_CONTROLS_TITLES.UPDATE_PRICES_IDLE}
+        aria-label={updatingPrices ? STOCK_CONTROLS_ARIA_LABELS.UPDATE_PRICES_ACTIVE : STOCK_CONTROLS_ARIA_LABELS.UPDATE_PRICES_IDLE}
         className="px-3 sm:px-4 py-2 text-xs sm:text-sm bg-green-500 text-white rounded hover:bg-green-600 disabled:bg-gray-400 whitespace-nowrap"
       >
-        {updatingPrices ? 'Updating...' : 'Update Prices'}
+        {updatingPrices ? STOCK_CONTROLS_BUTTON_TEXT.UPDATE_PRICES_ACTIVE : STOCK_CONTROLS_BUTTON_TEXT.UPDATE_PRICES_IDLE}
       </button>
       <button
         onClick={onRefreshData}
-        title="Re-read Excel, recalculate fields and fetch fresh prices"
-        aria-label="Refresh data from Excel and update prices"
+        title={STOCK_CONTROLS_TITLES.REFRESH_DATA}
+        aria-label={STOCK_CONTROLS_ARIA_LABELS.REFRESH_DATA}
         className="px-3 sm:px-4 py-2 text-xs sm:text-sm bg-blue-500 text-white rounded hover:bg-blue-600 whitespace-nowrap"
       >
-        Refresh Data
+        {STOCK_CONTROLS_BUTTON_TEXT.REFRESH_DATA}
       </button>
       <button
         onClick={onSaveData}
-        title="Save current data to stockData.json file"
-        aria-label="Save data to JSON file"
+        title={STOCK_CONTROLS_TITLES.SAVE_DATA}
+        aria-label={STOCK_CONTROLS_ARIA_LABELS.SAVE_DATA}
         className="px-3 sm:px-4 py-2 text-xs sm:text-sm bg-purple-500 text-white rounded hover:bg-purple-600 whitespace-nowrap"
       >
-        Save Data
+        {STOCK_CONTROLS_BUTTON_TEXT.SAVE_DATA}
       </button>
     </div>
   );

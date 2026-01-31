@@ -1,30 +1,17 @@
 import { Button } from './Button';
-
-interface SelectionItem {
-  name: string;
-  category: string;
-  symbol?: string;
-}
-
-interface SelectionModalProps<T extends SelectionItem> {
-  isOpen: boolean;
-  onClose: () => void;
-  onSelect: (item: T) => void;
-  items: T[];
-  title: string;
-  getCategoryColor?: (category: string) => string;
-}
+import type { SelectionItem, SelectionModalProps } from './types';
+import { MODAL_ARIA_LABELS, MODAL_CATEGORY_COLORS, MODAL_CATEGORY_NAMES } from './constants/modal.constants';
 
 const defaultGetCategoryColor = (category: string): string => {
   switch (category) {
-  case 'Good Stock':
-  case 'Good Bond':
-    return 'bg-green-100 text-green-700';
-  case 'Check Stock':
-  case 'Check Bond':
-    return 'bg-yellow-100 text-yellow-700';
+  case MODAL_CATEGORY_NAMES.GOOD_STOCK:
+  case MODAL_CATEGORY_NAMES.GOOD_BOND:
+    return MODAL_CATEGORY_COLORS.GOOD_STOCK;
+  case MODAL_CATEGORY_NAMES.CHECK_STOCK:
+  case MODAL_CATEGORY_NAMES.CHECK_BOND:
+    return MODAL_CATEGORY_COLORS.CHECK_STOCK;
   default:
-    return 'bg-red-100 text-red-700';
+    return MODAL_CATEGORY_COLORS.DEFAULT;
   }
 };
 
@@ -52,7 +39,7 @@ export function SelectionModal<T extends SelectionItem>({
             <button
               onClick={onClose}
               className="p-2 hover:bg-white hover:bg-opacity-20 rounded-xl transition-all duration-200 group"
-              aria-label="Close modal"
+              aria-label={MODAL_ARIA_LABELS.CLOSE}
             >
               <svg
                 className="w-6 h-6 group-hover:rotate-90 transition-transform duration-200"

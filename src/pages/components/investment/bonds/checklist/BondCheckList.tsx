@@ -5,7 +5,13 @@ import { CopyAllIcon, CopyIcon } from '../../helpers/CopyIcons';
 import { Button, CategoryBadge, PageHeader, SelectionModal } from '../../../common';
 import { useChecklist } from '../../../common/hooks/useChecklist';
 import { RESPONSIVE_PATTERNS } from '../../../../../constants/responsive.constants';
-import { CHECKLIST_CATEGORIES, MY_BOND_LIST, type MyBondItem } from './bondChecklist.constants';
+import { 
+  CHECKLIST_CATEGORIES, 
+  MY_BOND_LIST, 
+  BOND_CHECKLIST_PAGE_HEADER,
+  BOND_CHECKLIST_MODAL,
+  type MyBondItem 
+} from './bondChecklist.constants';
 import { useState } from 'react';
 
 const INITIAL_CHECKLIST_ITEMS = [
@@ -71,8 +77,8 @@ function BondCheckList() {
       <Breadcrumbs />
 
       <PageHeader
-        title="Bond Investment Checklist"
-        subtitle="Use this checklist to evaluate potential bond investments systematically."
+        title={BOND_CHECKLIST_PAGE_HEADER.TITLE}
+        subtitle={BOND_CHECKLIST_PAGE_HEADER.SUBTITLE}
         actions={
           <Button onClick={handleCopyAll} variant="secondary" icon={<CopyAllIcon />}>
             Copy All
@@ -269,7 +275,7 @@ function BondCheckList() {
         onClose={handleCloseModal}
         onSelect={handleSelectBond}
         items={MY_BOND_LIST}
-        title="Select Bond"
+        title={BOND_CHECKLIST_MODAL.TITLE}
       />
     </div>
   );
