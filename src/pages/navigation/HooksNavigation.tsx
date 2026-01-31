@@ -2,6 +2,12 @@ import { Link, useLocation } from 'react-router-dom';
 import { HOOKS_DATA } from '../../constants/hooksNavigation.constants';
 import Breadcrumbs from './Breadcrumbs';
 
+const HOOKS_NAVIGATION = {
+  HEADING: 'React Hooks',
+  SUBTITLE: 'Explore and learn different React hooks',
+  ABOUT_TITLE: 'About Hooks',
+};
+
 function HooksNavigation() {
   const location = useLocation();
 

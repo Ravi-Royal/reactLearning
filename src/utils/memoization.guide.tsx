@@ -4,7 +4,7 @@
  * This file documents when and how to use React memoization techniques.
  */
 
-import { memo, useMemo, useCallback } from 'react';
+import { memo, useMemo, useCallback, useState } from 'react';
 
 /**
  * RULE 1: Use React.memo for components that:

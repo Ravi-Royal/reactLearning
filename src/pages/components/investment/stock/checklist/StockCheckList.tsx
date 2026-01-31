@@ -29,7 +29,8 @@ function StockCheckList() {
   const personalStats = getCategoryStats(CHECKLIST_CATEGORIES.PERSONAL);
 
   const handleCopyChecklist = (category: string) => {
-    copyChecklistCategory('Stock Investment Checklist', category, checklistItems);
+    const items = getCategoryItems(category);
+    copyChecklistCategory('Stock Investment Checklist', category, items);
   };
 
   const handleCopyAll = () => {

@@ -101,23 +101,23 @@ export const useGoldSilverPrices = () => {
       return 0;
     }
     if (prices.length === 1) {
-      return prices[0];
+      return prices[0] ?? 0;
     }
     if (prices.length === 2) {
-      return (prices[0] + prices[1]) / 2;
+      return ((prices[0] ?? 0) + (prices[1] ?? 0)) / 2;
     }
 
     // For 3 prices, find the pair with the smallest difference
     prices.sort((a, b) => a - b);
-    const diff1 = prices[1] - prices[0];
-    const diff2 = prices[2] - prices[1];
+    const diff1 = (prices[1] ?? 0) - (prices[0] ?? 0);
+    const diff2 = (prices[2] ?? 0) - (prices[1] ?? 0);
 
     if (diff1 < diff2) {
       // First two are closer
-      return (prices[0] + prices[1]) / 2;
+      return ((prices[0] ?? 0) + (prices[1] ?? 0)) / 2;
     } else {
       // Last two are closer (or equal diff)
-      return (prices[1] + prices[2]) / 2;
+      return ((prices[1] ?? 0) + (prices[2] ?? 0)) / 2;
     }
   }, []);
 

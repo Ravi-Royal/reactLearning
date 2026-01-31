@@ -30,8 +30,7 @@ function BondCheckList() {
 
   const handleCopyChecklist = (category: string) => {
     const items = getCategoryItems(category);
-    const stats = getCategoryStats(category);
-    copyChecklistCategory(items, category, stats.checked, stats.total);
+    copyChecklistCategory('Bond Investment Checklist', category, items);
   };
 
   const handleCopyAll = () => {
