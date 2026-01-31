@@ -1,7 +1,6 @@
 import './App.css';
 import Routing from '@pages/route/Routing';
-import { ToastContainer } from '@components/common';
-import { ErrorBoundary } from './components/ErrorBoundary';
+import { ToastContainer, ErrorBoundary } from '@components/common';
 
 function App() {
   return (

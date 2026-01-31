@@ -12,6 +12,7 @@ export const RESPONSIVE_PATTERNS = {
     xl: 'text-lg sm:text-xl',
     '2xl': 'text-xl sm:text-2xl',
     '3xl': 'text-xl sm:text-2xl md:text-3xl',
+    heading: 'text-lg sm:text-xl font-bold',
   },
 
   // Spacing - consistent gaps

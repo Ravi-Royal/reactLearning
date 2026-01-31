@@ -29,7 +29,7 @@ export default defineConfig([
     },
     rules: {
       // Best practices
-      'no-console': ['warn', { allow: ['warn', 'error'] }],
+      'no-console': ['error', { allow: ['warn', 'error'] }],
       'no-debugger': 'error',
       'no-var': 'error',
       'prefer-const': 'error',

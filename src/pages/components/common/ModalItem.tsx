@@ -35,6 +35,6 @@ export const ModalItem = memo(<T extends SelectionItem>({ item, getCategoryColor
       </svg>
     </div>
   );
-}) as <T extends SelectionItem>(props: ModalItemProps<T>) => JSX.Element;
+}) as (<T extends SelectionItem>(props: ModalItemProps<T>) => React.JSX.Element) & { displayName?: string };
 
 ModalItem.displayName = 'ModalItem';

@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useForm, type Resolver } from 'react-hook-form';
 import { z } from 'zod';
 
 // Example form schema
@@ -28,7 +28,7 @@ export function useExampleForm() {
 export function createFormHook<T extends z.ZodType>(schema: T) {
   return function useTypedForm() {
     return useForm<z.infer<T>>({
-      resolver: zodResolver(schema),
+      resolver: zodResolver(schema) as unknown as Resolver<z.infer<T>>,
       mode: 'onBlur',
     });
   };

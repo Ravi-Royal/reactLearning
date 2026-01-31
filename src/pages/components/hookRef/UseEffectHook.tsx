@@ -20,6 +20,7 @@ function UseEffectHook() {
         clearInterval(intervalRef);
       };
     }
+    return undefined;
   }, [timerStarted]);
 
   return (

@@ -8,6 +8,8 @@ export { NavigationCard } from './NavigationCard';
 export { ModalItem } from './ModalItem';
 export { useChecklist } from './hooks/useChecklist';
 
+export { ErrorBoundary } from './ErrorBoundary';
+
 // Loader components
 export {
   Spinner,

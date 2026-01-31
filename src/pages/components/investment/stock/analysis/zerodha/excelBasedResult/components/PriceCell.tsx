@@ -5,7 +5,7 @@ interface PriceCellProps {
   symbol: string;
   priceKey: keyof PriceMap[string];
   priceMap: PriceMap;
-  align?: 'left' | 'right';
+  align?: 'left' | 'right' | undefined;
   isFirstColumn?: boolean;
 }
 
