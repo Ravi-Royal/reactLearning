@@ -8,12 +8,20 @@ interface RatioAnalysis {
   message: string;
 }
 
+interface PriceResult {
+  g: number;
+  s: number;
+  source: string;
+  time?: string;
+}
+
 function GoldVsSilverRatio() {
   const [goldPrice, setGoldPrice] = useState<string>('2050');
   const [silverPrice, setSilverPrice] = useState<string>('24.00');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [lastUpdated, setLastUpdated] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [priceDetails, setPriceDetails] = useState<PriceResult[]>([]);
 
   const fetchLivePrices = async () => {
     setIsLoading(true);
@@ -23,7 +31,14 @@ function GoldVsSilverRatio() {
     let sPrice = 0;
     let usedSource = '';
 
-    const tryCoinPaprika = async () => {
+    const formatTime = (time: string | number) => {
+      try {
+        const d = new Date(typeof time === 'number' ? time * 1000 : time);
+        return d.toLocaleTimeString();
+      } catch { return ''; }
+    };
+
+    const tryCoinPaprika = async (): Promise<PriceResult | null> => {
       try {
         const [goldRes, silverRes] = await Promise.all([
           fetch('https://api.coinpaprika.com/v1/tickers/paxg-pax-gold'),
@@ -32,23 +47,33 @@ function GoldVsSilverRatio() {
         if (!goldRes.ok || !silverRes.ok) {throw new Error('CoinPaprika Status Error');}
         const gData = await goldRes.json();
         const sData = await silverRes.json();
-        return { g: gData.quotes.USD.price, s: sData.quotes.USD.price, source: 'CoinPaprika' };
+        return {
+          g: gData.quotes.USD.price,
+          s: sData.quotes.USD.price,
+          source: 'CoinPaprika',
+          time: formatTime(gData.last_updated),
+        };
       } catch (e) { console.warn('CoinPaprika failed:', e); return null; }
     };
 
-    const tryCoinGecko = async () => {
+    const tryCoinGecko = async (): Promise<PriceResult | null> => {
       try {
-        const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold,kinesis-silver&vs_currencies=usd', {
+        const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold,kinesis-silver&vs_currencies=usd&include_last_updated_at=true', {
           headers: { 'Accept': 'application/json' },
         });
         if (!res.ok) {throw new Error('CoinGecko Status Error');}
         const data = await res.json();
         if (!data['pax-gold']?.usd || !data['kinesis-silver']?.usd) {throw new Error('Invalid format');}
-        return { g: data['pax-gold'].usd, s: data['kinesis-silver'].usd, source: 'CoinGecko' };
+        return {
+          g: data['pax-gold'].usd,
+          s: data['kinesis-silver'].usd,
+          source: 'CoinGecko',
+          time: formatTime(data['pax-gold'].last_updated_at),
+        };
       } catch (e) { console.warn('CoinGecko failed:', e); return null; }
     };
 
-    const tryCurrencyApi = async () => {
+    const tryCurrencyApi = async (): Promise<PriceResult | null> => {
       try {
         // https://github.com/fawazahmed0/currency-api
         const res = await fetch('https://latest.currency-api.pages.dev/v1/currencies/usd.json');
@@ -58,7 +83,12 @@ function GoldVsSilverRatio() {
         const goldRate = data.usd?.xau;
         const silverRate = data.usd?.xag;
         if (!goldRate || !silverRate) {throw new Error('Missing metals data');}
-        return { g: 1 / goldRate, s: 1 / silverRate, source: 'CurrencyAPI' };
+        return {
+          g: 1 / goldRate,
+          s: 1 / silverRate,
+          source: 'CurrencyAPI',
+          time: data.date,
+        };
       } catch (e) { console.warn('CurrencyAPI failed:', e); return null; }
     };
 
@@ -71,7 +101,7 @@ function GoldVsSilverRatio() {
       ]);
 
       // Filter out failed requests
-      const validResults = results.filter((r): r is { g: number; s: number; source: string } => r !== null);
+      const validResults = results.filter((r): r is PriceResult => r !== null);
 
       if (validResults.length === 0) {
         throw new Error('All APIs failed');
@@ -109,6 +139,7 @@ function GoldVsSilverRatio() {
       if (gPrice && sPrice) {
         setGoldPrice(gPrice.toFixed(2));
         setSilverPrice(sPrice.toFixed(2));
+        setPriceDetails(validResults);
         setLastUpdated(`${new Date().toLocaleTimeString()} (${usedSource})`);
       } else {
         throw new Error('Data format invalid');
@@ -257,6 +288,34 @@ function GoldVsSilverRatio() {
           </button>
         </div>
       </div>
+
+      {priceDetails.length > 0 && (
+        <div className="mb-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <h3 className="text-sm font-semibold text-gray-700 mb-2">Live Price Comparison (USD)</h3>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-xs sm:text-sm">
+              <thead>
+                <tr className="border-b border-gray-300">
+                  <th className="text-left py-2 px-3 text-gray-500 font-medium">Source</th>
+                  <th className="text-right py-2 px-3 text-yellow-600 font-medium">Gold</th>
+                  <th className="text-right py-2 px-3 text-gray-600 font-medium">Silver</th>
+                  <th className="text-right py-2 px-3 text-gray-400 font-medium">Last Updated</th>
+                </tr>
+              </thead>
+              <tbody>
+                {priceDetails.map((detail, idx) => (
+                  <tr key={idx} className="border-b border-gray-100 last:border-0 hover:bg-gray-100">
+                    <td className="py-2 px-3 text-gray-700">{detail.source}</td>
+                    <td className="py-2 px-3 text-right font-mono">${detail.g.toFixed(2)}</td>
+                    <td className="py-2 px-3 text-right font-mono">${detail.s.toFixed(2)}</td>
+                    <td className="py-2 px-3 text-right text-gray-500 text-xs">{detail.time || 'N/A'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input Section */}
