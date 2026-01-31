@@ -13,7 +13,9 @@ function UseStateHook(): React.ReactElement {
       <div className="max-w-4xl mx-auto">
         <Breadcrumbs />
         <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-gray-800">useState Hook Example</h1>
-        <p className="mb-4 text-sm sm:text-base text-gray-700">Current Count: <span className="font-bold text-blue-600 text-lg sm:text-xl">{count}</span></p>
+        <p className="mb-4 text-sm sm:text-base text-gray-700">
+          Current Count: <span className="font-bold text-blue-600 text-lg sm:text-xl">{count}</span>
+        </p>
         <button
           className="px-4 sm:px-6 py-2 sm:py-3 bg-blue-500 text-white rounded text-sm sm:text-base hover:bg-blue-600 transition-colors"
           onClick={handleClick}

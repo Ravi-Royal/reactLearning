@@ -6,14 +6,14 @@
 export const PERCENTAGE_THRESHOLDS = {
   // Price difference thresholds
   price: {
-    VERY_CLOSE: 5,      // <= 5%
-    CLOSE: 10,          // 5-10%
-    MODERATE: 20,       // 10-20%
-    FAR: 30,            // 20-30%
+    VERY_CLOSE: 5, // <= 5%
+    CLOSE: 10, // 5-10%
+    MODERATE: 20, // 10-20%
+    FAR: 30, // 20-30%
   },
 
   // Data precision
-  decimal: 1,           // Display 1 decimal place
+  decimal: 1, // Display 1 decimal place
 } as const;
 
 /**
@@ -62,9 +62,17 @@ export const PRICE_RANGE_COLORS = {
  * Helper to get price range from percentage
  */
 export const getPriceRange = (percentage: number): keyof typeof PRICE_RANGES => {
-  if (percentage <= PERCENTAGE_THRESHOLDS.price.VERY_CLOSE) {return 'VERY_CLOSE_TO_LOW';}
-  if (percentage <= PERCENTAGE_THRESHOLDS.price.CLOSE) {return 'CLOSE_TO_LOW';}
-  if (percentage <= PERCENTAGE_THRESHOLDS.price.MODERATE) {return 'MODERATELY_CLOSE';}
-  if (percentage <= PERCENTAGE_THRESHOLDS.price.FAR) {return 'FAR_FROM_LOW';}
+  if (percentage <= PERCENTAGE_THRESHOLDS.price.VERY_CLOSE) {
+    return 'VERY_CLOSE_TO_LOW';
+  }
+  if (percentage <= PERCENTAGE_THRESHOLDS.price.CLOSE) {
+    return 'CLOSE_TO_LOW';
+  }
+  if (percentage <= PERCENTAGE_THRESHOLDS.price.MODERATE) {
+    return 'MODERATELY_CLOSE';
+  }
+  if (percentage <= PERCENTAGE_THRESHOLDS.price.FAR) {
+    return 'FAR_FROM_LOW';
+  }
   return 'VERY_FAR';
 };

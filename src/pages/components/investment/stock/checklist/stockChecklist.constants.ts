@@ -4,7 +4,7 @@ export const CHECKLIST_CATEGORIES = {
   PERSONAL: 'mine',
 } as const;
 
-export type ChecklistCategory = typeof CHECKLIST_CATEGORIES[keyof typeof CHECKLIST_CATEGORIES];
+export type ChecklistCategory = (typeof CHECKLIST_CATEGORIES)[keyof typeof CHECKLIST_CATEGORIES];
 
 export const STOCK_LIST_CATEGORIES = {
   GOOD_STOCK: 'Good Stock',
@@ -49,15 +49,40 @@ export interface ChecklistItem {
 
 export const INITIAL_CHECKLIST_ITEMS: ChecklistItem[] = [
   { id: 'debt', label: CHECKLIST_ITEM_LABELS.DEBT_RATIO, checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-  { id: 'yearOveryearDebt', label: CHECKLIST_ITEM_LABELS.DEBT_DECREASE, checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-  { id: 'yearOnyearSales', label: CHECKLIST_ITEM_LABELS.SALES_INCREASE, checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
+  {
+    id: 'yearOveryearDebt',
+    label: CHECKLIST_ITEM_LABELS.DEBT_DECREASE,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.PERSONAL,
+  },
+  {
+    id: 'yearOnyearSales',
+    label: CHECKLIST_ITEM_LABELS.SALES_INCREASE,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.PERSONAL,
+  },
   { id: 'netProfit', label: CHECKLIST_ITEM_LABELS.NET_PROFIT, checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
   { id: 'ROE', label: CHECKLIST_ITEM_LABELS.ROE, checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-  { id: 'netproitYearOnyear', label: CHECKLIST_ITEM_LABELS.NET_PROFIT_INCREASE, checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-  { id: 'revenue', label: CHECKLIST_ITEM_LABELS.REVENUE_GROWTH, checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
+  {
+    id: 'netproitYearOnyear',
+    label: CHECKLIST_ITEM_LABELS.NET_PROFIT_INCREASE,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.PERSONAL,
+  },
+  {
+    id: 'revenue',
+    label: CHECKLIST_ITEM_LABELS.REVENUE_GROWTH,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.PERSONAL,
+  },
   { id: 'pedata', label: CHECKLIST_ITEM_LABELS.PE_RATIO, checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
   { id: 'PBratio', label: CHECKLIST_ITEM_LABELS.PB_RATIO, checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-  { id: 'PEAdPBratio', label: CHECKLIST_ITEM_LABELS.PE_PB_RATIO, checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
+  {
+    id: 'PEAdPBratio',
+    label: CHECKLIST_ITEM_LABELS.PE_PB_RATIO,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.PERSONAL,
+  },
   { id: 'profit', label: CHECKLIST_ITEM_LABELS.PROFIT_MARGIN, checked: false, category: CHECKLIST_CATEGORIES.AI },
   { id: 'pe', label: CHECKLIST_ITEM_LABELS.PE_REASONABLE, checked: false, category: CHECKLIST_CATEGORIES.AI },
   { id: 'dividend', label: CHECKLIST_ITEM_LABELS.DIVIDEND, checked: false, category: CHECKLIST_CATEGORIES.AI },
@@ -67,9 +92,9 @@ export const INITIAL_CHECKLIST_ITEMS: ChecklistItem[] = [
 ];
 
 export interface MyStockItem {
-    name: string;
-    category: string;
-    symbol?: string;
+  name: string;
+  category: string;
+  symbol?: string;
 }
 
 export const MY_STOCK_LIST: MyStockItem[] = [

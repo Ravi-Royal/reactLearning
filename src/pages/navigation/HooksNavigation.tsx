@@ -42,8 +42,8 @@ function HooksNavigation() {
       <div className="mt-6 sm:mt-8 bg-blue-50 rounded-lg p-4 sm:p-6">
         <h4 className="font-semibold text-gray-800 mb-2 text-sm sm:text-base">{HOOKS_NAVIGATION.ABOUT_TITLE}</h4>
         <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">
-          Hooks are functions that let you "hook into" React state and lifecycle features from function components.
-          They let you use state and other React features without writing a class component.
+          Hooks are functions that let you "hook into" React state and lifecycle features from function components. They
+          let you use state and other React features without writing a class component.
         </p>
       </div>
     </div>

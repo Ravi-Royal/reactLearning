@@ -6,12 +6,12 @@ export { ToastContainer } from './ToastContainer';
 export { useChecklist } from './hooks/useChecklist';
 
 // Type exports
-export type { 
-  ButtonProps, 
-  IconButtonProps, 
-  CategoryBadgeProps, 
-  PageHeaderProps, 
-  SelectionItem, 
+export type {
+  ButtonProps,
+  IconButtonProps,
+  CategoryBadgeProps,
+  PageHeaderProps,
+  SelectionItem,
   SelectionModalProps,
 } from './types';
 export type { ChecklistItem, CategoryStats, UseChecklistReturn } from './hooks/useChecklist';

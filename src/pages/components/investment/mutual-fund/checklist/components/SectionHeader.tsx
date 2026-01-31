@@ -15,12 +15,7 @@ export function SectionHeader({ title, checked, total, onCopy, colorClass }: Sec
       <h3 className={`text-lg font-semibold ${colorClass.includes('purple') ? 'text-purple-800' : 'text-blue-800'}`}>
         {title} ({checked}/{total})
       </h3>
-      <Button
-        onClick={onCopy}
-        variant="secondary"
-        size="sm"
-        icon={<CopyIcon />}
-      >
+      <Button onClick={onCopy} variant="secondary" size="sm" icon={<CopyIcon />}>
         Copy
       </Button>
     </div>

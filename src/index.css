@@ -1,63 +1,66 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* Base styles for responsive design */
 html {
-    font-size: 14px;
-    scroll-behavior: smooth;
+  font-size: 14px;
+  scroll-behavior: smooth;
 }
 
 /* Responsive font sizes */
 @media (min-width: 640px) {
-    html {
-        font-size: 15px;
-    }
+  html {
+    font-size: 15px;
+  }
 }
 
 @media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
+  html {
+    font-size: 16px;
+  }
 }
 
 /* Ensure proper box-sizing */
-*, *::before, *::after {
-    box-sizing: border-box;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 /* Prevent horizontal scroll on mobile */
 body {
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Better touch targets for mobile */
 @media (max-width: 640px) {
-    button, a {
-        min-height: 25px;
-        min-width: 25px;
-    }
+  button,
+  a {
+    min-height: 25px;
+    min-width: 25px;
+  }
 }
 
 /* Smooth transitions for responsive changes */
 * {
-    transition-property: padding, margin, font-size;
-    transition-duration: 0.2s;
-    transition-timing-function: ease-in-out;
+  transition-property: padding, margin, font-size;
+  transition-duration: 0.2s;
+  transition-timing-function: ease-in-out;
 }
 
 /* Toast animation */
 @keyframes slideIn {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 .animate-slideIn {
-    animation: slideIn 0.3s ease-out forwards;
+  animation: slideIn 0.3s ease-out forwards;
 }

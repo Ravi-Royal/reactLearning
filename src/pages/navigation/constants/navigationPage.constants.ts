@@ -20,7 +20,7 @@ export const INVESTMENT_NAVIGATION = {
 
 export const HOOKS_NAVIGATION = {
   HEADING: 'React Hooks Explorer',
-  SUBTITLE: 'Learn and experiment with React\'s built-in hooks',
+  SUBTITLE: "Learn and experiment with React's built-in hooks",
   ABOUT_TITLE: 'About React Hooks',
 } as const;
 

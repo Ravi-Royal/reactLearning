@@ -16,31 +16,31 @@ export function ToastContainer(): React.ReactElement {
 
   const getToastStyles = (type: Toast['type']): string => {
     switch (type) {
-    case TOAST_TYPES.SUCCESS:
-      return `${TOAST_BASE_STYLES} ${TOAST_STYLES.SUCCESS}`;
-    case TOAST_TYPES.ERROR:
-      return `${TOAST_BASE_STYLES} ${TOAST_STYLES.ERROR}`;
-    case TOAST_TYPES.WARNING:
-      return `${TOAST_BASE_STYLES} ${TOAST_STYLES.WARNING}`;
-    case TOAST_TYPES.INFO:
-      return `${TOAST_BASE_STYLES} ${TOAST_STYLES.INFO}`;
-    default:
-      return `${TOAST_BASE_STYLES} ${TOAST_STYLES.DEFAULT}`;
+      case TOAST_TYPES.SUCCESS:
+        return `${TOAST_BASE_STYLES} ${TOAST_STYLES.SUCCESS}`;
+      case TOAST_TYPES.ERROR:
+        return `${TOAST_BASE_STYLES} ${TOAST_STYLES.ERROR}`;
+      case TOAST_TYPES.WARNING:
+        return `${TOAST_BASE_STYLES} ${TOAST_STYLES.WARNING}`;
+      case TOAST_TYPES.INFO:
+        return `${TOAST_BASE_STYLES} ${TOAST_STYLES.INFO}`;
+      default:
+        return `${TOAST_BASE_STYLES} ${TOAST_STYLES.DEFAULT}`;
     }
   };
 
   const getIcon = (type: Toast['type']): string => {
     switch (type) {
-    case TOAST_TYPES.SUCCESS:
-      return TOAST_ICONS.SUCCESS;
-    case TOAST_TYPES.ERROR:
-      return TOAST_ICONS.ERROR;
-    case TOAST_TYPES.WARNING:
-      return TOAST_ICONS.WARNING;
-    case TOAST_TYPES.INFO:
-      return TOAST_ICONS.INFO;
-    default:
-      return TOAST_ICONS.DEFAULT;
+      case TOAST_TYPES.SUCCESS:
+        return TOAST_ICONS.SUCCESS;
+      case TOAST_TYPES.ERROR:
+        return TOAST_ICONS.ERROR;
+      case TOAST_TYPES.WARNING:
+        return TOAST_ICONS.WARNING;
+      case TOAST_TYPES.INFO:
+        return TOAST_ICONS.INFO;
+      default:
+        return TOAST_ICONS.DEFAULT;
     }
   };
 

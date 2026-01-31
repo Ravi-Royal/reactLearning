@@ -4,7 +4,7 @@ export const CHECKLIST_CATEGORIES = {
   PERSONAL: 'mine',
 } as const;
 
-export type ChecklistCategory = typeof CHECKLIST_CATEGORIES[keyof typeof CHECKLIST_CATEGORIES];
+export type ChecklistCategory = (typeof CHECKLIST_CATEGORIES)[keyof typeof CHECKLIST_CATEGORIES];
 
 export const MUTUAL_FUND_CATEGORIES = {
   EQUITY: 'Equity Fund',
@@ -127,11 +127,26 @@ export interface ChecklistItem {
 }
 
 export const INITIAL_CHECKLIST_ITEMS: ChecklistItem[] = [
-  { id: 'sharpeRatiomine', label: CHECKLIST_ITEM_LABELS.SHARPE_RATIO_MINE, checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
+  {
+    id: 'sharpeRatiomine',
+    label: CHECKLIST_ITEM_LABELS.SHARPE_RATIO_MINE,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.PERSONAL,
+  },
   { id: 'alpha', label: CHECKLIST_ITEM_LABELS.ALPHA, checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
   { id: 'beta', label: CHECKLIST_ITEM_LABELS.BETA, checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-  { id: 'expenseRatio', label: CHECKLIST_ITEM_LABELS.EXPENSE_RATIO, checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
-  { id: 'upsideDownsideCapture', label: CHECKLIST_ITEM_LABELS.UPSIDE_DOWNSIDE, checked: false, category: CHECKLIST_CATEGORIES.PERSONAL },
+  {
+    id: 'expenseRatio',
+    label: CHECKLIST_ITEM_LABELS.EXPENSE_RATIO,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.PERSONAL,
+  },
+  {
+    id: 'upsideDownsideCapture',
+    label: CHECKLIST_ITEM_LABELS.UPSIDE_DOWNSIDE,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.PERSONAL,
+  },
   { id: 'aum', label: CHECKLIST_ITEM_LABELS.AUM, checked: false, category: CHECKLIST_CATEGORIES.AI },
   { id: 'fundHouse', label: CHECKLIST_ITEM_LABELS.FUND_HOUSE, checked: false, category: CHECKLIST_CATEGORIES.AI },
   { id: 'returns5y', label: CHECKLIST_ITEM_LABELS.RETURNS_5Y, checked: false, category: CHECKLIST_CATEGORIES.AI },

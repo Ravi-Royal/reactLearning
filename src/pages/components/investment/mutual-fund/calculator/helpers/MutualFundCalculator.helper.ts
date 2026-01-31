@@ -7,11 +7,7 @@ import { Money } from '../../../../../utils/financial';
  * @param time - Time period in years
  * @returns Future value after compound interest
  */
-export const calculateCompoundInterest = (
-  principal: number,
-  rate: number,
-  time: number,
-): number => {
+export const calculateCompoundInterest = (principal: number, rate: number, time: number): number => {
   return Money.compoundInterest(principal, rate, time);
 };
 
@@ -23,11 +19,7 @@ export const calculateCompoundInterest = (
  * @param years - Investment period in years
  * @returns Future value of SIP
  */
-export const calculateSIPFutureValue = (
-  monthlyInvestment: number,
-  annualRate: number,
-  years: number,
-): number => {
+export const calculateSIPFutureValue = (monthlyInvestment: number, annualRate: number, years: number): number => {
   return Money.sipFutureValue(monthlyInvestment, annualRate, years);
 };
 
@@ -83,10 +75,7 @@ export const calculateMonthsToZero = (
  * @param annualReturn - Expected annual return rate (percentage)
  * @returns Minimum sustainable monthly withdrawal amount
  */
-export const calculateMinSWP = (
-  initialAmount: number,
-  annualReturn: number,
-): number => {
+export const calculateMinSWP = (initialAmount: number, annualReturn: number): number => {
   const monthlyRate = Money.divide(annualReturn, 1200); // annualReturn / 12 / 100
   return Money.multiply(initialAmount, monthlyRate);
 };

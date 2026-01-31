@@ -3,7 +3,6 @@ import Breadcrumbs from '../../navigation/Breadcrumbs';
 import { logger } from '../../../utils/logger';
 
 function UseEffectHook() {
-
   const [count, setCount] = useState(0);
   const [timerStarted, setTimerStarted] = useState(false);
 

@@ -37,21 +37,13 @@ export interface CurrencyFormatOptions {
  * formatCurrency(1234.56, { decimals: 0 }) // "₹1,235"
  * formatCurrency(150000, { compact: true }) // "₹1.5L"
  */
-export function formatCurrency(
-  amount: number,
-  options: CurrencyFormatOptions = {},
-): string {
+export function formatCurrency(amount: number, options: CurrencyFormatOptions = {}): string {
   // Guard against invalid numbers
   if (!isFinite(amount) || isNaN(amount)) {
     return options.showSymbol !== false ? '₹0.00' : '0.00';
   }
 
-  const {
-    decimals = 2,
-    compact = false,
-    showSymbol = true,
-    minimumDecimals = decimals,
-  } = options;
+  const { decimals = 2, compact = false, showSymbol = true, minimumDecimals = decimals } = options;
 
   // Handle compact notation for large numbers (Indian system)
   if (compact && amount >= 100000) {
@@ -75,11 +67,7 @@ export function formatCurrency(
  * @param decimals Number of decimal places
  * @param showSymbol Whether to show currency symbol
  */
-function formatCompactCurrency(
-  amount: number,
-  decimals: number,
-  showSymbol: boolean,
-): string {
+function formatCompactCurrency(amount: number, decimals: number, showSymbol: boolean): string {
   const symbol = showSymbol ? '₹' : '';
 
   // Crore (1,00,00,000)

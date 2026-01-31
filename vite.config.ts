@@ -34,6 +34,35 @@ export default defineConfig({
         });
       },
     },
+    {
+      name: 'security-headers',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          // Content Security Policy
+          res.setHeader(
+            'Content-Security-Policy',
+            [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // unsafe-eval needed for Vite HMR
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: https:",
+              "font-src 'self' data:",
+              "connect-src 'self' https://query1.finance.yahoo.com",
+              "frame-ancestors 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+            ].join('; '),
+          );
+          // Additional security headers
+          res.setHeader('X-Content-Type-Options', 'nosniff');
+          res.setHeader('X-Frame-Options', 'DENY');
+          res.setHeader('X-XSS-Protection', '1; mode=block');
+          res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+          res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+          next();
+        });
+      },
+    },
   ],
   server: {
     proxy: {
@@ -45,5 +74,29 @@ export default defineConfig({
       },
     },
     open: '/reactLearning',
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
+              return 'react-vendor';
+            }
+            if (id.includes('@tanstack/react-query')) {
+              return 'query-vendor';
+            }
+            if (id.includes('react-hook-form') || id.includes('zod') || id.includes('@hookform/resolvers')) {
+              return 'form-vendor';
+            }
+            if (id.includes('@radix-ui')) {
+              return 'ui-vendor';
+            }
+            return 'vendor';
+          }
+        },
+      },
+    },
+    chunkSizeWarningLimit: 600,
   },
 });

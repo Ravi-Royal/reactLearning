@@ -1,6 +1,14 @@
-
 import { YAHOO_FINANCE_CONFIG } from '../../../../../../../../constants/apiConfig';
-import { StockColumnKey, type PriceFetchResult, type PriceMap, type StockColumnKeyType, type StockData, type StockPriceInfo, type StoredStockData, type YahooFinanceResponse } from '../types/StockResult.types';
+import {
+  StockColumnKey,
+  type PriceFetchResult,
+  type PriceMap,
+  type StockColumnKeyType,
+  type StockData,
+  type StockPriceInfo,
+  type StoredStockData,
+  type YahooFinanceResponse,
+} from '../types/StockResult.types';
 import { logger, logSuccess } from '../../../../../../../../utils/logger';
 
 /**
@@ -38,8 +46,8 @@ export async function parseStockExcel(arrayBuffer: ArrayBuffer): Promise<StockDa
 
   // Convert to array of objects with proper keys
   const jsonData = (dataRows as (string | number | null | undefined)[][])
-    .filter(row => row && row.length > 0 && row[0]) // skip empty rows
-    .map(row => {
+    .filter((row) => row && row.length > 0 && row[0]) // skip empty rows
+    .map((row) => {
       const obj: Record<string, string | number | null | undefined> = {};
       headers.forEach((header, index) => {
         obj[String(header).trim()] = row[index] ?? null;
@@ -79,7 +87,7 @@ export function formatNormalizedStockData(data: StockData[]): StockData[] {
     const quantitySold = Number(row[StockColumnKey.Quantity]) || 1;
     const buyValue = Number(row[StockColumnKey.BuyValue]) || 0;
     const buyValuePerStock = buyValue / quantitySold;
-    const customRealisedStockValue = buyValuePerStock - (realizedPL / quantitySold);
+    const customRealisedStockValue = buyValuePerStock - realizedPL / quantitySold;
 
     // Custom Unrealised Stock Value: Same calculation as realized, but assuming selling at current price
     // = Current Open Buy Price Per Stock - (Potential P&L / Open Quantity)
@@ -107,7 +115,10 @@ export function formatNormalizedStockData(data: StockData[]): StockData[] {
  * @param exchange Exchange to use ('NS' or 'BO')
  * @returns Stock price information
  */
-export async function yahooFinance(symbol: string, exchange: string = YAHOO_FINANCE_CONFIG.exchanges.nse): Promise<StockPriceInfo> {
+export async function yahooFinance(
+  symbol: string,
+  exchange: string = YAHOO_FINANCE_CONFIG.exchanges.nse,
+): Promise<StockPriceInfo> {
   try {
     const apiSymbol = symbol.split('-')[0]; // Use split only for API call
     const url = `${YAHOO_FINANCE_CONFIG.baseUrl}/${apiSymbol}.${exchange}`;
@@ -150,7 +161,9 @@ function createEmptyPriceInfo(): StockPriceInfo {
  */
 export async function fetchStockPrices(symbols: string[]): Promise<Record<string, StockPriceInfo>> {
   const uniqueSymbols = Array.from(new Set(symbols.filter(Boolean)));
-  if (uniqueSymbols.length === 0) { return {}; }
+  if (uniqueSymbols.length === 0) {
+    return {};
+  }
 
   const priceMap: Record<string, StockPriceInfo> = {};
 
@@ -165,9 +178,7 @@ export async function fetchStockPrices(symbols: string[]): Promise<Record<string
   });
 
   // Find symbols where primary exchange returned null price
-  const failedSymbols = primaryResults
-    .filter(({ price }) => price === null)
-    .map(({ symbol }) => symbol);
+  const failedSymbols = primaryResults.filter(({ price }) => price === null).map(({ symbol }) => symbol);
 
   logger.info('Symbols with null prices from primary exchange:', failedSymbols);
 
@@ -229,7 +240,7 @@ export async function loadStockDataFromJSON(): Promise<StoredStockData | null> {
       logger.info('No stored data file found (stockData.json)');
       return null;
     }
-    const data = await response.json() as StoredStockData;
+    const data = (await response.json()) as StoredStockData;
     logSuccess(`Loaded ${data.stocks.length} stocks from stockData.json`);
     return data;
   } catch (error) {
@@ -245,17 +256,21 @@ export async function loadStockDataFromJSON(): Promise<StoredStockData | null> {
  * @param fetchPrices Whether to fetch prices from Yahoo API (default: true)
  * @returns Promise that resolves when data is saved
  */
-export async function saveStockDataToJSON(data: StockData[], sourceFile: string, fetchPrices: boolean = true): Promise<void> {
+export async function saveStockDataToJSON(
+  data: StockData[],
+  sourceFile: string,
+  fetchPrices: boolean = true,
+): Promise<void> {
   let stocksWithPrices = data;
 
   // Fetch prices from Yahoo API if requested
   if (fetchPrices) {
     logger.info('Fetching prices from Yahoo Finance API...');
-    const symbols = data.map(stock => stock.Symbol);
+    const symbols = data.map((stock) => stock.Symbol);
     const priceMap = await fetchStockPrices(symbols);
 
     // Update stock data with fetched prices
-    stocksWithPrices = data.map(stock => ({
+    stocksWithPrices = data.map((stock) => ({
       ...stock,
       [StockColumnKey.CurrentPrice]: priceMap[stock.Symbol]?.price ?? null,
       [StockColumnKey.FiftyTwoWeekHigh]: priceMap[stock.Symbol]?.fiftyTwoWeekHigh ?? null,
@@ -299,15 +314,17 @@ export async function saveStockDataToJSON(data: StockData[], sourceFile: string,
  * @returns Updated stored data with fresh prices
  */
 export async function updateStockPricesInJSON(storedData: StoredStockData): Promise<StoredStockData> {
-  const symbols = storedData.stocks.map(stock => stock.Symbol);
+  const symbols = storedData.stocks.map((stock) => stock.Symbol);
   const priceMap = await fetchStockPrices(symbols);
 
   // Update the stock data with new prices
-  const updatedStocks = storedData.stocks.map(stock => ({
+  const updatedStocks = storedData.stocks.map((stock) => ({
     ...stock,
     [StockColumnKey.CurrentPrice]: priceMap[stock.Symbol]?.price ?? stock[StockColumnKey.CurrentPrice] ?? null,
-    [StockColumnKey.FiftyTwoWeekHigh]: priceMap[stock.Symbol]?.fiftyTwoWeekHigh ?? stock[StockColumnKey.FiftyTwoWeekHigh] ?? null,
-    [StockColumnKey.FiftyTwoWeekLow]: priceMap[stock.Symbol]?.fiftyTwoWeekLow ?? stock[StockColumnKey.FiftyTwoWeekLow] ?? null,
+    [StockColumnKey.FiftyTwoWeekHigh]:
+      priceMap[stock.Symbol]?.fiftyTwoWeekHigh ?? stock[StockColumnKey.FiftyTwoWeekHigh] ?? null,
+    [StockColumnKey.FiftyTwoWeekLow]:
+      priceMap[stock.Symbol]?.fiftyTwoWeekLow ?? stock[StockColumnKey.FiftyTwoWeekLow] ?? null,
   }));
 
   const updatedData: StoredStockData = {
@@ -367,9 +384,11 @@ export function sortStockData(
     let bValue = b[sortColumn as keyof StockData];
 
     // Handle special cases for computed columns
-    if (sortColumn === StockColumnKey.CurrentPrice ||
-            sortColumn === StockColumnKey.FiftyTwoWeekHigh ||
-            sortColumn === StockColumnKey.FiftyTwoWeekLow) {
+    if (
+      sortColumn === StockColumnKey.CurrentPrice ||
+      sortColumn === StockColumnKey.FiftyTwoWeekHigh ||
+      sortColumn === StockColumnKey.FiftyTwoWeekLow
+    ) {
       const aSymbol = a[StockColumnKey.Symbol] as string;
       const bSymbol = b[StockColumnKey.Symbol] as string;
       const aPriceData = priceMap[aSymbol];
@@ -388,9 +407,15 @@ export function sortStockData(
     }
 
     // Handle null/undefined values
-    if ((aValue === null || aValue === undefined) && (bValue === null || bValue === undefined)) { return 0; }
-    if (aValue === null || aValue === undefined) { return sortDirection === 'asc' ? 1 : -1; }
-    if (bValue === null || bValue === undefined) { return sortDirection === 'asc' ? -1 : 1; }
+    if ((aValue === null || aValue === undefined) && (bValue === null || bValue === undefined)) {
+      return 0;
+    }
+    if (aValue === null || aValue === undefined) {
+      return sortDirection === 'asc' ? 1 : -1;
+    }
+    if (bValue === null || bValue === undefined) {
+      return sortDirection === 'asc' ? -1 : 1;
+    }
 
     // Numeric comparison
     if (typeof aValue === 'number' && typeof bValue === 'number') {
@@ -422,12 +447,12 @@ export function getSortIcon(
   sortDirection: SortDirection,
 ): React.ReactElement {
   if (currentSortColumn !== columnKey) {
-    return <span className="ml-1 text-gray-400" >⇅</span>;
+    return <span className="ml-1 text-gray-400">⇅</span>;
   }
   if (sortDirection === 'asc') {
-    return <span className="ml-1 text-blue-600" >↑</span>;
+    return <span className="ml-1 text-blue-600">↑</span>;
   }
-  return <span className="ml-1 text-blue-600" >↓</span>;
+  return <span className="ml-1 text-blue-600">↓</span>;
 }
 
 /**
@@ -459,10 +484,7 @@ export function handleSortStateChange(
  * @param priceMap Price map for computed columns
  * @returns Object with column totals
  */
-export function calculateColumnTotals(
-  stockData: StockData[],
-  priceMap: PriceMap,
-): Record<string, number> {
+export function calculateColumnTotals(stockData: StockData[], priceMap: PriceMap): Record<string, number> {
   const totals: Record<string, number> = {};
   let totalBuyValue = 0;
   let totalCurrentValueOfOpenPositions = 0;
@@ -496,8 +518,13 @@ export function calculateColumnTotals(
     const symbol = row[StockColumnKey.Symbol] as string;
     const priceData = priceMap[symbol];
 
-    if (openQuantity && typeof openQuantity === 'number' && priceData?.price !== null && priceData?.price !== undefined) {
-      totalCurrentValueOfOpenPositions += (priceData.price * openQuantity);
+    if (
+      openQuantity &&
+      typeof openQuantity === 'number' &&
+      priceData?.price !== null &&
+      priceData?.price !== undefined
+    ) {
+      totalCurrentValueOfOpenPositions += priceData.price * openQuantity;
     }
 
     // Handle per-stock values
@@ -507,10 +534,12 @@ export function calculateColumnTotals(
       const sellValuePerStock = row[StockColumnKey.SellValuePerStock] as number;
 
       if (buyValuePerStock && typeof buyValuePerStock === 'number') {
-        totals[StockColumnKey.BuyValuePerStock] = (totals[StockColumnKey.BuyValuePerStock] || 0) + (buyValuePerStock * quantity);
+        totals[StockColumnKey.BuyValuePerStock] =
+          (totals[StockColumnKey.BuyValuePerStock] || 0) + buyValuePerStock * quantity;
       }
       if (sellValuePerStock && typeof sellValuePerStock === 'number') {
-        totals[StockColumnKey.SellValuePerStock] = (totals[StockColumnKey.SellValuePerStock] || 0) + (sellValuePerStock * quantity);
+        totals[StockColumnKey.SellValuePerStock] =
+          (totals[StockColumnKey.SellValuePerStock] || 0) + sellValuePerStock * quantity;
       }
     }
   });
@@ -521,7 +550,8 @@ export function calculateColumnTotals(
   }
 
   if (totalCurrentValueOfOpenPositions > 0 && totals[StockColumnKey.UnrealizedPL]) {
-    totals[StockColumnKey.UnrealizedPLPct] = (totals[StockColumnKey.UnrealizedPL] / totalCurrentValueOfOpenPositions) * 100;
+    totals[StockColumnKey.UnrealizedPLPct] =
+      (totals[StockColumnKey.UnrealizedPL] / totalCurrentValueOfOpenPositions) * 100;
   }
 
   return totals;

@@ -1,12 +1,12 @@
 import Breadcrumbs from '../../../../navigation/Breadcrumbs';
 import { useGoldSilverPrices } from './hooks/useGoldSilverPrices';
-import { 
-  HISTORICAL_CONTEXT, 
-  INVESTMENT_GUIDELINES, 
-  GOLD_SILVER_TEXTS, 
+import {
+  HISTORICAL_CONTEXT,
+  INVESTMENT_GUIDELINES,
+  GOLD_SILVER_TEXTS,
   ANALYSIS_MESSAGES,
   RECOMMENDATION_TYPES,
-  STRENGTH_TYPES
+  STRENGTH_TYPES,
 } from './constants/goldSilver.constants';
 import type { RatioAnalysis } from './types';
 import { LivePriceTable } from './components/LivePriceTable';
@@ -89,19 +89,27 @@ function GoldVsSilverRatio() {
 
   const getRecommendationColor = (recommendation: string): string => {
     switch (recommendation) {
-    case RECOMMENDATION_TYPES.BUY_GOLD: return 'text-yellow-600';
-    case RECOMMENDATION_TYPES.BUY_SILVER: return 'text-gray-600';
-    case RECOMMENDATION_TYPES.NEUTRAL: return 'text-blue-600';
-    default: return 'text-gray-600';
+      case RECOMMENDATION_TYPES.BUY_GOLD:
+        return 'text-yellow-600';
+      case RECOMMENDATION_TYPES.BUY_SILVER:
+        return 'text-gray-600';
+      case RECOMMENDATION_TYPES.NEUTRAL:
+        return 'text-blue-600';
+      default:
+        return 'text-gray-600';
     }
   };
 
   const getRecommendationBg = (recommendation: string): string => {
     switch (recommendation) {
-    case RECOMMENDATION_TYPES.BUY_GOLD: return 'bg-yellow-50 border-yellow-200';
-    case RECOMMENDATION_TYPES.BUY_SILVER: return 'bg-gray-50 border-gray-300';
-    case RECOMMENDATION_TYPES.NEUTRAL: return 'bg-blue-50 border-blue-200';
-    default: return 'bg-gray-50 border-gray-200';
+      case RECOMMENDATION_TYPES.BUY_GOLD:
+        return 'bg-yellow-50 border-yellow-200';
+      case RECOMMENDATION_TYPES.BUY_SILVER:
+        return 'bg-gray-50 border-gray-300';
+      case RECOMMENDATION_TYPES.NEUTRAL:
+        return 'bg-blue-50 border-blue-200';
+      default:
+        return 'bg-gray-50 border-gray-200';
     }
   };
 
@@ -111,13 +119,15 @@ function GoldVsSilverRatio() {
 
       <div className="mb-6">
         <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">{GOLD_SILVER_TEXTS.TITLE}</h1>
-        <p className="text-sm sm:text-base text-gray-600 mt-1">
-          {GOLD_SILVER_TEXTS.SUBTITLE}
-        </p>
+        <p className="text-sm sm:text-base text-gray-600 mt-1">{GOLD_SILVER_TEXTS.SUBTITLE}</p>
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-4">
           <div className="text-sm text-gray-500">
-            {lastUpdated && <span className="text-green-600 font-medium">{GOLD_SILVER_TEXTS.UPDATED_LABEL} {lastUpdated}</span>}
+            {lastUpdated && (
+              <span className="text-green-600 font-medium">
+                {GOLD_SILVER_TEXTS.UPDATED_LABEL} {lastUpdated}
+              </span>
+            )}
             {error && <span className="text-red-500">{error}</span>}
             {!lastUpdated && !error && GOLD_SILVER_TEXTS.MANUAL_ENTRY_TEXT}
           </div>
@@ -135,14 +145,16 @@ function GoldVsSilverRatio() {
               <>
                 <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
                 {GOLD_SILVER_TEXTS.FETCH_BUTTON.LOADING}
               </>
             ) : (
-              <>
-                {GOLD_SILVER_TEXTS.FETCH_BUTTON.DEFAULT}
-              </>
+              <>{GOLD_SILVER_TEXTS.FETCH_BUTTON.DEFAULT}</>
             )}
           </button>
         </div>
@@ -206,10 +218,14 @@ function GoldVsSilverRatio() {
 
           <div className="space-y-4">
             <div>
-              <div className="text-sm text-gray-600 mb-1">{GOLD_SILVER_TEXTS.ANALYSIS_SECTION.RECOMMENDATION_LABEL}</div>
+              <div className="text-sm text-gray-600 mb-1">
+                {GOLD_SILVER_TEXTS.ANALYSIS_SECTION.RECOMMENDATION_LABEL}
+              </div>
               <div className={`text-2xl font-bold ${getRecommendationColor(analysis.recommendation)} uppercase`}>
-                {analysis.recommendation === RECOMMENDATION_TYPES.BUY_GOLD && GOLD_SILVER_TEXTS.ANALYSIS_SECTION.BUY_GOLD}
-                {analysis.recommendation === RECOMMENDATION_TYPES.BUY_SILVER && GOLD_SILVER_TEXTS.ANALYSIS_SECTION.BUY_SILVER}
+                {analysis.recommendation === RECOMMENDATION_TYPES.BUY_GOLD &&
+                  GOLD_SILVER_TEXTS.ANALYSIS_SECTION.BUY_GOLD}
+                {analysis.recommendation === RECOMMENDATION_TYPES.BUY_SILVER &&
+                  GOLD_SILVER_TEXTS.ANALYSIS_SECTION.BUY_SILVER}
                 {analysis.recommendation === RECOMMENDATION_TYPES.NEUTRAL && GOLD_SILVER_TEXTS.ANALYSIS_SECTION.NEUTRAL}
               </div>
             </div>
@@ -223,7 +239,12 @@ function GoldVsSilverRatio() {
                     <div
                       key={i}
                       className={`w-2 h-6 rounded ${
-                        i < (analysis.strength === STRENGTH_TYPES.STRONG ? 3 : analysis.strength === STRENGTH_TYPES.MODERATE ? 2 : 1)
+                        i <
+                        (analysis.strength === STRENGTH_TYPES.STRONG
+                          ? 3
+                          : analysis.strength === STRENGTH_TYPES.MODERATE
+                            ? 2
+                            : 1)
                           ? 'bg-green-500'
                           : 'bg-gray-300'
                       }`}
@@ -234,7 +255,9 @@ function GoldVsSilverRatio() {
             </div>
 
             <div className="pt-4 border-t border-gray-300">
-              <div className="text-sm text-gray-600 mb-2">{GOLD_SILVER_TEXTS.ANALYSIS_SECTION.INTERPRETATION_LABEL}</div>
+              <div className="text-sm text-gray-600 mb-2">
+                {GOLD_SILVER_TEXTS.ANALYSIS_SECTION.INTERPRETATION_LABEL}
+              </div>
               <p className="text-gray-800">{analysis.message}</p>
             </div>
           </div>
@@ -273,13 +296,15 @@ function GoldVsSilverRatio() {
         <h3 className="text-lg font-semibold text-blue-900 mb-3">{GOLD_SILVER_TEXTS.INFO_SECTION.TITLE}</h3>
         <div className="space-y-2 text-sm text-blue-800">
           <p>
-            <strong>{GOLD_SILVER_TEXTS.INFO_SECTION.MEANING.LABEL}</strong> {GOLD_SILVER_TEXTS.INFO_SECTION.MEANING.TEXT}
+            <strong>{GOLD_SILVER_TEXTS.INFO_SECTION.MEANING.LABEL}</strong>{' '}
+            {GOLD_SILVER_TEXTS.INFO_SECTION.MEANING.TEXT}
           </p>
           <p>
             <strong>{GOLD_SILVER_TEXTS.INFO_SECTION.USAGE.LABEL}</strong> {GOLD_SILVER_TEXTS.INFO_SECTION.USAGE.TEXT}
           </p>
           <p>
-            <strong>{GOLD_SILVER_TEXTS.INFO_SECTION.STRATEGY.LABEL}</strong> {GOLD_SILVER_TEXTS.INFO_SECTION.STRATEGY.TEXT}
+            <strong>{GOLD_SILVER_TEXTS.INFO_SECTION.STRATEGY.LABEL}</strong>{' '}
+            {GOLD_SILVER_TEXTS.INFO_SECTION.STRATEGY.TEXT}
           </p>
           <p>
             <strong>{GOLD_SILVER_TEXTS.INFO_SECTION.NOTE.LABEL}</strong> {GOLD_SILVER_TEXTS.INFO_SECTION.NOTE.TEXT}

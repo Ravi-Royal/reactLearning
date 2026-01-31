@@ -18,12 +18,12 @@ export const formatCurrency = (amount: number): string => {
  */
 export const getPeriodLabel = (view: 'monthly' | 'quarterly' | 'yearly'): string => {
   switch (view) {
-  case 'monthly':
-    return 'Month';
-  case 'quarterly':
-    return 'Quarter';
-  case 'yearly':
-    return 'Year';
+    case 'monthly':
+      return 'Month';
+    case 'quarterly':
+      return 'Quarter';
+    case 'yearly':
+      return 'Year';
   }
 };
 
@@ -34,11 +34,11 @@ export const getPeriodLabel = (view: 'monthly' | 'quarterly' | 'yearly'): string
  */
 export const getMonthsPerPeriod = (view: 'monthly' | 'quarterly' | 'yearly'): number => {
   switch (view) {
-  case 'monthly':
-    return 1;
-  case 'quarterly':
-    return 3;
-  case 'yearly':
-    return 12;
+    case 'monthly':
+      return 1;
+    case 'quarterly':
+      return 3;
+    case 'yearly':
+      return 12;
   }
 };

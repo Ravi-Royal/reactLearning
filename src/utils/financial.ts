@@ -114,10 +114,7 @@ export class Money {
     // FV = P × [(1 + r)^n - 1] / r × (1 + r)
     const onePlusRate = new Decimal(1).plus(monthlyRate);
     const numerator = onePlusRate.pow(months).minus(1);
-    const futureValue = new Decimal(monthlyInvestment)
-      .times(numerator)
-      .div(monthlyRate)
-      .times(onePlusRate);
+    const futureValue = new Decimal(monthlyInvestment).times(numerator).div(monthlyRate).times(onePlusRate);
 
     return futureValue.toNumber();
   }
@@ -132,10 +129,7 @@ export class Money {
     const yearlyRate = new Decimal(annualRate).div(100);
     const onePlusRate = new Decimal(1).plus(yearlyRate);
     const numerator = onePlusRate.pow(years).minus(1);
-    const futureValue = new Decimal(yearlyInvestment)
-      .times(numerator)
-      .div(yearlyRate)
-      .times(onePlusRate);
+    const futureValue = new Decimal(yearlyInvestment).times(numerator).div(yearlyRate).times(onePlusRate);
 
     return futureValue.toNumber();
   }

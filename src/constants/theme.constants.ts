@@ -113,17 +113,14 @@ export const TAILWIND_CLASS_GROUPS = {
   // Navigation link classes
   navLink: (isActive: boolean): string => {
     const base = 'px-3 py-2 rounded-md text-sm font-medium transition-colors';
-    return isActive
-      ? `${base} text-blue-600`
-      : `${base} text-black hover:text-gray-700 hover:bg-gray-300`;
+    return isActive ? `${base} text-blue-600` : `${base} text-black hover:text-gray-700 hover:bg-gray-300`;
   },
 
   // Card with hover effect
   hoverCard: (isActive: boolean): string => {
-    const base = 'block bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition-all duration-200';
-    return isActive
-      ? `${base} ring-2 ring-blue-500 border-blue-300`
-      : `${base} hover:border-gray-300`;
+    const base =
+      'block bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition-all duration-200';
+    return isActive ? `${base} ring-2 ring-blue-500 border-blue-300` : `${base} hover:border-gray-300`;
   },
 
   // Button with state

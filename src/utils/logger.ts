@@ -52,11 +52,7 @@ export const logger = {
 /**
  * Utility to log API failures with context
  */
-export const logApiFailure = (
-  apiName: string,
-  error: unknown,
-  context?: Record<string, unknown>,
-): void => {
+export const logApiFailure = (apiName: string, error: unknown, context?: Record<string, unknown>): void => {
   const errorMessage = error instanceof Error ? error.message : String(error);
   logger.warn(`API ${apiName} failed:`, errorMessage, context);
 };

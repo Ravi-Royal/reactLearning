@@ -7,26 +7,19 @@ import { copyAllChecklistItems, copyChecklistCategory } from '../../helpers/chec
 import { CopyAllIcon, CopyIcon } from '../../helpers/CopyIcons';
 import { useChecklist } from '../../../common/hooks/useChecklist';
 import { RESPONSIVE_PATTERNS } from '../../../../../constants/responsive.constants';
-import { 
-  CHECKLIST_CATEGORIES, 
-  MUTUAL_FUND_LIST, 
+import {
+  CHECKLIST_CATEGORIES,
+  MUTUAL_FUND_LIST,
   MUTUAL_FUND_CHECKLIST_PAGE_HEADER,
   MUTUAL_FUND_CHECKLIST_MODAL,
   CHECKLIST_INFO,
   INITIAL_CHECKLIST_ITEMS,
-  type MutualFundItem 
+  type MutualFundItem,
 } from './mutualFundChecklist.constants';
 
 function MutualFundChecklist() {
-  const {
-    toggleItem,
-    uncheckAll,
-    uncheckCategory,
-    getCategoryItems,
-    getCategoryStats,
-    totalChecked,
-    totalItems,
-  } = useChecklist(INITIAL_CHECKLIST_ITEMS);
+  const { toggleItem, uncheckAll, uncheckCategory, getCategoryItems, getCategoryStats, totalChecked, totalItems } =
+    useChecklist(INITIAL_CHECKLIST_ITEMS);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedFund, setSelectedFund] = useState<MutualFundItem | null>(null);
@@ -86,29 +79,32 @@ function MutualFundChecklist() {
         </div>
       </div>
 
-      <div className={`${RESPONSIVE_PATTERNS.padding.card} bg-blue-50 rounded-lg ${RESPONSIVE_PATTERNS.margin.section}`}>
+      <div
+        className={`${RESPONSIVE_PATTERNS.padding.card} bg-blue-50 rounded-lg ${RESPONSIVE_PATTERNS.margin.section}`}
+      >
         {selectedFund && (
-          <div className={`${RESPONSIVE_PATTERNS.margin.element} p-3 sm:p-4 bg-green-100 rounded-lg border border-green-200`}>
+          <div
+            className={`${RESPONSIVE_PATTERNS.margin.element} p-3 sm:p-4 bg-green-100 rounded-lg border border-green-200`}
+          >
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 gap-2">
               <div>
                 <span className="text-sm font-medium text-green-800">Evaluating: {selectedFund.name}</span>
-                {selectedFund.code && (
-                  <div className="text-xs text-green-600 mt-1">
-                    Code: {selectedFund.code}
-                  </div>
-                )}
+                {selectedFund.code && <div className="text-xs text-green-600 mt-1">Code: {selectedFund.code}</div>}
                 {selectedFund.fundHouse && (
-                  <div className="text-xs text-green-600 mt-1">
-                    Fund House: {selectedFund.fundHouse}
-                  </div>
+                  <div className="text-xs text-green-600 mt-1">Fund House: {selectedFund.fundHouse}</div>
                 )}
               </div>
-              <span className={`px-2 py-1 text-xs rounded-full font-medium self-start sm:self-auto ${
-                selectedFund.category === 'Index Fund' ? 'bg-blue-600 text-white' :
-                  selectedFund.category === 'Equity Fund' ? 'bg-green-600 text-white' :
-                    selectedFund.category === 'Hybrid Fund' ? 'bg-purple-600 text-white' :
-                      'bg-orange-600 text-white'
-              }`}>
+              <span
+                className={`px-2 py-1 text-xs rounded-full font-medium self-start sm:self-auto ${
+                  selectedFund.category === 'Index Fund'
+                    ? 'bg-blue-600 text-white'
+                    : selectedFund.category === 'Equity Fund'
+                      ? 'bg-green-600 text-white'
+                      : selectedFund.category === 'Hybrid Fund'
+                        ? 'bg-purple-600 text-white'
+                        : 'bg-orange-600 text-white'
+                }`}
+              >
                 {selectedFund.category}
               </span>
             </div>
@@ -116,7 +112,12 @@ function MutualFundChecklist() {
         )}
         <div className="space-y-3">
           <ProgressBar label="AI Criteria" completed={aiStats.checked} total={aiStats.total} colorClass="bg-blue-600" />
-          <ProgressBar label="Personal Criteria" completed={personalStats.checked} total={personalStats.total} colorClass="bg-purple-600" />
+          <ProgressBar
+            label="Personal Criteria"
+            completed={personalStats.checked}
+            total={personalStats.total}
+            colorClass="bg-purple-600"
+          />
         </div>
       </div>
 
@@ -160,9 +161,7 @@ function MutualFundChecklist() {
                 <div
                   key={item.id}
                   className={`p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${
-                    item.checked
-                      ? 'bg-green-50 border-green-200'
-                      : 'bg-white border-gray-200 hover:border-gray-300'
+                    item.checked ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200 hover:border-gray-300'
                   }`}
                   onClick={() => toggleItem(item.id)}
                 >
@@ -179,12 +178,20 @@ function MutualFundChecklist() {
                       style={{ display: 'flex', alignItems: 'center', gap: 4 }}
                     >
                       {item.label}
-                      <span title={CHECKLIST_INFO[item.id as keyof typeof CHECKLIST_INFO]?.info || ''} style={{ marginLeft: 4, cursor: 'pointer' }}>
+                      <span
+                        title={CHECKLIST_INFO[item.id as keyof typeof CHECKLIST_INFO]?.info || ''}
+                        style={{ marginLeft: 4, cursor: 'pointer' }}
+                      >
                         <AiOutlineInfoCircle style={{ display: 'inline', color: '#6366f1' }} />
                       </span>
                     </label>
                     {item.checked && (
-                      <svg className="w-5 h-5 text-green-600 ml-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg
+                        className="w-5 h-5 text-green-600 ml-auto flex-shrink-0"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     )}
@@ -214,9 +221,7 @@ function MutualFundChecklist() {
                 <div
                   key={item.id}
                   className={`p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer ${
-                    item.checked
-                      ? 'bg-green-50 border-green-200'
-                      : 'bg-white border-gray-200 hover:border-gray-300'
+                    item.checked ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200 hover:border-gray-300'
                   }`}
                   onClick={() => toggleItem(item.id)}
                 >
@@ -236,7 +241,12 @@ function MutualFundChecklist() {
                       {item.label}
                     </label>
                     {item.checked && (
-                      <svg className="w-5 h-5 text-green-600 ml-auto flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg
+                        className="w-5 h-5 text-green-600 ml-auto flex-shrink-0"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     )}
@@ -248,17 +258,25 @@ function MutualFundChecklist() {
         </div>
       </div>
 
-      <div className={`${RESPONSIVE_PATTERNS.margin.section} ${RESPONSIVE_PATTERNS.padding.card} bg-gray-50 rounded-lg`}>
+      <div
+        className={`${RESPONSIVE_PATTERNS.margin.section} ${RESPONSIVE_PATTERNS.padding.card} bg-gray-50 rounded-lg`}
+      >
         <h3 className="font-semibold text-gray-800 mb-2">Investment Readiness</h3>
         <div className="text-sm text-gray-600">
           {totalChecked === totalItems && (
-            <p className="text-green-600 font-medium">🎉 Excellent! This fund meets all key criteria for investment consideration.</p>
+            <p className="text-green-600 font-medium">
+              🎉 Excellent! This fund meets all key criteria for investment consideration.
+            </p>
           )}
           {totalChecked >= totalItems * 0.75 && totalChecked < totalItems && (
-            <p className="text-blue-600 font-medium">👍 Good candidate. Meets most criteria - conduct further due diligence.</p>
+            <p className="text-blue-600 font-medium">
+              👍 Good candidate. Meets most criteria - conduct further due diligence.
+            </p>
           )}
           {totalChecked >= totalItems * 0.5 && totalChecked < totalItems * 0.75 && (
-            <p className="text-yellow-600 font-medium">⚠️ Moderate risk. Some concerns - additional research recommended.</p>
+            <p className="text-yellow-600 font-medium">
+              ⚠️ Moderate risk. Some concerns - additional research recommended.
+            </p>
           )}
           {totalChecked < totalItems * 0.5 && (
             <p className="text-red-600 font-medium">❌ High risk. Significant concerns - reconsider investment.</p>

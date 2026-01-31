@@ -15,7 +15,9 @@ export const useGoldSilverPrices = () => {
     try {
       const d = new Date(typeof time === 'number' ? time * 1000 : time);
       return d.toLocaleTimeString();
-    } catch { return ''; }
+    } catch {
+      return '';
+    }
   }, []);
 
   const tryCoinPaprika = useCallback(async (): Promise<PriceResult | null> => {
@@ -24,7 +26,9 @@ export const useGoldSilverPrices = () => {
         fetch('https://api.coinpaprika.com/v1/tickers/paxg-pax-gold'),
         fetch('https://api.coinpaprika.com/v1/tickers/kag-kinesis-silver'),
       ]);
-      if (!goldRes.ok || !silverRes.ok) {throw new Error('CoinPaprika Status Error');}
+      if (!goldRes.ok || !silverRes.ok) {
+        throw new Error('CoinPaprika Status Error');
+      }
       const gData = await goldRes.json();
       const sData = await silverRes.json();
       return {
@@ -33,49 +37,75 @@ export const useGoldSilverPrices = () => {
         source: 'CoinPaprika',
         time: formatTime(gData.last_updated),
       };
-    } catch (error) { logApiFailure('CoinPaprika', error); return null; }
+    } catch (error) {
+      logApiFailure('CoinPaprika', error);
+      return null;
+    }
   }, [formatTime]);
 
   const tryCoinGecko = useCallback(async (): Promise<PriceResult | null> => {
     try {
-      const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=pax-gold,kinesis-silver&vs_currencies=usd&include_last_updated_at=true', {
-        headers: { 'Accept': 'application/json' },
-      });
-      if (!res.ok) {throw new Error('CoinGecko Status Error');}
+      const res = await fetch(
+        'https://api.coingecko.com/api/v3/simple/price?ids=pax-gold,kinesis-silver&vs_currencies=usd&include_last_updated_at=true',
+        {
+          headers: { Accept: 'application/json' },
+        },
+      );
+      if (!res.ok) {
+        throw new Error('CoinGecko Status Error');
+      }
       const data = await res.json();
-      if (!data['pax-gold']?.usd || !data['kinesis-silver']?.usd) {throw new Error('Invalid format');}
+      if (!data['pax-gold']?.usd || !data['kinesis-silver']?.usd) {
+        throw new Error('Invalid format');
+      }
       return {
         g: data['pax-gold'].usd,
         s: data['kinesis-silver'].usd,
         source: 'CoinGecko',
         time: formatTime(data['pax-gold'].last_updated_at),
       };
-    } catch (error) { logApiFailure('CoinGecko', error); return null; }
+    } catch (error) {
+      logApiFailure('CoinGecko', error);
+      return null;
+    }
   }, [formatTime]);
 
   const tryCurrencyApi = useCallback(async (): Promise<PriceResult | null> => {
     try {
       // https://github.com/fawazahmed0/currency-api
       const res = await fetch('https://latest.currency-api.pages.dev/v1/currencies/usd.json');
-      if (!res.ok) {throw new Error('CurrencyAPI Status Error');}
+      if (!res.ok) {
+        throw new Error('CurrencyAPI Status Error');
+      }
       const data = await res.json();
       // data.usd.xau is "Amount of Gold for 1 USD". Price = 1/xau
       const goldRate = data.usd?.xau;
       const silverRate = data.usd?.xag;
-      if (!goldRate || !silverRate) {throw new Error('Missing metals data');}
+      if (!goldRate || !silverRate) {
+        throw new Error('Missing metals data');
+      }
       return {
         g: 1 / goldRate,
         s: 1 / silverRate,
         source: 'CurrencyAPI',
         time: data.date,
       };
-    } catch (error) { logApiFailure('CurrencyAPI', error); return null; }
+    } catch (error) {
+      logApiFailure('CurrencyAPI', error);
+      return null;
+    }
   }, []);
 
   const getConsensus = useCallback((prices: number[]): number => {
-    if (prices.length === 0) {return 0;}
-    if (prices.length === 1) {return prices[0];}
-    if (prices.length === 2) {return (prices[0] + prices[1]) / 2;}
+    if (prices.length === 0) {
+      return 0;
+    }
+    if (prices.length === 1) {
+      return prices[0];
+    }
+    if (prices.length === 2) {
+      return (prices[0] + prices[1]) / 2;
+    }
 
     // For 3 prices, find the pair with the smallest difference
     prices.sort((a, b) => a - b);
@@ -97,11 +127,7 @@ export const useGoldSilverPrices = () => {
 
     try {
       // Execute all fetches in parallel
-      const results = await Promise.all([
-        tryCoinPaprika(),
-        tryCurrencyApi(),
-        tryCoinGecko(),
-      ]);
+      const results = await Promise.all([tryCoinPaprika(), tryCurrencyApi(), tryCoinGecko()]);
 
       // Filter out failed requests
       const validResults = results.filter((r): r is PriceResult => r !== null);
@@ -110,14 +136,17 @@ export const useGoldSilverPrices = () => {
         throw new Error(GOLD_SILVER_TEXTS.ERRORS.ALL_FAILED);
       }
 
-      const goldPrices = validResults.map(r => r.g);
-      const silverPrices = validResults.map(r => r.s);
+      const goldPrices = validResults.map((r) => r.g);
+      const silverPrices = validResults.map((r) => r.s);
 
       const gPrice = getConsensus(goldPrices);
       const sPrice = getConsensus(silverPrices);
 
-      const sourcesList = validResults.map(r => r.source).join(', ');
-      const usedSource = validResults.length > 1 ? `${GOLD_SILVER_TEXTS.MESSAGES.AVG_OF} ${validResults.length}: ${sourcesList}` : sourcesList;
+      const sourcesList = validResults.map((r) => r.source).join(', ');
+      const usedSource =
+        validResults.length > 1
+          ? `${GOLD_SILVER_TEXTS.MESSAGES.AVG_OF} ${validResults.length}: ${sourcesList}`
+          : sourcesList;
 
       if (gPrice && sPrice) {
         setGoldPrice(gPrice.toFixed(2));
@@ -127,7 +156,6 @@ export const useGoldSilverPrices = () => {
       } else {
         throw new Error(GOLD_SILVER_TEXTS.ERRORS.INVALID_FORMAT);
       }
-
     } catch (err) {
       logger.error('Final Fetch error:', err);
       setError(GOLD_SILVER_TEXTS.ERRORS.FETCH_ERROR);

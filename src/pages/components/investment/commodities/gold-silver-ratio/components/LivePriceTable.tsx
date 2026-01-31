@@ -6,7 +6,9 @@ interface LivePriceTableProps {
 }
 
 export function LivePriceTable({ priceDetails }: LivePriceTableProps) {
-  if (priceDetails.length === 0) {return null;}
+  if (priceDetails.length === 0) {
+    return null;
+  }
 
   return (
     <div className="mb-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
@@ -15,10 +17,18 @@ export function LivePriceTable({ priceDetails }: LivePriceTableProps) {
         <table className="min-w-full text-xs sm:text-sm">
           <thead>
             <tr className="border-b border-gray-300">
-              <th className="text-left py-2 px-3 text-gray-500 font-medium">{GOLD_SILVER_TEXTS.LIVE_TABLE.HEADERS.SOURCE}</th>
-              <th className="text-right py-2 px-3 text-yellow-600 font-medium">{GOLD_SILVER_TEXTS.LIVE_TABLE.HEADERS.GOLD}</th>
-              <th className="text-right py-2 px-3 text-gray-600 font-medium">{GOLD_SILVER_TEXTS.LIVE_TABLE.HEADERS.SILVER}</th>
-              <th className="text-right py-2 px-3 text-gray-400 font-medium">{GOLD_SILVER_TEXTS.LIVE_TABLE.HEADERS.LAST_UPDATED}</th>
+              <th className="text-left py-2 px-3 text-gray-500 font-medium">
+                {GOLD_SILVER_TEXTS.LIVE_TABLE.HEADERS.SOURCE}
+              </th>
+              <th className="text-right py-2 px-3 text-yellow-600 font-medium">
+                {GOLD_SILVER_TEXTS.LIVE_TABLE.HEADERS.GOLD}
+              </th>
+              <th className="text-right py-2 px-3 text-gray-600 font-medium">
+                {GOLD_SILVER_TEXTS.LIVE_TABLE.HEADERS.SILVER}
+              </th>
+              <th className="text-right py-2 px-3 text-gray-400 font-medium">
+                {GOLD_SILVER_TEXTS.LIVE_TABLE.HEADERS.LAST_UPDATED}
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -27,7 +37,9 @@ export function LivePriceTable({ priceDetails }: LivePriceTableProps) {
                 <td className="py-2 px-3 text-gray-700">{detail.source}</td>
                 <td className="py-2 px-3 text-right font-mono">${detail.g.toFixed(2)}</td>
                 <td className="py-2 px-3 text-right font-mono">${detail.s.toFixed(2)}</td>
-                <td className="py-2 px-3 text-right text-gray-500 text-xs">{detail.time || GOLD_SILVER_TEXTS.LIVE_TABLE.NA}</td>
+                <td className="py-2 px-3 text-right text-gray-500 text-xs">
+                  {detail.time || GOLD_SILVER_TEXTS.LIVE_TABLE.NA}
+                </td>
               </tr>
             ))}
           </tbody>

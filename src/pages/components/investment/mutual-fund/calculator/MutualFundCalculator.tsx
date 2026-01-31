@@ -164,10 +164,7 @@ function MutualFundCalculator() {
       // Calculate the initial SWP amount (after applying inflation from SIP start if needed)
       let initialSwpAmount = swp;
       if (inflationStartFrom === 'sip-start' && yearsFromSipStart > 0 && inflation > 0) {
-        initialSwpAmount = Money.multiply(
-          swp,
-          Money.pow(Money.add(1, annualInflationRate), yearsFromSipStart),
-        );
+        initialSwpAmount = Money.multiply(swp, Money.pow(Money.add(1, annualInflationRate), yearsFromSipStart));
       }
 
       // Compare initial SWP amount with minimum sustainable amount
@@ -195,10 +192,7 @@ function MutualFundCalculator() {
       let currentSwpAmount = swp;
       // If calculating from SIP start, apply inflation for years already passed
       if (inflationStartFrom === 'sip-start' && yearsFromSipStart > 0 && inflation > 0) {
-        currentSwpAmount = Money.multiply(
-          swp,
-          Money.pow(Money.add(1, annualInflationRate), yearsFromSipStart),
-        );
+        currentSwpAmount = Money.multiply(swp, Money.pow(Money.add(1, annualInflationRate), yearsFromSipStart));
       }
 
       for (let month = 1; month <= totalSwpMonths; month++) {
@@ -230,7 +224,19 @@ function MutualFundCalculator() {
       monthsToZero,
       minSWPToSustain: Money.max(minSWP, 0),
     };
-  }, [investmentType, sipAmount, lumpsumAmount, annualReturn, investmentPeriod, postInvestmentHoldingPeriod, oneTimeWithdrawal, swpAmount, swpPeriod, inflationRate, inflationStartFrom]);
+  }, [
+    investmentType,
+    sipAmount,
+    lumpsumAmount,
+    annualReturn,
+    investmentPeriod,
+    postInvestmentHoldingPeriod,
+    oneTimeWithdrawal,
+    swpAmount,
+    swpPeriod,
+    inflationRate,
+    inflationStartFrom,
+  ]);
 
   const handleReset = () => {
     setSipAmount('');
@@ -413,7 +419,9 @@ function MutualFundCalculator() {
             withdrawal: periodWithdrawal,
           });
 
-          if (balance <= 0) { break; }
+          if (balance <= 0) {
+            break;
+          }
         }
       }
     } else if (investmentType === 'yearly-sip') {
@@ -555,7 +563,9 @@ function MutualFundCalculator() {
             withdrawal: periodWithdrawal,
           });
 
-          if (balance <= 0) { break; }
+          if (balance <= 0) {
+            break;
+          }
         }
       }
     } else if (investmentType === 'lumpsum') {
@@ -711,17 +721,32 @@ function MutualFundCalculator() {
             withdrawal: periodWithdrawal,
           });
 
-          if (balance <= 0) { break; }
+          if (balance <= 0) {
+            break;
+          }
         }
       }
     }
 
     return breakdown;
-  }, [investmentType, sipAmount, lumpsumAmount, annualReturn, investmentPeriod, postInvestmentHoldingPeriod, oneTimeWithdrawal, swpAmount, swpPeriod, inflationRate, inflationStartFrom, breakdownView]);
+  }, [
+    investmentType,
+    sipAmount,
+    lumpsumAmount,
+    annualReturn,
+    investmentPeriod,
+    postInvestmentHoldingPeriod,
+    oneTimeWithdrawal,
+    swpAmount,
+    swpPeriod,
+    inflationRate,
+    inflationStartFrom,
+    breakdownView,
+  ]);
 
   // Ref for SWP start row (must be after yearlyBreakdown is defined)
   const swpStartRowRef = useRef<HTMLTableRowElement | null>(null);
-  const swpStartIndex = yearlyBreakdown.findIndex(row => row.withdrawal !== undefined);
+  const swpStartIndex = yearlyBreakdown.findIndex((row) => row.withdrawal !== undefined);
 
   return (
     <div className="p-4 sm:p-6 md:p-8 lg:p-10">
@@ -733,13 +758,17 @@ function MutualFundCalculator() {
         >
           ← Back to Mutual Funds
         </Link>
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">{MUTUAL_FUND_CALCULATOR_TEXTS.PAGE_TITLE}</h1>
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">
+          {MUTUAL_FUND_CALCULATOR_TEXTS.PAGE_TITLE}
+        </h1>
         <p className="text-sm sm:text-base text-gray-600 mt-1">Calculate SIP/Lumpsum returns and SWP sustainability</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-gradient-to-br from-purple-50 via-white to-blue-50 rounded-lg shadow-lg p-4 sm:p-6 border-2 border-purple-200">
-          <h2 className="text-lg font-semibold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-4">💰 Investment Details</h2>
+          <h2 className="text-lg font-semibold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-4">
+            💰 Investment Details
+          </h2>
 
           <div className="mb-4">
             <label className="block text-sm font-medium text-purple-700 mb-2">Investment Type</label>
@@ -779,12 +808,18 @@ function MutualFundCalculator() {
 
           {investmentType === 'sip' || investmentType === 'yearly-sip' ? (
             <div className="mb-4">
-              <label className="block text-sm font-medium text-purple-700 mb-2">💵 {investmentType === 'sip' ? 'Monthly' : 'Yearly'} SIP Amount (₹)</label>
+              <label className="block text-sm font-medium text-purple-700 mb-2">
+                💵 {investmentType === 'sip' ? 'Monthly' : 'Yearly'} SIP Amount (₹)
+              </label>
               <input
                 type="number"
                 value={sipAmount}
                 onChange={(e) => setSipAmount(e.target.value)}
-                placeholder={investmentType === 'sip' ? MUTUAL_FUND_CALCULATOR_TEXTS.SIP_INPUTS.MONTHLY_AMOUNT_PLACEHOLDER : MUTUAL_FUND_CALCULATOR_TEXTS.SIP_INPUTS.YEARLY_AMOUNT_PLACEHOLDER}
+                placeholder={
+                  investmentType === 'sip'
+                    ? MUTUAL_FUND_CALCULATOR_TEXTS.SIP_INPUTS.MONTHLY_AMOUNT_PLACEHOLDER
+                    : MUTUAL_FUND_CALCULATOR_TEXTS.SIP_INPUTS.YEARLY_AMOUNT_PLACEHOLDER
+                }
                 step="1"
                 min="0"
                 className="w-full px-3 py-2 border-2 border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white"
@@ -833,10 +868,14 @@ function MutualFundCalculator() {
 
           <div className="border-t-2 border-teal-200 pt-4 mt-4 bg-teal-50 -mx-4 sm:-mx-6 px-4 sm:px-6 py-4 rounded-lg">
             <h3 className="text-md font-semibold text-teal-700 mb-3">🕐 Post-Investment Holding Period - Optional</h3>
-            <p className="text-xs text-teal-600 mb-3">After investment period ends, let your corpus grow without any withdrawals</p>
+            <p className="text-xs text-teal-600 mb-3">
+              After investment period ends, let your corpus grow without any withdrawals
+            </p>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-teal-700 mb-2">Post-Investment Holding Period (Years)</label>
+              <label className="block text-sm font-medium text-teal-700 mb-2">
+                Post-Investment Holding Period (Years)
+              </label>
               <input
                 type="number"
                 value={postInvestmentHoldingPeriod}
@@ -846,7 +885,9 @@ function MutualFundCalculator() {
                 min="0"
                 className="w-full px-3 py-2 border-2 border-teal-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 bg-white"
               />
-              <p className="text-xs text-teal-600 mt-1">Years to hold before starting withdrawals (corpus continues to grow)</p>
+              <p className="text-xs text-teal-600 mt-1">
+                Years to hold before starting withdrawals (corpus continues to grow)
+              </p>
             </div>
           </div>
 
@@ -865,12 +906,16 @@ function MutualFundCalculator() {
                 min="0"
                 className="w-full px-3 py-2 border-2 border-indigo-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white"
               />
-              <p className="text-xs text-indigo-600 mt-1">Amount to withdraw after holding period (before SWP starts)</p>
+              <p className="text-xs text-indigo-600 mt-1">
+                Amount to withdraw after holding period (before SWP starts)
+              </p>
             </div>
           </div>
 
           <div className="border-t-2 border-orange-200 pt-4 mt-4 bg-orange-50 -mx-4 sm:-mx-6 px-4 sm:px-6 py-4 rounded-lg">
-            <h3 className="text-md font-semibold text-orange-700 mb-3">💸 Systematic Withdrawal Plan (SWP) - Optional</h3>
+            <h3 className="text-md font-semibold text-orange-700 mb-3">
+              💸 Systematic Withdrawal Plan (SWP) - Optional
+            </h3>
             <p className="text-xs text-orange-600 mb-3">Set up regular monthly withdrawals after holding period</p>
 
             <div className="mb-4">
@@ -956,7 +1001,9 @@ function MutualFundCalculator() {
 
         {result && (
           <div className="bg-gradient-to-br from-green-50 via-white to-teal-50 rounded-lg shadow-lg p-4 sm:p-6 border-2 border-green-200">
-            <h2 className="text-lg font-semibold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent mb-4">📊 Calculation Results</h2>
+            <h2 className="text-lg font-semibold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent mb-4">
+              📊 Calculation Results
+            </h2>
 
             <div className="space-y-4">
               <div className="bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-lg border-2 border-blue-200 shadow-sm">
@@ -978,8 +1025,12 @@ function MutualFundCalculator() {
               {parseFloat(postInvestmentHoldingPeriod) > 0 && (
                 <div className="bg-gradient-to-r from-cyan-50 to-cyan-100 p-4 rounded-lg border-2 border-cyan-200 shadow-sm">
                   <div className="text-sm text-cyan-700 font-medium mb-1">🕐 Corpus After Holding Period</div>
-                  <div className="text-2xl font-bold text-cyan-700">{formatCurrency(result.corpusAfterHoldingPeriod)}</div>
-                  <div className="text-xs text-cyan-600 mt-1">Amount after {postInvestmentHoldingPeriod} years of holding (compounded growth)</div>
+                  <div className="text-2xl font-bold text-cyan-700">
+                    {formatCurrency(result.corpusAfterHoldingPeriod)}
+                  </div>
+                  <div className="text-xs text-cyan-600 mt-1">
+                    Amount after {postInvestmentHoldingPeriod} years of holding (compounded growth)
+                  </div>
                 </div>
               )}
 
@@ -987,7 +1038,9 @@ function MutualFundCalculator() {
                 <div className="bg-gradient-to-r from-purple-50 to-purple-100 p-4 rounded-lg border-2 border-purple-200 shadow-sm">
                   <div className="text-sm text-purple-700 font-medium mb-1">💰 Final Balance (After SWP)</div>
                   <div className="text-2xl font-bold text-purple-700">{formatCurrency(result.finalBalance)}</div>
-                  <div className="text-xs text-purple-600 mt-1">Balance remaining after {swpPeriod} years of withdrawals</div>
+                  <div className="text-xs text-purple-600 mt-1">
+                    Balance remaining after {swpPeriod} years of withdrawals
+                  </div>
                 </div>
               )}
 
@@ -998,13 +1051,24 @@ function MutualFundCalculator() {
                     {parseFloat(inflationRate) > 0 && (
                       <div className="bg-blue-50 p-3 rounded-lg border border-blue-200 mb-3">
                         <div className="flex items-start gap-2">
-                          <svg className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                          <svg
+                            className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                              clipRule="evenodd"
+                            />
                           </svg>
                           <div className="flex-1">
-                            <div className="text-sm font-semibold text-blue-800">Inflation Applied: {inflationRate}% annually</div>
+                            <div className="text-sm font-semibold text-blue-800">
+                              Inflation Applied: {inflationRate}% annually
+                            </div>
                             <div className="text-xs text-blue-700 mt-1">
-                              SWP amount increases each year to account for inflation, starting from {inflationStartFrom === 'current-year' ? 'when SWP begins' : 'SIP start year'}.
+                              SWP amount increases each year to account for inflation, starting from{' '}
+                              {inflationStartFrom === 'current-year' ? 'when SWP begins' : 'SIP start year'}.
                             </div>
                             {(() => {
                               const swp = parseFloat(swpAmount);
@@ -1012,11 +1076,13 @@ function MutualFundCalculator() {
                               const investYears = parseFloat(investmentPeriod) || 0;
                               const holdingYears = parseFloat(postInvestmentHoldingPeriod) || 0;
                               const swpYears = parseFloat(swpPeriod) || 0;
-                              const yearsFromSipStart = inflationStartFrom === 'sip-start' ? investYears + holdingYears : 0;
+                              const yearsFromSipStart =
+                                inflationStartFrom === 'sip-start' ? investYears + holdingYears : 0;
 
-                              const initialSwp = inflationStartFrom === 'sip-start' && yearsFromSipStart > 0
-                                ? swp * Math.pow(1 + inflation, yearsFromSipStart)
-                                : swp;
+                              const initialSwp =
+                                inflationStartFrom === 'sip-start' && yearsFromSipStart > 0
+                                  ? swp * Math.pow(1 + inflation, yearsFromSipStart)
+                                  : swp;
 
                               const finalSwp = initialSwp * Math.pow(1 + inflation, swpYears - 1);
 
@@ -1024,26 +1090,58 @@ function MutualFundCalculator() {
                                 <>
                                   {inflationStartFrom === 'sip-start' && yearsFromSipStart > 0 && (
                                     <div className="bg-amber-50 border border-amber-300 rounded p-2 mt-2 mb-2">
-                                      <div className="text-xs font-semibold text-amber-800 mb-1">💡 Understanding "SIP Start Year" Mode:</div>
+                                      <div className="text-xs font-semibold text-amber-800 mb-1">
+                                        💡 Understanding "SIP Start Year" Mode:
+                                      </div>
                                       <div className="text-xs text-amber-700 space-y-1">
-                                        <div>• Your input: <span className="font-semibold">{formatCurrency(swp)}/month</span> represents the value in <span className="font-semibold">today's money</span> (at SIP start)</div>
-                                        <div>• After {yearsFromSipStart} years of {inflationRate}% inflation, this equals <span className="font-semibold">{formatCurrency(initialSwp)}/month</span> when SWP begins</div>
-                                        <div>• This ensures your withdrawals maintain the same purchasing power throughout</div>
+                                        <div>
+                                          • Your input:{' '}
+                                          <span className="font-semibold">{formatCurrency(swp)}/month</span> represents
+                                          the value in <span className="font-semibold">today's money</span> (at SIP
+                                          start)
+                                        </div>
+                                        <div>
+                                          • After {yearsFromSipStart} years of {inflationRate}% inflation, this equals{' '}
+                                          <span className="font-semibold">{formatCurrency(initialSwp)}/month</span> when
+                                          SWP begins
+                                        </div>
+                                        <div>
+                                          • This ensures your withdrawals maintain the same purchasing power throughout
+                                        </div>
 
                                         {(() => {
-                                          const sustainableInTodaysTerms = result.minSWPToSustain / Math.pow(1 + inflation, yearsFromSipStart);
+                                          const sustainableInTodaysTerms =
+                                            result.minSWPToSustain / Math.pow(1 + inflation, yearsFromSipStart);
                                           const currentSwpValue = parseFloat(swpAmount);
                                           const isOverSustainable = currentSwpValue > sustainableInTodaysTerms;
 
                                           return (
-                                            <div className={`mt-2 pt-2 border-t ${isOverSustainable ? 'border-red-300 bg-red-50' : 'border-green-300 bg-green-50'} rounded p-2`}>
-                                              <div className="text-xs font-bold">{isOverSustainable ? '⚠️ Current Entry' : '✅ Sustainable Entry'}:</div>
+                                            <div
+                                              className={`mt-2 pt-2 border-t ${isOverSustainable ? 'border-red-300 bg-red-50' : 'border-green-300 bg-green-50'} rounded p-2`}
+                                            >
+                                              <div className="text-xs font-bold">
+                                                {isOverSustainable ? '⚠️ Current Entry' : '✅ Sustainable Entry'}:
+                                              </div>
                                               <div className="text-xs mt-1">
-                                                • To sustain forever: Enter max <span className="font-bold text-green-700">{formatCurrency(sustainableInTodaysTerms)}</span>
+                                                • To sustain forever: Enter max{' '}
+                                                <span className="font-bold text-green-700">
+                                                  {formatCurrency(sustainableInTodaysTerms)}
+                                                </span>
                                               </div>
                                               <div className="text-xs">
-                                                • You entered: <span className={`font-bold ${isOverSustainable ? 'text-red-700' : 'text-green-700'}`}>{formatCurrency(currentSwpValue)}</span>
-                                                {isOverSustainable && <span className="text-red-700"> (Exceeds sustainable by {formatCurrency(currentSwpValue - sustainableInTodaysTerms)})</span>}
+                                                • You entered:{' '}
+                                                <span
+                                                  className={`font-bold ${isOverSustainable ? 'text-red-700' : 'text-green-700'}`}
+                                                >
+                                                  {formatCurrency(currentSwpValue)}
+                                                </span>
+                                                {isOverSustainable && (
+                                                  <span className="text-red-700">
+                                                    {' '}
+                                                    (Exceeds sustainable by{' '}
+                                                    {formatCurrency(currentSwpValue - sustainableInTodaysTerms)})
+                                                  </span>
+                                                )}
                                               </div>
                                             </div>
                                           );
@@ -1052,8 +1150,14 @@ function MutualFundCalculator() {
                                     </div>
                                   )}
                                   <div className="text-xs text-blue-600 mt-2 space-y-1">
-                                    <div>• {inflationStartFrom === 'sip-start' ? 'Actual first' : 'Initial'} monthly withdrawal: <span className="font-semibold">{formatCurrency(initialSwp)}</span></div>
-                                    <div>• Final monthly withdrawal (Year {swpYears}): <span className="font-semibold">{formatCurrency(finalSwp)}</span></div>
+                                    <div>
+                                      • {inflationStartFrom === 'sip-start' ? 'Actual first' : 'Initial'} monthly
+                                      withdrawal: <span className="font-semibold">{formatCurrency(initialSwp)}</span>
+                                    </div>
+                                    <div>
+                                      • Final monthly withdrawal (Year {swpYears}):{' '}
+                                      <span className="font-semibold">{formatCurrency(finalSwp)}</span>
+                                    </div>
                                   </div>
                                 </>
                               );
@@ -1071,9 +1175,7 @@ function MutualFundCalculator() {
                         {result.yearsToZero} years {result.monthsToZero} months
                       </div>
                     ) : (
-                      <div className="text-xl font-bold text-green-600">
-                        Balance will never reach zero! 🎉
-                      </div>
+                      <div className="text-xl font-bold text-green-600">Balance will never reach zero! 🎉</div>
                     )}
                   </div>
 
@@ -1083,49 +1185,79 @@ function MutualFundCalculator() {
                     <div className="text-xs text-gray-500 mt-2">
                       {parseFloat(inflationRate) > 0
                         ? 'This is the maximum initial monthly withdrawal that keeps your corpus stable (interest = withdrawal).'
-                        : 'This is the maximum amount you can withdraw monthly without depleting your principal.'
-                      }
+                        : 'This is the maximum amount you can withdraw monthly without depleting your principal.'}
                     </div>
                     {parseFloat(inflationRate) > 0 && (
                       <>
-                        {inflationStartFrom === 'sip-start' && parseFloat(investmentPeriod) > 0 && parseFloat(postInvestmentHoldingPeriod) >= 0 && (
-                          <div className="bg-blue-50 border border-blue-300 rounded p-2 mt-2">
-                            <div className="text-xs font-semibold text-blue-800 mb-1">💡 In "SIP Start Year" Mode:</div>
-                            <div className="text-xs text-blue-700 space-y-1">
-                              {(() => {
-                                const inflation = parseFloat(inflationRate) / 100;
-                                const investYears = parseFloat(investmentPeriod) || 0;
-                                const holdingYears = parseFloat(postInvestmentHoldingPeriod) || 0;
-                                const yearsFromSipStart = investYears + holdingYears;
-                                const minSwpInTodaysTerms = result.minSWPToSustain / Math.pow(1 + inflation, yearsFromSipStart);
+                        {inflationStartFrom === 'sip-start' &&
+                          parseFloat(investmentPeriod) > 0 &&
+                          parseFloat(postInvestmentHoldingPeriod) >= 0 && (
+                            <div className="bg-blue-50 border border-blue-300 rounded p-2 mt-2">
+                              <div className="text-xs font-semibold text-blue-800 mb-1">
+                                💡 In "SIP Start Year" Mode:
+                              </div>
+                              <div className="text-xs text-blue-700 space-y-1">
+                                {(() => {
+                                  const inflation = parseFloat(inflationRate) / 100;
+                                  const investYears = parseFloat(investmentPeriod) || 0;
+                                  const holdingYears = parseFloat(postInvestmentHoldingPeriod) || 0;
+                                  const yearsFromSipStart = investYears + holdingYears;
+                                  const minSwpInTodaysTerms =
+                                    result.minSWPToSustain / Math.pow(1 + inflation, yearsFromSipStart);
 
-                                return (
-                                  <>
-                                    <div>• Sustainable withdrawal in <span className="font-semibold">today's terms</span>: {formatCurrency(minSwpInTodaysTerms)}/month</div>
-                                    <div>• This grows to <span className="font-semibold">{formatCurrency(result.minSWPToSustain)}/month</span> when SWP starts (after {yearsFromSipStart} years)</div>
-                                    <div>• Then increases {inflationRate}% annually to maintain purchasing power</div>
-                                    <div className="mt-2 pt-2 border-t border-blue-300">
-                                      <div className="font-semibold text-blue-900">📝 To sustain forever, enter:</div>
-                                      <div className="bg-white rounded px-2 py-1 mt-1 border border-blue-400">
-                                        <span className="font-bold text-green-700">{formatCurrency(minSwpInTodaysTerms)}</span> in "Monthly SWP Amount" field
+                                  return (
+                                    <>
+                                      <div>
+                                        • Sustainable withdrawal in <span className="font-semibold">today's terms</span>
+                                        : {formatCurrency(minSwpInTodaysTerms)}/month
                                       </div>
-                                      <div className="text-xs mt-1 italic">This will be inflation-adjusted to {formatCurrency(result.minSWPToSustain)}/month when SWP starts</div>
-                                    </div>
-                                  </>
-                                );
-                              })()}
+                                      <div>
+                                        • This grows to{' '}
+                                        <span className="font-semibold">
+                                          {formatCurrency(result.minSWPToSustain)}/month
+                                        </span>{' '}
+                                        when SWP starts (after {yearsFromSipStart} years)
+                                      </div>
+                                      <div>• Then increases {inflationRate}% annually to maintain purchasing power</div>
+                                      <div className="mt-2 pt-2 border-t border-blue-300">
+                                        <div className="font-semibold text-blue-900">📝 To sustain forever, enter:</div>
+                                        <div className="bg-white rounded px-2 py-1 mt-1 border border-blue-400">
+                                          <span className="font-bold text-green-700">
+                                            {formatCurrency(minSwpInTodaysTerms)}
+                                          </span>{' '}
+                                          in "Monthly SWP Amount" field
+                                        </div>
+                                        <div className="text-xs mt-1 italic">
+                                          This will be inflation-adjusted to {formatCurrency(result.minSWPToSustain)}
+                                          /month when SWP starts
+                                        </div>
+                                      </div>
+                                    </>
+                                  );
+                                })()}
+                              </div>
                             </div>
-                          </div>
-                        )}
+                          )}
                         {inflationStartFrom === 'current-year' && (
                           <div className="text-xs text-amber-600 mt-2">
                             <div>⚠️ Important: With {inflationRate}% inflation growing each year:</div>
-                            <div className="mt-1">• Sustainable starting amount ≈ {formatCurrency(result.minSWPToSustain * (1 - parseFloat(inflationRate)/100))}/month</div>
-                            <div>• Your corpus will slowly deplete if you start with {formatCurrency(result.minSWPToSustain)}/month and apply inflation</div>
+                            <div className="mt-1">
+                              • Sustainable starting amount ≈{' '}
+                              {formatCurrency(result.minSWPToSustain * (1 - parseFloat(inflationRate) / 100))}/month
+                            </div>
+                            <div>
+                              • Your corpus will slowly deplete if you start with{' '}
+                              {formatCurrency(result.minSWPToSustain)}/month and apply inflation
+                            </div>
                             <div className="mt-2 pt-2 border-t border-amber-400">
-                              <div className="font-semibold text-amber-900">📝 To sustain forever, enter approximately:</div>
+                              <div className="font-semibold text-amber-900">
+                                📝 To sustain forever, enter approximately:
+                              </div>
                               <div className="bg-white rounded px-2 py-1 mt-1 border border-amber-500">
-                                <span className="font-bold text-green-700">{formatCurrency(result.minSWPToSustain * (1 - parseFloat(inflationRate)/100))}</span> in "Monthly SWP Amount" field
+                                <span className="font-bold text-green-700">
+                                  {formatCurrency(result.minSWPToSustain * (1 - parseFloat(inflationRate) / 100))}
+                                </span>{' '}
+                                in "Monthly SWP Amount" field
                               </div>
                             </div>
                           </div>
@@ -1137,13 +1269,23 @@ function MutualFundCalculator() {
                   {result.yearsToZero !== null && (
                     <div className="bg-red-50 p-3 rounded-lg border border-red-200">
                       <div className="flex items-start gap-2">
-                        <svg className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        <svg
+                          className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                            clipRule="evenodd"
+                          />
                         </svg>
                         <div>
                           <div className="text-sm font-semibold text-red-800">Warning</div>
                           <div className="text-xs text-red-700 mt-1">
-                            Your current SWP{parseFloat(inflationRate) > 0 ? ' (with inflation adjustments)' : ''} exceeds the sustainable amount. Your balance will reach zero in {result.yearsToZero} years {result.monthsToZero} months.
+                            Your current SWP{parseFloat(inflationRate) > 0 ? ' (with inflation adjustments)' : ''}{' '}
+                            exceeds the sustainable amount. Your balance will reach zero in {result.yearsToZero} years{' '}
+                            {result.monthsToZero} months.
                           </div>
                         </div>
                       </div>
@@ -1153,13 +1295,22 @@ function MutualFundCalculator() {
                   {result.yearsToZero === null && (
                     <div className="bg-green-50 p-3 rounded-lg border border-green-200">
                       <div className="flex items-start gap-2">
-                        <svg className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        <svg
+                          className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clipRule="evenodd"
+                          />
                         </svg>
                         <div>
                           <div className="text-sm font-semibold text-green-800">Sustainable Plan</div>
                           <div className="text-xs text-green-700 mt-1">
-                            Your SWP{parseFloat(inflationRate) > 0 ? ' (even with inflation adjustments)' : ''} is within sustainable limits. Your balance will grow or remain stable!
+                            Your SWP{parseFloat(inflationRate) > 0 ? ' (even with inflation adjustments)' : ''} is
+                            within sustainable limits. Your balance will grow or remain stable!
                           </div>
                         </div>
                       </div>
@@ -1175,10 +1326,19 @@ function MutualFundCalculator() {
       <div className="mt-6 bg-blue-50 rounded-lg p-4 border border-blue-200">
         <h3 className="text-sm font-semibold text-blue-900 mb-2">💡 How it works</h3>
         <ul className="text-xs text-blue-800 space-y-1">
-          <li>• <strong>SIP:</strong> Invest a fixed amount monthly. Returns compound monthly based on annual rate.</li>
-          <li>• <strong>Lumpsum:</strong> One-time investment that grows with compound interest.</li>
-          <li>• <strong>SWP:</strong> Systematic Withdrawal Plan - withdraw fixed amount monthly from accumulated corpus.</li>
-          <li>• <strong>Minimum SWP:</strong> Maximum sustainable withdrawal (equals monthly returns, keeping principal intact).</li>
+          <li>
+            • <strong>SIP:</strong> Invest a fixed amount monthly. Returns compound monthly based on annual rate.
+          </li>
+          <li>
+            • <strong>Lumpsum:</strong> One-time investment that grows with compound interest.
+          </li>
+          <li>
+            • <strong>SWP:</strong> Systematic Withdrawal Plan - withdraw fixed amount monthly from accumulated corpus.
+          </li>
+          <li>
+            • <strong>Minimum SWP:</strong> Maximum sustainable withdrawal (equals monthly returns, keeping principal
+            intact).
+          </li>
           <li>• Calculations assume returns are reinvested and rate remains constant.</li>
         </ul>
       </div>
@@ -1203,27 +1363,30 @@ function MutualFundCalculator() {
               )}
               <button
                 onClick={() => setBreakdownView('monthly')}
-                className={`px-3 py-1.5 text-xs sm:text-sm rounded-lg font-medium transition-colors ${breakdownView === 'monthly'
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                className={`px-3 py-1.5 text-xs sm:text-sm rounded-lg font-medium transition-colors ${
+                  breakdownView === 'monthly'
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
                 Monthly
               </button>
               <button
                 onClick={() => setBreakdownView('quarterly')}
-                className={`px-3 py-1.5 text-xs sm:text-sm rounded-lg font-medium transition-colors ${breakdownView === 'quarterly'
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                className={`px-3 py-1.5 text-xs sm:text-sm rounded-lg font-medium transition-colors ${
+                  breakdownView === 'quarterly'
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
                 Quarterly
               </button>
               <button
                 onClick={() => setBreakdownView('yearly')}
-                className={`px-3 py-1.5 text-xs sm:text-sm rounded-lg font-medium transition-colors ${breakdownView === 'yearly'
-                  ? 'bg-purple-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                className={`px-3 py-1.5 text-xs sm:text-sm rounded-lg font-medium transition-colors ${
+                  breakdownView === 'yearly'
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
                 Yearly
@@ -1241,7 +1404,7 @@ function MutualFundCalculator() {
                   <th className="p-2 sm:p-3 text-right font-semibold text-gray-700 bg-gray-100">Opening Balance</th>
                   <th className="p-2 sm:p-3 text-right font-semibold text-gray-700 bg-gray-100">Period Investment</th>
                   <th className="p-2 sm:p-3 text-right font-semibold text-gray-700 bg-gray-100">Period Interest</th>
-                  {yearlyBreakdown.some(row => row.withdrawal) && (
+                  {yearlyBreakdown.some((row) => row.withdrawal) && (
                     <th className="p-2 sm:p-3 text-right font-semibold text-gray-700 bg-gray-100">Withdrawal</th>
                   )}
                   <th className="p-2 sm:p-3 text-right font-semibold text-gray-700 bg-gray-100">Closing Balance</th>
@@ -1264,41 +1427,46 @@ function MutualFundCalculator() {
                   const isLastYear = index === yearlyBreakdown.length - 1;
 
                   // Attach ref to first SWP row
-                  const rowProps = (index === swpStartIndex && isWithdrawalPhase)
-                    ? { ref: swpStartRowRef }
-                    : {};
+                  const rowProps = index === swpStartIndex && isWithdrawalPhase ? { ref: swpStartRowRef } : {};
 
                   return (
                     <tr
                       key={row.year}
                       {...rowProps}
-                      className={`border-b border-gray-200 hover:bg-gray-50 transition-colors ${isWithdrawalPhase ? 'bg-orange-50' :
-                        isHoldingPhase ? 'bg-teal-50' :
-                          isInvestmentPhase ? 'bg-blue-50' : ''
+                      className={`border-b border-gray-200 hover:bg-gray-50 transition-colors ${
+                        isWithdrawalPhase
+                          ? 'bg-orange-50'
+                          : isHoldingPhase
+                            ? 'bg-teal-50'
+                            : isInvestmentPhase
+                              ? 'bg-blue-50'
+                              : ''
                       } ${isLastYear ? 'font-semibold bg-purple-50' : ''}`}
                     >
                       <td className="p-2 sm:p-3 text-left">
-                        <span className={
-                          isWithdrawalPhase ? 'text-orange-700' :
-                            isHoldingPhase ? 'text-teal-700' :
-                              isInvestmentPhase ? 'text-blue-700' : 'text-gray-800'
-                        }>
+                        <span
+                          className={
+                            isWithdrawalPhase
+                              ? 'text-orange-700'
+                              : isHoldingPhase
+                                ? 'text-teal-700'
+                                : isInvestmentPhase
+                                  ? 'text-blue-700'
+                                  : 'text-gray-800'
+                          }
+                        >
                           {row.year}
                           {isHoldingPhase && <span className="text-xs ml-1">(Holding)</span>}
                           {isWithdrawalPhase && <span className="text-xs ml-1">(SWP)</span>}
                           {row.withdrawal && !isWithdrawalPhase && <span className="text-xs ml-1">(Withdrawal)</span>}
                         </span>
                       </td>
-                      <td className="p-2 sm:p-3 text-right text-gray-700">
-                        {formatCurrency(row.openingBalance)}
-                      </td>
+                      <td className="p-2 sm:p-3 text-right text-gray-700">{formatCurrency(row.openingBalance)}</td>
                       <td className="p-2 sm:p-3 text-right text-indigo-700">
                         {row.periodInvestment > 0 ? formatCurrency(row.periodInvestment) : '-'}
                       </td>
-                      <td className="p-2 sm:p-3 text-right text-green-600">
-                        {formatCurrency(row.periodInterest)}
-                      </td>
-                      {yearlyBreakdown.some(r => r.withdrawal) && (
+                      <td className="p-2 sm:p-3 text-right text-green-600">{formatCurrency(row.periodInterest)}</td>
+                      {yearlyBreakdown.some((r) => r.withdrawal) && (
                         <td className="p-2 sm:p-3 text-right text-orange-700">
                           {row.withdrawal ? formatCurrency(row.withdrawal) : '-'}
                         </td>
@@ -1306,24 +1474,24 @@ function MutualFundCalculator() {
                       <td className="p-2 sm:p-3 text-right font-semibold text-purple-700">
                         {formatCurrency(row.closingBalance)}
                       </td>
-                      <td className="p-2 sm:p-3 text-right text-blue-700">
-                        {formatCurrency(row.invested)}
-                      </td>
-                      <td className="p-2 sm:p-3 text-right text-green-700">
-                        {formatCurrency(row.interest)}
-                      </td>
+                      <td className="p-2 sm:p-3 text-right text-blue-700">{formatCurrency(row.invested)}</td>
+                      <td className="p-2 sm:p-3 text-right text-green-700">{formatCurrency(row.interest)}</td>
                       <td className="p-2 sm:p-3 text-right text-teal-700">
-                        {row.periodInvestment > 0 && !isWithdrawalPhase ? (() => {
-                          const annualRate = parseFloat(annualReturn) || 0;
-                          const monthsPerPeriod = breakdownView === 'monthly' ? 1 : breakdownView === 'quarterly' ? 3 : 12;
-                          const totalInvestmentPeriods = (parseFloat(investmentPeriod) || 0) * (12 / monthsPerPeriod);
-                          const periodsCompleted = index + 1;
-                          const remainingPeriods = Math.max(0, totalInvestmentPeriods - periodsCompleted);
-                          const remainingMonths = remainingPeriods * monthsPerPeriod;
-                          const monthlyRate = annualRate / 12 / 100;
-                          const fv = row.periodInvestment * Math.pow(1 + monthlyRate, remainingMonths);
-                          return formatCurrency(fv);
-                        })() : '-'}
+                        {row.periodInvestment > 0 && !isWithdrawalPhase
+                          ? (() => {
+                              const annualRate = parseFloat(annualReturn) || 0;
+                              const monthsPerPeriod =
+                                breakdownView === 'monthly' ? 1 : breakdownView === 'quarterly' ? 3 : 12;
+                              const totalInvestmentPeriods =
+                                (parseFloat(investmentPeriod) || 0) * (12 / monthsPerPeriod);
+                              const periodsCompleted = index + 1;
+                              const remainingPeriods = Math.max(0, totalInvestmentPeriods - periodsCompleted);
+                              const remainingMonths = remainingPeriods * monthsPerPeriod;
+                              const monthlyRate = annualRate / 12 / 100;
+                              const fv = row.periodInvestment * Math.pow(1 + monthlyRate, remainingMonths);
+                              return formatCurrency(fv);
+                            })()
+                          : '-'}
                       </td>
                     </tr>
                   );
@@ -1363,22 +1531,43 @@ function MutualFundCalculator() {
             <p>
               💡 <strong>Investment Phase:</strong> Blue background rows show accumulation periods.
               {parseFloat(postInvestmentHoldingPeriod) > 0 && (
-                <span> <strong>Holding Phase:</strong> Teal background rows show post-investment holding periods.</span>
+                <span>
+                  {' '}
+                  <strong>Holding Phase:</strong> Teal background rows show post-investment holding periods.
+                </span>
               )}
-              {yearlyBreakdown.some(row => row.withdrawal && row.withdrawal > 0) && (
-                <span> <strong>SWP Phase:</strong> Orange background rows show SWP withdrawal periods.</span>
+              {yearlyBreakdown.some((row) => row.withdrawal && row.withdrawal > 0) && (
+                <span>
+                  {' '}
+                  <strong>SWP Phase:</strong> Orange background rows show SWP withdrawal periods.
+                </span>
               )}
-              {yearlyBreakdown.some(row => row.withdrawal && row.withdrawal < 0) && (
-                <span> <strong>One-time Withdrawal:</strong> Rows with withdrawal amounts show lump sum withdrawals.</span>
+              {yearlyBreakdown.some((row) => row.withdrawal && row.withdrawal < 0) && (
+                <span>
+                  {' '}
+                  <strong>One-time Withdrawal:</strong> Rows with withdrawal amounts show lump sum withdrawals.
+                </span>
               )}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs bg-blue-50 p-3 rounded-lg border border-blue-200">
-              <div><strong>Opening Balance:</strong> Balance at the start of period</div>
-              <div><strong>Period Investment:</strong> Amount invested during this period</div>
-              <div><strong>Period Interest:</strong> Interest earned during this period only</div>
-              <div><strong>Closing Balance:</strong> Balance at the end of period</div>
-              <div><strong>Total Invested:</strong> Cumulative invested till this period</div>
-              <div><strong>Total Interest:</strong> Cumulative interest earned till this period</div>
+              <div>
+                <strong>Opening Balance:</strong> Balance at the start of period
+              </div>
+              <div>
+                <strong>Period Investment:</strong> Amount invested during this period
+              </div>
+              <div>
+                <strong>Period Interest:</strong> Interest earned during this period only
+              </div>
+              <div>
+                <strong>Closing Balance:</strong> Balance at the end of period
+              </div>
+              <div>
+                <strong>Total Invested:</strong> Cumulative invested till this period
+              </div>
+              <div>
+                <strong>Total Interest:</strong> Cumulative interest earned till this period
+              </div>
             </div>
           </div>
         </div>

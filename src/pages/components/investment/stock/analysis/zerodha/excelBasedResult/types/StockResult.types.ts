@@ -2,75 +2,75 @@
  * Interface for Yahoo Finance API response
  */
 export interface YahooFinanceResponse {
-    chart: {
-        result: YahooFinanceResult[];
-        error: null;
-    };
+  chart: {
+    result: YahooFinanceResult[];
+    error: null;
+  };
 }
 
 /**
  * Interface for individual result in Yahoo Finance response
  */
 export interface YahooFinanceResult {
-    meta: YahooFinanceMeta;
-    timestamp: number[];
-    indicators: {
-        quote: Array<{
-            low: Array<number | null>;
-            high: Array<number | null>;
-            open: Array<number | null>;
-            volume: Array<number | null>;
-            close: Array<number | null>;
-        }>;
-    };
+  meta: YahooFinanceMeta;
+  timestamp: number[];
+  indicators: {
+    quote: Array<{
+      low: Array<number | null>;
+      high: Array<number | null>;
+      open: Array<number | null>;
+      volume: Array<number | null>;
+      close: Array<number | null>;
+    }>;
+  };
 }
 
 /**
  * Interface for meta information in Yahoo Finance response
  */
 export interface YahooFinanceMeta {
-    currency: string;
-    symbol: string;
-    exchangeName: string;
-    fullExchangeName: string;
-    instrumentType: string;
-    firstTradeDate: number;
-    regularMarketTime: number;
-    hasPrePostMarketData: boolean;
-    gmtoffset: number;
-    timezone: string;
-    exchangeTimezoneName: string;
-    regularMarketPrice: number;
-    fiftyTwoWeekHigh: number;
-    fiftyTwoWeekLow: number;
-    regularMarketDayHigh: number;
-    regularMarketDayLow: number;
-    regularMarketVolume: number;
-    longName: string;
-    shortName: string;
-    chartPreviousClose: number;
-    previousClose: number;
-    scale: number;
-    priceHint: number;
-    currentTradingPeriod: {
-        pre: YahooFinanceTradingPeriod;
-        regular: YahooFinanceTradingPeriod;
-        post: YahooFinanceTradingPeriod;
-    };
-    tradingPeriods: Array<Array<YahooFinanceTradingPeriod>>;
-    dataGranularity: string;
-    range: string;
-    validRanges: string[];
+  currency: string;
+  symbol: string;
+  exchangeName: string;
+  fullExchangeName: string;
+  instrumentType: string;
+  firstTradeDate: number;
+  regularMarketTime: number;
+  hasPrePostMarketData: boolean;
+  gmtoffset: number;
+  timezone: string;
+  exchangeTimezoneName: string;
+  regularMarketPrice: number;
+  fiftyTwoWeekHigh: number;
+  fiftyTwoWeekLow: number;
+  regularMarketDayHigh: number;
+  regularMarketDayLow: number;
+  regularMarketVolume: number;
+  longName: string;
+  shortName: string;
+  chartPreviousClose: number;
+  previousClose: number;
+  scale: number;
+  priceHint: number;
+  currentTradingPeriod: {
+    pre: YahooFinanceTradingPeriod;
+    regular: YahooFinanceTradingPeriod;
+    post: YahooFinanceTradingPeriod;
+  };
+  tradingPeriods: Array<Array<YahooFinanceTradingPeriod>>;
+  dataGranularity: string;
+  range: string;
+  validRanges: string[];
 }
 
 /**
  * Interface for trading period information
  */
 export interface YahooFinanceTradingPeriod {
-    timezone: string;
-    start: number;
-    end: number;
-    gmtoffset: number;
+  timezone: string;
+  start: number;
+  end: number;
+  gmtoffset: number;
 }
 
 /**
@@ -89,7 +89,7 @@ export const StockColumnKey = {
   FiftyTwoWeekLow: '52W Low',
   NearFiftyTwoWeekLow: 'Near 52W Low',
   CurrentPrice: 'Current Price',
-    OpenValuePerUnit: 'Current Holding Price',
+  OpenValuePerUnit: 'Current Holding Price',
   RealizedPriceVsValue: 'Realized Price vs Value',
   UnrealizedPriceToCmp: 'Unrealized Price to Cmp',
   OpenQuantity: 'Open Quantity',
@@ -103,7 +103,7 @@ export const StockColumnKey = {
   SellValuePerStock: 'Sell Value Per Stock',
 } as const;
 
-export type StockColumnKeyType = typeof StockColumnKey[keyof typeof StockColumnKey];
+export type StockColumnKeyType = (typeof StockColumnKey)[keyof typeof StockColumnKey];
 
 /**
  * Array of P&L column keys for color logic.
@@ -119,12 +119,12 @@ export const pnlColumnKeys: StockColumnKeyType[] = [
  * Column configuration for rendering tables.
  */
 export const stockColumns: Array<{ key: StockColumnKeyType; label: string; align?: 'left' | 'right' }> = [
-    { key: StockColumnKey.Symbol, label: 'Symbol' },
-    { key: StockColumnKey.FiftyTwoWeekHigh, label: '52W High', align: 'right' },
-    { key: StockColumnKey.FiftyTwoWeekLow, label: '52W Low', align: 'right' },
-    { key: StockColumnKey.NearFiftyTwoWeekLow, label: 'Near 52W Low' },
-    { key: StockColumnKey.CurrentPrice, label: 'Current Price', align: 'right' },
-    { key: StockColumnKey.OpenValuePerUnit, label: 'Current Holding Price', align: 'right' },
+  { key: StockColumnKey.Symbol, label: 'Symbol' },
+  { key: StockColumnKey.FiftyTwoWeekHigh, label: '52W High', align: 'right' },
+  { key: StockColumnKey.FiftyTwoWeekLow, label: '52W Low', align: 'right' },
+  { key: StockColumnKey.NearFiftyTwoWeekLow, label: 'Near 52W Low' },
+  { key: StockColumnKey.CurrentPrice, label: 'Current Price', align: 'right' },
+  { key: StockColumnKey.OpenValuePerUnit, label: 'Current Holding Price', align: 'right' },
   { key: StockColumnKey.RealizedPriceVsValue, label: 'Realized Price vs Value', align: 'right' },
   { key: StockColumnKey.UnrealizedPriceToCmp, label: 'Unrealized Price to Cmp', align: 'right' },
   { key: StockColumnKey.CustomRealisedStockValue, label: 'Custom Realised Stock Value', align: 'right' },
@@ -149,62 +149,65 @@ export const stockColumns: Array<{ key: StockColumnKeyType; label: string; align
  * Type for a single row of stock data.
  */
 export interface StockData {
-    [StockColumnKey.Symbol]: string;
-    [StockColumnKey.ISIN]: string;
-    [StockColumnKey.Quantity]: number;
-    [StockColumnKey.BuyValue]: number;
-    [StockColumnKey.SellValue]: number;
-    [StockColumnKey.RealizedPL]: number;
-    [StockColumnKey.RealizedPLPct]: number;
-    [StockColumnKey.PreviousClosingPrice]: number;
-    [StockColumnKey.OpenQuantity]: number;
-    [StockColumnKey.OpenQuantityType]: string;
-    [StockColumnKey.OpenValue]: number;
-    [StockColumnKey.UnrealizedPL]: number;
-    [StockColumnKey.UnrealizedPLPct]: number;
-    [StockColumnKey.CustomRealisedStockValue]?: number;
-    [StockColumnKey.CustomUnrealisedStockValue]?: number;
-    [StockColumnKey.BuyValuePerStock]?: number;
-    [StockColumnKey.SellValuePerStock]?: number;
-    [StockColumnKey.FiftyTwoWeekHigh]?: number | null;
-    [StockColumnKey.FiftyTwoWeekLow]?: number | null;
-    [StockColumnKey.CurrentPrice]?: number | null;
+  [StockColumnKey.Symbol]: string;
+  [StockColumnKey.ISIN]: string;
+  [StockColumnKey.Quantity]: number;
+  [StockColumnKey.BuyValue]: number;
+  [StockColumnKey.SellValue]: number;
+  [StockColumnKey.RealizedPL]: number;
+  [StockColumnKey.RealizedPLPct]: number;
+  [StockColumnKey.PreviousClosingPrice]: number;
+  [StockColumnKey.OpenQuantity]: number;
+  [StockColumnKey.OpenQuantityType]: string;
+  [StockColumnKey.OpenValue]: number;
+  [StockColumnKey.UnrealizedPL]: number;
+  [StockColumnKey.UnrealizedPLPct]: number;
+  [StockColumnKey.CustomRealisedStockValue]?: number;
+  [StockColumnKey.CustomUnrealisedStockValue]?: number;
+  [StockColumnKey.BuyValuePerStock]?: number;
+  [StockColumnKey.SellValuePerStock]?: number;
+  [StockColumnKey.FiftyTwoWeekHigh]?: number | null;
+  [StockColumnKey.FiftyTwoWeekLow]?: number | null;
+  [StockColumnKey.CurrentPrice]?: number | null;
 }
 
 /**
  * Type for price mapping from symbol to price data
  */
-export type PriceMap = Record<string, {
+export type PriceMap = Record<
+  string,
+  {
     price: number | null;
     fiftyTwoWeekHigh: number | null;
     fiftyTwoWeekLow: number | null;
-}>;
+  }
+>;
 
 /**
  * Common interface for stock price information
  */
 export interface StockPriceInfo {
-    price: number | null;
-    fiftyTwoWeekHigh: number | null;
-    fiftyTwoWeekLow: number | null;
+  price: number | null;
+  fiftyTwoWeekHigh: number | null;
+  fiftyTwoWeekLow: number | null;
 }
 
 /**
  * Result of fetching prices for multiple symbols
  */
 export interface PriceFetchResult extends StockPriceInfo {
-    symbol: string;
+  symbol: string;
 }
 
 /**
  * Stored stock data with metadata and timestamps
  */
 export interface StoredStockData {
-    metadata: {
-        lastUpdated: string;
-        lastPriceUpdate: string | null;
-        sourceFile: string;
-        version: string;
-    };
-    stocks: StockData[];
+  metadata: {
+    lastUpdated: string;
+    lastPriceUpdate: string | null;
+    sourceFile: string;
+    version: string;
+  };
+  stocks: StockData[];
 }

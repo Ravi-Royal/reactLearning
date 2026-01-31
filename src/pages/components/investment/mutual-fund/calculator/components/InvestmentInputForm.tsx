@@ -43,9 +43,7 @@ export const InvestmentInputForm: React.FC<InvestmentInputFormProps> = ({
       </h2>
 
       <div className="mb-4">
-        <label className="block text-sm font-medium text-purple-700 mb-2">
-          Investment Type
-        </label>
+        <label className="block text-sm font-medium text-purple-700 mb-2">Investment Type</label>
         <div className="flex gap-4">
           <label className="flex items-center">
             <input
@@ -97,9 +95,7 @@ export const InvestmentInputForm: React.FC<InvestmentInputFormProps> = ({
         </div>
       ) : (
         <div className="mb-4">
-          <label className="block text-sm font-medium text-purple-700 mb-2">
-            💰 Lumpsum Amount (₹)
-          </label>
+          <label className="block text-sm font-medium text-purple-700 mb-2">💰 Lumpsum Amount (₹)</label>
           <input
             type="number"
             value={lumpsumAmount}
@@ -113,9 +109,7 @@ export const InvestmentInputForm: React.FC<InvestmentInputFormProps> = ({
       )}
 
       <div className="mb-4">
-        <label className="block text-sm font-medium text-purple-700 mb-2">
-          📈 Expected Annual Return (%)
-        </label>
+        <label className="block text-sm font-medium text-purple-700 mb-2">📈 Expected Annual Return (%)</label>
         <input
           type="number"
           value={annualReturn}
@@ -128,9 +122,7 @@ export const InvestmentInputForm: React.FC<InvestmentInputFormProps> = ({
       </div>
 
       <div className="mb-4">
-        <label className="block text-sm font-medium text-purple-700 mb-2">
-          ⏱️ Investment Period (Years)
-        </label>
+        <label className="block text-sm font-medium text-purple-700 mb-2">⏱️ Investment Period (Years)</label>
         <input
           type="number"
           value={investmentPeriod}
@@ -143,14 +135,10 @@ export const InvestmentInputForm: React.FC<InvestmentInputFormProps> = ({
       </div>
 
       <div className="border-t-2 border-orange-200 pt-4 mt-4 bg-orange-50 -mx-4 sm:-mx-6 px-4 sm:px-6 py-4 rounded-lg">
-        <h3 className="text-md font-semibold text-orange-700 mb-3">
-          💸 Systematic Withdrawal Plan (SWP) - Optional
-        </h3>
+        <h3 className="text-md font-semibold text-orange-700 mb-3">💸 Systematic Withdrawal Plan (SWP) - Optional</h3>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-orange-700 mb-2">
-            Monthly SWP Amount (₹)
-          </label>
+          <label className="block text-sm font-medium text-orange-700 mb-2">Monthly SWP Amount (₹)</label>
           <input
             type="number"
             value={swpAmount}
@@ -163,9 +151,7 @@ export const InvestmentInputForm: React.FC<InvestmentInputFormProps> = ({
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-medium text-orange-700 mb-2">
-            SWP Period (Years)
-          </label>
+          <label className="block text-sm font-medium text-orange-700 mb-2">SWP Period (Years)</label>
           <input
             type="number"
             value={swpPeriod}

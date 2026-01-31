@@ -12,8 +12,20 @@ interface UnrealizedPriceToCmpIndicatorProps {
  * - currentPrice < avgOpenPrice: green (profit opportunity)
  * - otherwise: neutral
  */
-const UnrealizedPriceToCmpIndicator: React.FC<UnrealizedPriceToCmpIndicatorProps> = ({ currentPrice, openValue, openQuantity }) => {
-  if (currentPrice === null || currentPrice === undefined || openValue === null || openValue === undefined || openQuantity === null || openQuantity === undefined || openQuantity === 0) {
+const UnrealizedPriceToCmpIndicator: React.FC<UnrealizedPriceToCmpIndicatorProps> = ({
+  currentPrice,
+  openValue,
+  openQuantity,
+}) => {
+  if (
+    currentPrice === null ||
+    currentPrice === undefined ||
+    openValue === null ||
+    openValue === undefined ||
+    openQuantity === null ||
+    openQuantity === undefined ||
+    openQuantity === 0
+  ) {
     return <span className="text-gray-400">N/A</span>;
   }
 

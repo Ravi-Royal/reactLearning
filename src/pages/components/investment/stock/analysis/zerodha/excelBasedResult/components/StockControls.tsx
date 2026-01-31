@@ -1,8 +1,8 @@
 import React from 'react';
-import { 
-  STOCK_CONTROLS_TITLES, 
-  STOCK_CONTROLS_ARIA_LABELS, 
-  STOCK_CONTROLS_BUTTON_TEXT 
+import {
+  STOCK_CONTROLS_TITLES,
+  STOCK_CONTROLS_ARIA_LABELS,
+  STOCK_CONTROLS_BUTTON_TEXT,
 } from '../constants/stockControls.constants';
 
 interface StockControlsProps {
@@ -15,22 +15,23 @@ interface StockControlsProps {
 /**
  * Component for stock action controls (buttons)
  */
-const StockControls: React.FC<StockControlsProps> = ({
-  onUpdatePrices,
-  onRefreshData,
-  onSaveData,
-  updatingPrices,
-}) => {
+const StockControls: React.FC<StockControlsProps> = ({ onUpdatePrices, onRefreshData, onSaveData, updatingPrices }) => {
   return (
     <div className="flex flex-col sm:flex-row gap-2">
       <button
         onClick={onUpdatePrices}
         disabled={updatingPrices}
         title={updatingPrices ? STOCK_CONTROLS_TITLES.UPDATE_PRICES_ACTIVE : STOCK_CONTROLS_TITLES.UPDATE_PRICES_IDLE}
-        aria-label={updatingPrices ? STOCK_CONTROLS_ARIA_LABELS.UPDATE_PRICES_ACTIVE : STOCK_CONTROLS_ARIA_LABELS.UPDATE_PRICES_IDLE}
+        aria-label={
+          updatingPrices
+            ? STOCK_CONTROLS_ARIA_LABELS.UPDATE_PRICES_ACTIVE
+            : STOCK_CONTROLS_ARIA_LABELS.UPDATE_PRICES_IDLE
+        }
         className="px-3 sm:px-4 py-2 text-xs sm:text-sm bg-green-500 text-white rounded hover:bg-green-600 disabled:bg-gray-400 whitespace-nowrap"
       >
-        {updatingPrices ? STOCK_CONTROLS_BUTTON_TEXT.UPDATE_PRICES_ACTIVE : STOCK_CONTROLS_BUTTON_TEXT.UPDATE_PRICES_IDLE}
+        {updatingPrices
+          ? STOCK_CONTROLS_BUTTON_TEXT.UPDATE_PRICES_ACTIVE
+          : STOCK_CONTROLS_BUTTON_TEXT.UPDATE_PRICES_IDLE}
       </button>
       <button
         onClick={onRefreshData}

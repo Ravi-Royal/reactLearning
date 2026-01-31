@@ -3,9 +3,21 @@ import Breadcrumbs from '../../../../../navigation/Breadcrumbs';
 import StockControls from './excelBasedResult/components/StockControls';
 import StockMetadata from './excelBasedResult/components/StockMetadata';
 import StockTable from './excelBasedResult/components/StockTable';
-import { fetchStockPrices, formatNormalizedStockData, loadStockDataFromJSON, parseStockExcel, saveStockDataToJSON, updateStockPricesInJSON } from './excelBasedResult/helpers/StockResult.helper';
+import {
+  fetchStockPrices,
+  formatNormalizedStockData,
+  loadStockDataFromJSON,
+  parseStockExcel,
+  saveStockDataToJSON,
+  updateStockPricesInJSON,
+} from './excelBasedResult/helpers/StockResult.helper';
 import type { PriceMap, StockData } from './excelBasedResult/types/StockResult.types';
-import { STOCK_RESULT_MESSAGES, EXCEL_SOURCE_TYPES, EXCEL_FILE_NAMES, STOCK_RESULT_ERROR_PREFIXES } from './constants/stockResult.constants';
+import {
+  STOCK_RESULT_MESSAGES,
+  EXCEL_SOURCE_TYPES,
+  EXCEL_FILE_NAMES,
+  STOCK_RESULT_ERROR_PREFIXES,
+} from './constants/stockResult.constants';
 import { logger, logSuccess } from '../../../../../../utils/logger';
 import { toast } from '../../../../../../utils/toast';
 
@@ -140,10 +152,8 @@ const StockResult: React.FC = () => {
       setLastPriceUpdate(storedData.metadata.lastPriceUpdate);
 
       const storedPriceMap: PriceMap = {};
-      recalculatedStocks.forEach(stock => {
-        if (stock['Current Price'] !== undefined ||
-          stock['52W High'] !== undefined ||
-          stock['52W Low'] !== undefined) {
+      recalculatedStocks.forEach((stock) => {
+        if (stock['Current Price'] !== undefined || stock['52W High'] !== undefined || stock['52W Low'] !== undefined) {
           storedPriceMap[stock.Symbol] = {
             price: stock['Current Price'] ?? null,
             fiftyTwoWeekHigh: stock['52W High'] ?? null,
@@ -165,7 +175,9 @@ const StockResult: React.FC = () => {
 
   const handleUploadChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
-    if (!file) { return; }
+    if (!file) {
+      return;
+    }
     setUploadedFile(file);
     setExcelSource('upload');
 
@@ -225,7 +237,9 @@ const StockResult: React.FC = () => {
   };
 
   const updatePrices = async () => {
-    if (stockData.length === 0) { return; }
+    if (stockData.length === 0) {
+      return;
+    }
 
     try {
       setUpdatingPrices(true);
@@ -246,7 +260,7 @@ const StockResult: React.FC = () => {
 
       // Update price map for display
       const updatedPriceMap: PriceMap = {};
-      updatedData.stocks.forEach(stock => {
+      updatedData.stocks.forEach((stock) => {
         updatedPriceMap[stock.Symbol] = {
           price: stock['Current Price'] ?? null,
           fiftyTwoWeekHigh: stock['52W High'] ?? null,
@@ -271,9 +285,12 @@ const StockResult: React.FC = () => {
     }
 
     try {
-      const sourceFile = excelSource === EXCEL_SOURCE_TYPES.PRIVATE ? EXCEL_FILE_NAMES.PRIVATE :
-        excelSource === EXCEL_SOURCE_TYPES.UPLOAD ? uploadedFile?.name ?? EXCEL_FILE_NAMES.UPLOAD_DEFAULT :
-          EXCEL_FILE_NAMES.JSON_OUTPUT;
+      const sourceFile =
+        excelSource === EXCEL_SOURCE_TYPES.PRIVATE
+          ? EXCEL_FILE_NAMES.PRIVATE
+          : excelSource === EXCEL_SOURCE_TYPES.UPLOAD
+            ? (uploadedFile?.name ?? EXCEL_FILE_NAMES.UPLOAD_DEFAULT)
+            : EXCEL_FILE_NAMES.JSON_OUTPUT;
 
       await saveStockDataToJSON(stockData, sourceFile, false);
       logSuccess(STOCK_RESULT_MESSAGES.SAVE_SUCCESS);
@@ -316,7 +333,10 @@ const StockResult: React.FC = () => {
 
           <div className="bg-white rounded-lg shadow-md p-4 border border-gray-200">
             <h2 className="text-base sm:text-lg font-semibold text-gray-800">Load from Private Document</h2>
-            <p className="text-xs sm:text-sm text-gray-600 mt-1">Loads <span className="font-mono text-xs">pnl-WAR042.xlsx</span> from <span className="font-mono text-xs">src/privateDocument</span>.</p>
+            <p className="text-xs sm:text-sm text-gray-600 mt-1">
+              Loads <span className="font-mono text-xs">pnl-WAR042.xlsx</span> from{' '}
+              <span className="font-mono text-xs">src/privateDocument</span>.
+            </p>
             <button
               onClick={loadFromPrivateDocument}
               className="mt-3 px-3 sm:px-4 py-2 text-sm sm:text-base bg-blue-500 text-white rounded hover:bg-blue-600"
@@ -328,7 +348,9 @@ const StockResult: React.FC = () => {
 
         <div className="mt-4 bg-white rounded-lg shadow-md p-4 border border-gray-200">
           <h2 className="text-base sm:text-lg font-semibold text-gray-800">Load Older Version</h2>
-          <p className="text-xs sm:text-sm text-gray-600 mt-1">Load previously saved data from <span className="font-mono text-xs">stockData.json</span>.</p>
+          <p className="text-xs sm:text-sm text-gray-600 mt-1">
+            Load previously saved data from <span className="font-mono text-xs">stockData.json</span>.
+          </p>
           <button
             onClick={loadOlderVersion}
             className="mt-3 px-3 sm:px-4 py-2 text-sm sm:text-base bg-gray-500 text-white rounded hover:bg-gray-600"
@@ -367,11 +389,7 @@ const StockResult: React.FC = () => {
         />
       </div>
 
-      <StockMetadata
-        totalRecords={stockData.length}
-        lastUpdated={lastUpdated}
-        lastPriceUpdate={lastPriceUpdate}
-      />
+      <StockMetadata totalRecords={stockData.length} lastUpdated={lastUpdated} lastPriceUpdate={lastPriceUpdate} />
 
       {stockData.length > 0 ? (
         <StockTable stockData={stockData} priceMap={priceMap} />
@@ -382,9 +400,7 @@ const StockResult: React.FC = () => {
       {/* JSON Data Preview (for debugging/analysis) */}
       <div className="mt-8">
         <details>
-          <summary className="cursor-pointer text-blue-600 font-semibold">
-            View Raw JSON Data (for analysis)
-          </summary>
+          <summary className="cursor-pointer text-blue-600 font-semibold">View Raw JSON Data (for analysis)</summary>
           <pre className="mt-2 p-4 bg-gray-100 rounded overflow-auto max-h-96">
             {JSON.stringify(stockData, null, 2)}
           </pre>

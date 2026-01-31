@@ -4,14 +4,14 @@ import { MODAL_ARIA_LABELS, MODAL_CATEGORY_COLORS, MODAL_CATEGORY_NAMES } from '
 
 const defaultGetCategoryColor = (category: string): string => {
   switch (category) {
-  case MODAL_CATEGORY_NAMES.GOOD_STOCK:
-  case MODAL_CATEGORY_NAMES.GOOD_BOND:
-    return MODAL_CATEGORY_COLORS.GOOD_STOCK;
-  case MODAL_CATEGORY_NAMES.CHECK_STOCK:
-  case MODAL_CATEGORY_NAMES.CHECK_BOND:
-    return MODAL_CATEGORY_COLORS.CHECK_STOCK;
-  default:
-    return MODAL_CATEGORY_COLORS.DEFAULT;
+    case MODAL_CATEGORY_NAMES.GOOD_STOCK:
+    case MODAL_CATEGORY_NAMES.GOOD_BOND:
+      return MODAL_CATEGORY_COLORS.GOOD_STOCK;
+    case MODAL_CATEGORY_NAMES.CHECK_STOCK:
+    case MODAL_CATEGORY_NAMES.CHECK_BOND:
+      return MODAL_CATEGORY_COLORS.CHECK_STOCK;
+    default:
+      return MODAL_CATEGORY_COLORS.DEFAULT;
   }
 };
 
@@ -65,11 +65,7 @@ export function SelectionModal<T extends SelectionItem>({
                 <div className="flex items-center gap-3">
                   <div>
                     <span className="font-medium text-gray-800">{item.name}</span>
-                    {item.symbol && (
-                      <div className="text-xs text-gray-500 mt-1">
-                        Symbol: {item.symbol}
-                      </div>
-                    )}
+                    {item.symbol && <div className="text-xs text-gray-500 mt-1">Symbol: {item.symbol}</div>}
                   </div>
                   <span className={`px-2 py-1 text-xs rounded-full font-medium ${getCategoryColor(item.category)}`}>
                     {item.category}

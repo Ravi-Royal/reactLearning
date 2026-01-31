@@ -32,34 +32,36 @@ export const useChecklist = (initialItems: ChecklistItem[]): UseChecklistReturn 
   const [items, setItems] = useState<ChecklistItem[]>(initialItems);
 
   const toggleItem = useCallback((id: string): void => {
-    setItems(prev =>
-      prev.map(item => (item.id === id ? { ...item, checked: !item.checked } : item)),
-    );
+    setItems((prev) => prev.map((item) => (item.id === id ? { ...item, checked: !item.checked } : item)));
   }, []);
 
   const uncheckAll = useCallback((): void => {
-    setItems(prev => prev.map(item => ({ ...item, checked: false })));
+    setItems((prev) => prev.map((item) => ({ ...item, checked: false })));
   }, []);
 
   const uncheckCategory = useCallback((category: string): void => {
-    setItems(prev =>
-      prev.map(item => (item.category === category ? { ...item, checked: false } : item)),
-    );
+    setItems((prev) => prev.map((item) => (item.category === category ? { ...item, checked: false } : item)));
   }, []);
 
-  const getCategoryItems = useCallback((category: string): ChecklistItem[] => {
-    return items.filter(item => item.category === category);
-  }, [items]);
+  const getCategoryItems = useCallback(
+    (category: string): ChecklistItem[] => {
+      return items.filter((item) => item.category === category);
+    },
+    [items],
+  );
 
-  const getCategoryStats = useCallback((category: string): CategoryStats => {
-    const categoryItems = items.filter(item => item.category === category);
-    return {
-      checked: categoryItems.filter(item => item.checked).length,
-      total: categoryItems.length,
-    };
-  }, [items]);
+  const getCategoryStats = useCallback(
+    (category: string): CategoryStats => {
+      const categoryItems = items.filter((item) => item.category === category);
+      return {
+        checked: categoryItems.filter((item) => item.checked).length,
+        total: categoryItems.length,
+      };
+    },
+    [items],
+  );
 
-  const totalChecked = useMemo(() => items.filter(item => item.checked).length, [items]);
+  const totalChecked = useMemo(() => items.filter((item) => item.checked).length, [items]);
   const totalItems = items.length;
 
   return {

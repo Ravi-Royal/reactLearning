@@ -9,9 +9,7 @@ function HomePage() {
         <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-4">
           {HOME_PAGE.HEADING}
         </h1>
-        <p className="mt-2 text-base sm:text-lg md:text-xl text-gray-600 leading-relaxed">
-          {HOME_PAGE.DESCRIPTION}
-        </p>
+        <p className="mt-2 text-base sm:text-lg md:text-xl text-gray-600 leading-relaxed">{HOME_PAGE.DESCRIPTION}</p>
       </div>
     </div>
   );

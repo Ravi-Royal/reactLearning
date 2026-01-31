@@ -1,5 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
-import { CALCULATOR_NAVIGATION_ITEMS, CALCULATOR_QUICK_STATS } from '../../constants/calculatorNavigation.constants';import { CALCULATOR_NAVIGATION } from './constants/navigationPage.constants';import Breadcrumbs from './Breadcrumbs';
+import { CALCULATOR_NAVIGATION_ITEMS, CALCULATOR_QUICK_STATS } from '../../constants/calculatorNavigation.constants';
+import { CALCULATOR_NAVIGATION } from './constants/navigationPage.constants';
+import Breadcrumbs from './Breadcrumbs';
 
 function CalculatorNavigation() {
   const location = useLocation();
@@ -22,8 +24,15 @@ function CalculatorNavigation() {
         {CALCULATOR_NAVIGATION_ITEMS.map((item) => (
           <div key={item.id} className="bg-white rounded-lg shadow-md p-4 sm:p-6 border border-gray-200">
             <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
-              <div className={`w-8 h-8 sm:w-10 sm:h-10 ${item.icon.bgColor} rounded-lg flex items-center justify-center flex-shrink-0`}>
-                <svg className={`w-5 h-5 sm:w-6 sm:h-6 ${item.icon.color}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div
+                className={`w-8 h-8 sm:w-10 sm:h-10 ${item.icon.bgColor} rounded-lg flex items-center justify-center flex-shrink-0`}
+              >
+                <svg
+                  className={`w-5 h-5 sm:w-6 sm:h-6 ${item.icon.color}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon.path} />
                 </svg>
               </div>
@@ -33,9 +42,7 @@ function CalculatorNavigation() {
             <Link
               to={item.route}
               className={`inline-flex items-center px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
-                location.pathname.includes(item.route)
-                  ? item.buttonColors.active
-                  : item.buttonColors.inactive
+                location.pathname.includes(item.route) ? item.buttonColors.active : item.buttonColors.inactive
               }`}
             >
               {item.buttonText}
@@ -48,7 +55,9 @@ function CalculatorNavigation() {
       </div>
 
       <div className="mt-6 sm:mt-8 bg-gray-50 rounded-lg p-4 sm:p-6">
-        <h4 className="font-semibold text-gray-800 mb-3 sm:mb-4 text-sm sm:text-base">{CALCULATOR_NAVIGATION.QUICK_INFO_TITLE}</h4>
+        <h4 className="font-semibold text-gray-800 mb-3 sm:mb-4 text-sm sm:text-base">
+          {CALCULATOR_NAVIGATION.QUICK_INFO_TITLE}
+        </h4>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-xs sm:text-sm">
           {CALCULATOR_QUICK_STATS.map((stat) => (
             <div key={stat.id} className="text-center p-3 bg-white rounded-lg">

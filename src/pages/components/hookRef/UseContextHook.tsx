@@ -4,7 +4,6 @@ import Breadcrumbs from '../../navigation/Breadcrumbs';
 const MyContext = createContext<{ test: string } | null>(null);
 
 export default function UseContextHook() {
-
   return (
     <MyContext.Provider value={{ test: 'from Context' }}>
       <div className="p-4 sm:p-6 md:p-8">

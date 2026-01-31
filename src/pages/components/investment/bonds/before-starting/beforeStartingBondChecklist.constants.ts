@@ -5,7 +5,7 @@ export const CHECKLIST_CATEGORIES = {
   MINE: 'mine',
 } as const;
 
-export type ChecklistCategory = typeof CHECKLIST_CATEGORIES[keyof typeof CHECKLIST_CATEGORIES];
+export type ChecklistCategory = (typeof CHECKLIST_CATEGORIES)[keyof typeof CHECKLIST_CATEGORIES];
 
 export const BOND_LIST_CATEGORIES = {
   GOOD_BOND: 'Good Bond',
@@ -40,23 +40,78 @@ export interface ChecklistItem {
 }
 
 export const INITIAL_CHECKLIST_ITEMS: ChecklistItem[] = [
-  { id: 'howToComeOut', label: CHECKLIST_ITEM_LABELS.HOW_TO_COME_OUT, checked: false, category: CHECKLIST_CATEGORIES.MINE },
-  { id: 'understandBasics', label: CHECKLIST_ITEM_LABELS.UNDERSTAND_BASICS, checked: false, category: CHECKLIST_CATEGORIES.EDUCATION },
-  { id: 'riskTolerance', label: CHECKLIST_ITEM_LABELS.RISK_TOLERANCE, checked: false, category: CHECKLIST_CATEGORIES.PREPARATION },
-  { id: 'investmentGoals', label: CHECKLIST_ITEM_LABELS.INVESTMENT_GOALS, checked: false, category: CHECKLIST_CATEGORIES.PREPARATION },
-  { id: 'researchIssuers', label: CHECKLIST_ITEM_LABELS.RESEARCH_ISSUERS, checked: false, category: CHECKLIST_CATEGORIES.EDUCATION },
-  { id: 'creditRatings', label: CHECKLIST_ITEM_LABELS.CREDIT_RATINGS, checked: false, category: CHECKLIST_CATEGORIES.EDUCATION },
-  { id: 'taxImplications', label: CHECKLIST_ITEM_LABELS.TAX_IMPLICATIONS, checked: false, category: CHECKLIST_CATEGORIES.EDUCATION },
-  { id: 'diversification', label: CHECKLIST_ITEM_LABELS.DIVERSIFICATION, checked: false, category: CHECKLIST_CATEGORIES.PREPARATION },
-  { id: 'brokerAccount', label: CHECKLIST_ITEM_LABELS.BROKER_ACCOUNT, checked: false, category: CHECKLIST_CATEGORIES.PREPARATION },
-  { id: 'marketConditions', label: CHECKLIST_ITEM_LABELS.MARKET_CONDITIONS, checked: false, category: CHECKLIST_CATEGORIES.PREPARATION },
-  { id: 'professionalAdvice', label: CHECKLIST_ITEM_LABELS.PROFESSIONAL_ADVICE, checked: false, category: CHECKLIST_CATEGORIES.PREPARATION },
+  {
+    id: 'howToComeOut',
+    label: CHECKLIST_ITEM_LABELS.HOW_TO_COME_OUT,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.MINE,
+  },
+  {
+    id: 'understandBasics',
+    label: CHECKLIST_ITEM_LABELS.UNDERSTAND_BASICS,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.EDUCATION,
+  },
+  {
+    id: 'riskTolerance',
+    label: CHECKLIST_ITEM_LABELS.RISK_TOLERANCE,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.PREPARATION,
+  },
+  {
+    id: 'investmentGoals',
+    label: CHECKLIST_ITEM_LABELS.INVESTMENT_GOALS,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.PREPARATION,
+  },
+  {
+    id: 'researchIssuers',
+    label: CHECKLIST_ITEM_LABELS.RESEARCH_ISSUERS,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.EDUCATION,
+  },
+  {
+    id: 'creditRatings',
+    label: CHECKLIST_ITEM_LABELS.CREDIT_RATINGS,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.EDUCATION,
+  },
+  {
+    id: 'taxImplications',
+    label: CHECKLIST_ITEM_LABELS.TAX_IMPLICATIONS,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.EDUCATION,
+  },
+  {
+    id: 'diversification',
+    label: CHECKLIST_ITEM_LABELS.DIVERSIFICATION,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.PREPARATION,
+  },
+  {
+    id: 'brokerAccount',
+    label: CHECKLIST_ITEM_LABELS.BROKER_ACCOUNT,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.PREPARATION,
+  },
+  {
+    id: 'marketConditions',
+    label: CHECKLIST_ITEM_LABELS.MARKET_CONDITIONS,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.PREPARATION,
+  },
+  {
+    id: 'professionalAdvice',
+    label: CHECKLIST_ITEM_LABELS.PROFESSIONAL_ADVICE,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.PREPARATION,
+  },
 ];
 
 export interface MyBondItem {
-    name: string;
-    category: string;
-    symbol?: string;
+  name: string;
+  category: string;
+  symbol?: string;
 }
 
 export const MY_BOND_LIST: MyBondItem[] = [

@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom';
+import { PageSkeleton } from '../../components/LoadingStates';
 import BaseNavigation from '../navigation/BaseNavigation';
 
 const HomePage = lazy(() => import('../Home'));
@@ -20,7 +21,9 @@ const UseContextHook = lazy(() => import('../components/hookRef/UseContextHook')
 const UseCallbackHook = lazy(() => import('../components/hookRef/UseCallbackHook'));
 
 const Bonds = lazy(() => import('../components/investment/bonds/Bonds'));
-const BeforeStartingBondCheckList = lazy(() => import('../components/investment/bonds/before-starting/BeforeStartingBondCheckList'));
+const BeforeStartingBondCheckList = lazy(
+  () => import('../components/investment/bonds/before-starting/BeforeStartingBondCheckList'),
+);
 const BondCheckList = lazy(() => import('../components/investment/bonds/checklist/BondCheckList'));
 
 const StockAnalysis = lazy(() => import('../components/investment/stock/analysis/Analysis'));
@@ -28,16 +31,16 @@ const StockResult = lazy(() => import('../components/investment/stock/analysis/z
 const StockCheckList = lazy(() => import('../components/investment/stock/checklist/StockCheckList'));
 const MyFavStocks = lazy(() => import('../components/investment/stock/favorites/MyFavStocks'));
 const AverageCalculator = lazy(() => import('../components/investment/stock/average-calculator/AverageCalculator'));
-const StockProfitCalculator = lazy(() => import('../components/investment/stock/profit-calculator/StockProfitCalculator'));
+const StockProfitCalculator = lazy(
+  () => import('../components/investment/stock/profit-calculator/StockProfitCalculator'),
+);
 const MutualFundCalculator = lazy(() => import('../components/investment/mutual-fund/calculator/MutualFundCalculator'));
 const MutualFundChecklist = lazy(() => import('../components/investment/mutual-fund/checklist/MutualFundChecklist'));
-const GoldVsSilverRatio = lazy(() => import('../components/investment/commodities/gold-silver-ratio/GoldVsSilverRatio'));
-
-const RouteFallback = (): React.ReactElement => (
-  <div className="p-6">
-    <div className="text-gray-600">Loading…</div>
-  </div>
+const GoldVsSilverRatio = lazy(
+  () => import('../components/investment/commodities/gold-silver-ratio/GoldVsSilverRatio'),
 );
+
+const RouteFallback = (): React.ReactElement => <PageSkeleton />;
 
 function Routing(): React.ReactElement {
   return (
