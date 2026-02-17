@@ -142,12 +142,12 @@ const sectionStyles: Record<
 
 function HomePage() {
   return (
-    <div className="p-4 sm:p-6 md:p-8 lg:p-10">
+    <div className="p-3 sm:p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
         <Breadcrumbs />
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">Welcome to Invest</h1>
-        <p className="mb-8 text-lg text-gray-600">Explore all investment tools and calculators below:</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-3 sm:mb-4">Welcome to Invest</h1>
+        <p className="mb-6 text-base sm:text-lg text-gray-600">Explore all investment tools and calculators below:</p>
+        <div className="grid grid-cols-1 gap-4 sm:gap-6">
           {investmentLinks.map((section) => {
             const styles = sectionStyles[section.section] || {
               bg: 'bg-gray-50',
@@ -159,20 +159,26 @@ function HomePage() {
             return (
               <div
                 key={section.section}
-                className={`rounded-lg shadow-lg p-6 border-2 transition duration-200 hover:scale-[1.02] hover:shadow-xl ${styles.bg} ${styles.border}`}
+                className={`rounded-lg shadow-lg p-4 sm:p-5 border-2 transition duration-200 active:scale-[0.98] ${styles.bg} ${styles.border}`}
               >
-                <h2 className={`text-xl font-bold mb-4 flex items-center gap-2 ${styles.headerText}`}>
-                  <span className="text-2xl">{styles.icon}</span>
+                <h2 className={`text-lg sm:text-xl font-bold mb-3 flex items-center gap-2 ${styles.headerText}`}>
+                  <span className="text-xl sm:text-2xl">{styles.icon}</span>
                   {section.section}
                 </h2>
-                <ul className="space-y-2">
+                <ul className="space-y-3">
                   {section.links.map((link) => (
-                    <li key={link.to}>
+                    <li key={link.to} className="group">
                       <Link
                         to={link.to}
-                        className={`hover:underline text-base font-medium transition-colors ${styles.linkText}`}
+                        className={`block py-2 px-3 rounded-md transition-all active:bg-white/50 ${styles.linkText}`}
                       >
-                        → {link.label}
+                        <div className="font-medium text-sm sm:text-base flex items-start">
+                          <span className="mr-2 flex-shrink-0">→</span>
+                          <span>{link.label}</span>
+                        </div>
+                        <div className="text-xs sm:text-sm text-gray-600 ml-5 mt-1 opacity-80 group-hover:opacity-100">
+                          {link.hint}
+                        </div>
                       </Link>
                     </li>
                   ))}
