@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build --mode production --base /reactLearning/",
+    "build:android": "vite build --mode production --base /",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint-staged": "lint-staged",
@@ -16,7 +17,13 @@
     "predeploy": "npm run build:gh-pages",
     "deploy": "gh-pages -d dist",
     "build:gh-pages": "vite build --mode production --base /reactLearning/",
-    "prepare": "husky"
+    "prepare": "husky",
+    "android:sync": "npm run build:android && npx cap sync android",
+    "android:open": "npx cap open android",
+    "android:run": "npm run build:android && npx cap sync android && npx cap open android",
+    "android:build": "npm run build:android && npx cap sync android && cd android && .\\gradlew assembleRelease",
+    "android:release": "powershell -ExecutionPolicy Bypass -File ./scripts/build-android-release.ps1",
+    "android:keystore": "powershell -ExecutionPolicy Bypass -File ./scripts/generate-keystore.ps1"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
@@ -28,6 +35,10 @@
     ]
   },
   "dependencies": {
+    "@capacitor/android": "^8.0.2",
+    "@capacitor/cli": "^8.0.2",
+    "@capacitor/core": "^8.0.2",
+    "@capacitor/splash-screen": "^8.0.0",
     "@tailwindcss/vite": "^4.1.17",
     "axios": "^1.13.2",
     "decimal.js": "^10.6.0",

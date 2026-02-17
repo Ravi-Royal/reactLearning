@@ -29,3 +29,16 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Android
+android/local.properties
+android/keystore.properties
+android/*.keystore
+android/*.jks
+*.keystore
+*.jks
+investment-app-release.apk
+android/app/build/
+android/app/release/
+android/build/
+android/.gradle/

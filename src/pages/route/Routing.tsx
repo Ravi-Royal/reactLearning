@@ -43,8 +43,13 @@ const GoldVsSilverRatio = lazy(
 const RouteFallback = (): React.ReactElement => <PageLoader message="Loading page..." />;
 
 function Routing(): React.ReactElement {
+  // Use Vite's BASE_URL which changes based on build target
+  // For Android: --base / results in BASE_URL = '/'
+  // For GitHub Pages: --base /reactLearning/ results in BASE_URL = '/reactLearning/'
+  const basename = import.meta.env.BASE_URL;
+
   return (
-    <BrowserRouter basename="/reactLearning">
+    <BrowserRouter basename={basename}>
       <BaseNavigation />
       <Suspense fallback={<RouteFallback />}>
         <Routes>
