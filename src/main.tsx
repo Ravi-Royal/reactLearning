@@ -5,6 +5,14 @@ import { QueryProvider } from '@providers/QueryProvider';
 import '@config/env'; // Validate environment variables on startup
 import './index.css';
 import App from './App.tsx';
+import { StatusBar, Style } from '@capacitor/status-bar';
+import { Capacitor } from '@capacitor/core';
+
+// Configure native Android status bar
+if (Capacitor.getPlatform() === 'android') {
+  StatusBar.setStyle({ style: Style.Light });
+  StatusBar.setBackgroundColor({ color: '#ffffff' });
+}
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

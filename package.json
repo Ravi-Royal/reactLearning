@@ -39,6 +39,7 @@
     "@capacitor/cli": "^8.0.2",
     "@capacitor/core": "^8.0.2",
     "@capacitor/splash-screen": "^8.0.0",
+    "@capacitor/status-bar": "^8.0.1",
     "@tailwindcss/vite": "^4.1.17",
     "axios": "^1.13.2",
     "decimal.js": "^10.6.0",

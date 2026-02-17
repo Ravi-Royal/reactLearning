@@ -1,0 +1,44 @@
+/* Native Android App Enhancements */
+
+/* Card elevation (Material Design) */
+.card {
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    0 1px 2px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease;
+}
+
+.card:active {
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.15),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Bottom sheet style for mobile */
+@media (max-width: 768px) {
+  .modal,
+  .sheet {
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Native-like navigation bar */
+.nav-bar {
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.12),
+    0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* Prevent image drag (native app behavior) */
+img {
+  -webkit-user-drag: none;
+  user-drag: none;
+  pointer-events: none;
+}
+
+/* Make clickable images work */
+a img,
+button img {
+  pointer-events: auto;
+}

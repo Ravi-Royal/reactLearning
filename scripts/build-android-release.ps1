@@ -124,16 +124,20 @@ if ($buildResult -eq 0) {
         
         Write-Host "Next Steps:" -ForegroundColor Yellow
         Write-Host "  1. Test on physical device:" -ForegroundColor White
-        Write-Host "     adb install $apkPath" -ForegroundColor Gray
+        Write-Host "     adb install android\apk\investment-app-release.apk" -ForegroundColor Gray
         Write-Host ""
         Write-Host "  2. Upload to Google Play Console" -ForegroundColor White
         Write-Host "     https://play.google.com/console" -ForegroundColor Gray
         Write-Host ""
         
-        # Copy to root for easy access
-        $rootApk = "investment-app-release.apk"
-        Copy-Item $apkPath $rootApk -Force
-        Write-Host "[OK] Copied APK to project root: $rootApk" -ForegroundColor Green
+        # Copy to android/apk folder
+        $apkFolder = "android\apk"
+        if (-not (Test-Path $apkFolder)) {
+            New-Item -ItemType Directory -Path $apkFolder -Force | Out-Null
+        }
+        $finalApk = "$apkFolder\investment-app-release.apk"
+        Copy-Item $apkPath $finalApk -Force
+        Write-Host "[OK] Production APK saved to: $finalApk" -ForegroundColor Green
     }
     else {
         Write-Host "[WARNING] APK not found at expected location" -ForegroundColor Yellow

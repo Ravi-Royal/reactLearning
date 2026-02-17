@@ -35,9 +35,9 @@ android/local.properties
 android/keystore.properties
 android/*.keystore
 android/*.jks
+android/apk/*.apk
 *.keystore
 *.jks
-investment-app-release.apk
 android/app/build/
 android/app/release/
 android/build/
