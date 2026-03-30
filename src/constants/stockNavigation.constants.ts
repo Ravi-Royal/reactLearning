@@ -80,12 +80,29 @@ export const STOCK_NAVIGATION_ITEMS = [
       inactive: 'bg-teal-50 text-teal-600 hover:bg-teal-100',
     },
   },
+  {
+    id: 'percentage-recovery',
+    title: 'Loss Recovery Table',
+    description:
+      'See how much % gain is needed to recover from any % drop. Includes an interactive table from 1%–100% and a custom calculator.',
+    icon: {
+      path: 'M3 17l4-8 4 4 4-6 4 3M3 21h18',
+      bgColor: 'bg-red-100',
+      color: 'text-red-600',
+    },
+    route: 'percentage-recovery',
+    buttonText: 'View Recovery Table',
+    buttonColors: {
+      active: 'bg-red-600 text-white',
+      inactive: 'bg-red-50 text-red-600 hover:bg-red-100',
+    },
+  },
 ];
 
 export const STOCK_QUICK_STATS = [
   {
     id: 'tools',
-    value: '5',
+    value: '6',
     label: 'Analysis Tools',
     color: 'text-blue-600',
   },

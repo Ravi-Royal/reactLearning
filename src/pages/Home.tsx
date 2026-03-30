@@ -39,6 +39,11 @@ const investmentLinks: InvestmentSection[] = [
         to: '/investment/stock/profit-calculator',
         hint: 'Calculate profit/loss on stock trades',
       },
+      {
+        label: 'Loss Recovery Table',
+        to: '/investment/stock/percentage-recovery',
+        hint: 'See how much % gain is needed to recover from any % drop',
+      },
     ],
   },
   {
@@ -159,7 +164,7 @@ function HomePage() {
             return (
               <div
                 key={section.section}
-                className={`rounded-lg shadow-lg p-4 sm:p-5 border-2 transition duration-200 active:scale-[0.98] ${styles.bg} ${styles.border}`}
+                className={`rounded-lg shadow-lg p-4 sm:p-5 border-2 transition duration-200 ${styles.bg} ${styles.border}`}
               >
                 <h2 className={`text-lg sm:text-xl font-bold mb-3 flex items-center gap-2 ${styles.headerText}`}>
                   <span className="text-xl sm:text-2xl">{styles.icon}</span>
@@ -170,7 +175,7 @@ function HomePage() {
                     <li key={link.to} className="group">
                       <Link
                         to={link.to}
-                        className={`block py-2 px-3 rounded-md transition-all active:bg-white/50 ${styles.linkText}`}
+                        className={`block py-2 px-3 rounded-md transition-all hover:bg-white/40 ${styles.linkText}`}
                       >
                         <div className="font-medium text-sm sm:text-base flex items-start">
                           <span className="mr-2 flex-shrink-0">→</span>

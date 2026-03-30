@@ -34,6 +34,7 @@ const AverageCalculator = lazy(() => import('../components/investment/stock/aver
 const StockProfitCalculator = lazy(
   () => import('../components/investment/stock/profit-calculator/StockProfitCalculator'),
 );
+const PercentageRecovery = lazy(() => import('../components/investment/stock/percentage-recovery/PercentageRecovery'));
 const MutualFundCalculator = lazy(() => import('../components/investment/mutual-fund/calculator/MutualFundCalculator'));
 const MutualFundChecklist = lazy(() => import('../components/investment/mutual-fund/checklist/MutualFundChecklist'));
 const GoldVsSilverRatio = lazy(
@@ -77,6 +78,7 @@ function Routing(): React.ReactElement {
               <Route path="checklist" element={<StockCheckList />} />
               <Route path="average-calculator" element={<AverageCalculator />} />
               <Route path="profit-calculator" element={<StockProfitCalculator />} />
+              <Route path="percentage-recovery" element={<PercentageRecovery />} />
             </Route>
             <Route path="mutual-fund" element={<Outlet />}>
               <Route index element={<MutualFundNavigation />} />
