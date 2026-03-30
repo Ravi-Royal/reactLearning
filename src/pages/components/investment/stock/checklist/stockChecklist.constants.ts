@@ -32,12 +32,32 @@ export const CHECKLIST_ITEM_LABELS = {
   PE_RATIO: 'Less PE (<10)',
   PB_RATIO: 'Less price to book',
   PE_PB_RATIO: 'Lower PE and lower Price to Book is for sure better stock',
+  // S2: Financial Health (AI)
   PROFIT_MARGIN: 'Strong profit margins (>15%)',
-  PE_REASONABLE: 'Reasonable P/E ratio (<25)',
-  DIVIDEND: 'Consistent dividend payments',
-  COMPETITION: 'Strong competitive advantage',
-  MANAGEMENT: 'Experienced management team',
-  GROWTH: 'Clear growth strategy',
+  POSITIVE_FCF: 'Positive Free Cash Flow (FCF)',
+  HIGH_ROE: 'Return on Equity (ROE) > 15% consistently',
+  HIGH_ROCE: 'Return on Capital (ROCE/ROIC) > 15%',
+  SAFE_INTEREST_COVERAGE: 'Interest coverage ratio > 4x–5x (EBIT / Interest)',
+  HEALTHY_CURRENT_RATIO: 'Current ratio > 1.5 (short-term liquidity)',
+  // S3: Valuation (AI)
+  PE_REASONABLE: 'Reasonable P/E ratio — in-line with 5-year historical average',
+  ATTRACTIVE_PEG: 'PEG ratio < 1.5 (not overpaying for growth)',
+  PRICE_TO_FCF: 'Price-to-Free-Cash-Flow (P/FCF) < 20',
+  FAIR_EV_EBITDA: 'EV/EBITDA reasonable vs. direct sector peers',
+  SHAREHOLDER_YIELD: 'Consistent dividends or steady share buybacks',
+  // S4: Business Quality (AI)
+  ECONOMIC_MOAT: 'Strong economic moat (brand, network effect, switching cost)',
+  PRICING_POWER: 'Can raise prices during inflation without losing customers',
+  MANAGEMENT: 'Transparent, capable and shareholder-friendly management',
+  LOW_CUSTOMER_CONCENTRATION: 'No single customer accounts for >10% of revenue',
+  CONTINUOUS_INNOVATION: 'Adequate R&D investment to stay ahead of competition',
+  GROWTH: 'Clear growth strategy & addressable market',
+  // S5: Risk & Stability (AI)
+  CLEAN_GOVERNANCE: 'No frequent auditor changes or accounting red flags',
+  LOW_PROMOTER_PLEDGING: 'Promoter pledged shares < 5% (ideally zero)',
+  NO_TOXIC_DILUTION: 'Outstanding shares are stable — no excessive dilution',
+  MANAGEABLE_REGULATORY_RISK: 'Not overly vulnerable to sudden regulatory changes',
+  MACRO_RESILIENCE: 'Business can survive recession or high interest rate cycles',
 } as const;
 
 export interface ChecklistItem {
@@ -83,12 +103,77 @@ export const INITIAL_CHECKLIST_ITEMS: ChecklistItem[] = [
     checked: false,
     category: CHECKLIST_CATEGORIES.PERSONAL,
   },
+  // S2: Financial Health
   { id: 'profit', label: CHECKLIST_ITEM_LABELS.PROFIT_MARGIN, checked: false, category: CHECKLIST_CATEGORIES.AI },
+  { id: 'fcf', label: CHECKLIST_ITEM_LABELS.POSITIVE_FCF, checked: false, category: CHECKLIST_CATEGORIES.AI },
+  { id: 'roe', label: CHECKLIST_ITEM_LABELS.HIGH_ROE, checked: false, category: CHECKLIST_CATEGORIES.AI },
+  { id: 'roce', label: CHECKLIST_ITEM_LABELS.HIGH_ROCE, checked: false, category: CHECKLIST_CATEGORIES.AI },
+  {
+    id: 'interest_coverage',
+    label: CHECKLIST_ITEM_LABELS.SAFE_INTEREST_COVERAGE,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.AI,
+  },
+  {
+    id: 'current_ratio',
+    label: CHECKLIST_ITEM_LABELS.HEALTHY_CURRENT_RATIO,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.AI,
+  },
+  // S3: Valuation
   { id: 'pe', label: CHECKLIST_ITEM_LABELS.PE_REASONABLE, checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'dividend', label: CHECKLIST_ITEM_LABELS.DIVIDEND, checked: false, category: CHECKLIST_CATEGORIES.AI },
-  { id: 'competition', label: CHECKLIST_ITEM_LABELS.COMPETITION, checked: false, category: CHECKLIST_CATEGORIES.AI },
+  { id: 'peg', label: CHECKLIST_ITEM_LABELS.ATTRACTIVE_PEG, checked: false, category: CHECKLIST_CATEGORIES.AI },
+  { id: 'pfcf', label: CHECKLIST_ITEM_LABELS.PRICE_TO_FCF, checked: false, category: CHECKLIST_CATEGORIES.AI },
+  { id: 'evebitda', label: CHECKLIST_ITEM_LABELS.FAIR_EV_EBITDA, checked: false, category: CHECKLIST_CATEGORIES.AI },
+  { id: 'yield', label: CHECKLIST_ITEM_LABELS.SHAREHOLDER_YIELD, checked: false, category: CHECKLIST_CATEGORIES.AI },
+  // S4: Business Quality
+  { id: 'moat', label: CHECKLIST_ITEM_LABELS.ECONOMIC_MOAT, checked: false, category: CHECKLIST_CATEGORIES.AI },
+  {
+    id: 'pricing_power',
+    label: CHECKLIST_ITEM_LABELS.PRICING_POWER,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.AI,
+  },
   { id: 'management', label: CHECKLIST_ITEM_LABELS.MANAGEMENT, checked: false, category: CHECKLIST_CATEGORIES.AI },
+  {
+    id: 'concentration',
+    label: CHECKLIST_ITEM_LABELS.LOW_CUSTOMER_CONCENTRATION,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.AI,
+  },
+  {
+    id: 'innovation',
+    label: CHECKLIST_ITEM_LABELS.CONTINUOUS_INNOVATION,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.AI,
+  },
   { id: 'growth', label: CHECKLIST_ITEM_LABELS.GROWTH, checked: false, category: CHECKLIST_CATEGORIES.AI },
+  // S5: Risk & Stability
+  {
+    id: 'governance',
+    label: CHECKLIST_ITEM_LABELS.CLEAN_GOVERNANCE,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.AI,
+  },
+  {
+    id: 'pledging',
+    label: CHECKLIST_ITEM_LABELS.LOW_PROMOTER_PLEDGING,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.AI,
+  },
+  { id: 'dilution', label: CHECKLIST_ITEM_LABELS.NO_TOXIC_DILUTION, checked: false, category: CHECKLIST_CATEGORIES.AI },
+  {
+    id: 'reg_risk',
+    label: CHECKLIST_ITEM_LABELS.MANAGEABLE_REGULATORY_RISK,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.AI,
+  },
+  {
+    id: 'macro_resilience',
+    label: CHECKLIST_ITEM_LABELS.MACRO_RESILIENCE,
+    checked: false,
+    category: CHECKLIST_CATEGORIES.AI,
+  },
 ];
 
 export interface MyStockItem {
