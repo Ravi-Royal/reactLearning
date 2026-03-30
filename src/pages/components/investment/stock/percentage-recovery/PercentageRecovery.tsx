@@ -1,103 +1,49 @@
 import { useState, useMemo } from 'react';
-import Breadcrumbs from '@pages/navigation/Breadcrumbs';
 import { Link } from 'react-router-dom';
+import Breadcrumbs from '@pages/navigation/Breadcrumbs';
 
-// ─── pure functions ────────────────────────────────────────────────────────────
+import {
+  PERCENTAGE_RECOVERY_TEXTS as TEXTS,
+  PERCENTAGE_RECOVERY_DEFAULTS as DEFAULTS,
+  ALL_SEVERITIES,
+  SEVERITY_BTN_STYLE,
+} from './constants/percentageRecovery.constants';
+import type { Severity, SortKey, SortDir } from './types/PercentageRecovery.types';
+import { recoveryGain, insightText, buildAllRows, applyFilterAndSort } from './helpers/percentageRecovery.helper';
+import SortIcon from './components/SortIcon';
 
-function recoveryGain(drop: number): number {
-  if (drop >= 100) {
-    return Infinity;
-  }
-  return (1 / (1 - drop / 100) - 1) * 100;
-}
+// ─── Pre-built base rows (never changes) ──────────────────────────────────────
 
-type Severity = 'Minor' | 'Moderate' | 'Major' | 'Severe' | 'Catastrophic';
+const BASE_ROWS = buildAllRows();
 
-interface SeverityMeta {
-  label: Severity;
-  order: number; // for sorting
-  rowClass: string;
-  badgeClass: string;
-}
-
-function getSeverity(drop: number): SeverityMeta {
-  if (drop >= 90) {
-    return { label: 'Catastrophic', order: 5, rowClass: 'bg-red-100', badgeClass: 'bg-red-600 text-white' };
-  }
-  if (drop >= 70) {
-    return { label: 'Severe', order: 4, rowClass: 'bg-orange-50', badgeClass: 'bg-orange-500 text-white' };
-  }
-  if (drop >= 50) {
-    return { label: 'Major', order: 3, rowClass: 'bg-yellow-50', badgeClass: 'bg-yellow-400 text-gray-900' };
-  }
-  if (drop >= 20) {
-    return { label: 'Moderate', order: 2, rowClass: 'bg-blue-50', badgeClass: 'bg-blue-400 text-white' };
-  }
-  return { label: 'Minor', order: 1, rowClass: 'bg-green-50', badgeClass: 'bg-green-500 text-white' };
-}
-
-function insightText(drop: number, gain: number): string {
-  if (!isFinite(gain)) {
-    return 'Complete loss — unrecoverable';
-  }
-  if (drop === 50) {
-    return '50% drop = 100% gain needed!';
-  }
-  if (drop >= 90) {
-    return `Needs ${gain.toFixed(0)}× original investment`;
-  }
-  if (drop >= 75) {
-    return `Needs ${gain.toFixed(0)}% gain to break even`;
-  }
-  return `Needs ${gain.toFixed(2)}% gain to break even`;
-}
-
-// ─── types ─────────────────────────────────────────────────────────────────────
-
-type SortKey = 'drop' | 'recovery' | 'severity';
-type SortDir = 'asc' | 'desc';
-
-const ALL_SEVERITIES: Severity[] = ['Minor', 'Moderate', 'Major', 'Severe', 'Catastrophic'];
-
-// ─── SortIcon ──────────────────────────────────────────────────────────────────
-
-function SortIcon({ active, dir }: { active: boolean; dir: SortDir }) {
-  return (
-    <span className={`ml-1 inline-flex flex-col leading-none ${active ? 'opacity-100' : 'opacity-30'}`}>
-      <span className={`text-[8px] leading-none ${active && dir === 'asc' ? 'text-yellow-300' : ''}`}>▲</span>
-      <span className={`text-[8px] leading-none ${active && dir === 'desc' ? 'text-yellow-300' : ''}`}>▼</span>
-    </span>
-  );
-}
-
-// ─── component ─────────────────────────────────────────────────────────────────
+// ─── Component ────────────────────────────────────────────────────────────────
 
 function PercentageRecovery() {
-  // Custom calculator state
+  // ── Custom calculator state ──────────────────────────────────────────────
   const [customDrop, setCustomDrop] = useState('');
   const [customResult, setCustomResult] = useState<number | null>(null);
   const [customError, setCustomError] = useState('');
 
-  // Filter state
-  const [minDrop, setMinDrop] = useState('1');
-  const [maxDrop, setMaxDrop] = useState('100');
-  const [severityFilter, setSeverityFilter] = useState<Severity | 'All'>('All');
+  // ── Filter state ─────────────────────────────────────────────────────────
+  const [minDrop, setMinDrop] = useState<string>(DEFAULTS.MIN_DROP);
+  const [maxDrop, setMaxDrop] = useState<string>(DEFAULTS.MAX_DROP);
+  const [severityFilter, setSeverityFilter] = useState<Severity | 'All'>(DEFAULTS.SEVERITY);
 
-  // Sort state
-  const [sortKey, setSortKey] = useState<SortKey>('drop');
-  const [sortDir, setSortDir] = useState<SortDir>('asc');
+  // ── Sort state ───────────────────────────────────────────────────────────
+  const [sortKey, setSortKey] = useState<SortKey>(DEFAULTS.SORT_KEY);
+  const [sortDir, setSortDir] = useState<SortDir>(DEFAULTS.SORT_DIR);
 
-  // ── handlers ──────────────────────────────────────────────────────────────
+  // ── Handlers ─────────────────────────────────────────────────────────────
 
   const handleCalculate = () => {
     const val = parseFloat(customDrop);
     if (isNaN(val) || val < 0) {
-      setCustomError('Please enter a valid positive number.');
+      setCustomError(TEXTS.ERRORS.INVALID_INPUT);
       setCustomResult(null);
       return;
     }
     if (val >= 100) {
-      setCustomError('A 100% or more drop means the value reaches zero — no recovery possible.');
+      setCustomError(TEXTS.ERRORS.UNRECOVERABLE);
       setCustomResult(null);
       return;
     }
@@ -115,80 +61,28 @@ function PercentageRecovery() {
   };
 
   const resetFilters = () => {
-    setMinDrop('1');
-    setMaxDrop('100');
-    setSeverityFilter('All');
-    setSortKey('drop');
-    setSortDir('asc');
+    setMinDrop(DEFAULTS.MIN_DROP);
+    setMaxDrop(DEFAULTS.MAX_DROP);
+    setSeverityFilter(DEFAULTS.SEVERITY);
+    setSortKey(DEFAULTS.SORT_KEY);
+    setSortDir(DEFAULTS.SORT_DIR);
   };
 
-  // ── derived data ──────────────────────────────────────────────────────────
+  // ── Derived data ─────────────────────────────────────────────────────────
 
-  const tableRows = useMemo(() => {
-    const min = Math.max(1, parseInt(minDrop) || 1);
-    const max = Math.min(100, parseInt(maxDrop) || 100);
-
-    const baseRows = Array.from({ length: 100 }, (_, i) => {
-      const drop = i + 1;
-      const gain = recoveryGain(drop);
-      const severity = getSeverity(drop);
-      return { drop, gain, severity };
-    });
-
-    // Filter
-    const filtered = baseRows.filter(({ drop, severity }) => {
-      const inRange = drop >= min && drop <= max;
-      const inSeverity = severityFilter === 'All' || severity.label === severityFilter;
-      return inRange && inSeverity;
-    });
-
-    // Sort
-    return filtered.sort((a, b) => {
-      let cmp = 0;
-      if (sortKey === 'drop') {
-        cmp = a.drop - b.drop;
-      } else if (sortKey === 'recovery') {
-        const ga = isFinite(a.gain) ? a.gain : 1e9;
-        const gb = isFinite(b.gain) ? b.gain : 1e9;
-        cmp = ga - gb;
-      } else if (sortKey === 'severity') {
-        cmp = a.severity.order - b.severity.order;
-      }
-      return sortDir === 'asc' ? cmp : -cmp;
-    });
-  }, [minDrop, maxDrop, severityFilter, sortKey, sortDir]);
+  const tableRows = useMemo(
+    () => applyFilterAndSort(BASE_ROWS, { minDrop, maxDrop, severityFilter, sortKey, sortDir }),
+    [minDrop, maxDrop, severityFilter, sortKey, sortDir],
+  );
 
   const filtersActive =
-    minDrop !== '1' || maxDrop !== '100' || severityFilter !== 'All' || sortKey !== 'drop' || sortDir !== 'asc';
+    minDrop !== DEFAULTS.MIN_DROP ||
+    maxDrop !== DEFAULTS.MAX_DROP ||
+    severityFilter !== DEFAULTS.SEVERITY ||
+    sortKey !== DEFAULTS.SORT_KEY ||
+    sortDir !== DEFAULTS.SORT_DIR;
 
-  // ── severity badge colours for filter buttons ─────────────────────────────
-
-  const severityBtnStyle: Record<Severity | 'All', { active: string; inactive: string }> = {
-    All: {
-      active: 'bg-gray-700 text-white border-gray-700',
-      inactive: 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50',
-    },
-    Minor: {
-      active: 'bg-green-600 text-white border-green-600',
-      inactive: 'bg-white text-green-700 border-green-300 hover:bg-green-50',
-    },
-    Moderate: {
-      active: 'bg-blue-500 text-white border-blue-500',
-      inactive: 'bg-white text-blue-700 border-blue-300 hover:bg-blue-50',
-    },
-    Major: {
-      active: 'bg-yellow-500 text-gray-900 border-yellow-500',
-      inactive: 'bg-white text-yellow-700 border-yellow-300 hover:bg-yellow-50',
-    },
-    Severe: {
-      active: 'bg-orange-500 text-white border-orange-500',
-      inactive: 'bg-white text-orange-700 border-orange-300 hover:bg-orange-50',
-    },
-    Catastrophic: {
-      active: 'bg-red-600 text-white border-red-600',
-      inactive: 'bg-white text-red-700 border-red-300 hover:bg-red-50',
-    },
-  };
+  // ── Render ───────────────────────────────────────────────────────────────
 
   return (
     <div className="bg-white rounded-lg shadow-md border border-gray-200 p-4 sm:p-6 md:p-8">
@@ -198,39 +92,29 @@ function PercentageRecovery() {
         to="/investment/stock"
         className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 text-xs sm:text-sm font-medium inline-flex items-center gap-2 mb-4 px-3 py-2 rounded-md transition-colors"
       >
-        ← Back to Stock Dashboard
+        {TEXTS.LABELS.BACK_LINK}
       </Link>
 
-      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-1">📉 Stock Loss Recovery Table</h1>
-      <p className="text-sm sm:text-base text-gray-500 mb-6">
-        If a stock drops by X%, how much does it need to gain (from the new lower price) to get back to the original
-        value?
-      </p>
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-1">{TEXTS.LABELS.PAGE_TITLE}</h1>
+      <p className="text-sm sm:text-base text-gray-500 mb-6">{TEXTS.MESSAGES.PAGE_SUBTITLE}</p>
 
-      {/* ── Math insight banner ────────────────────────────────────────── */}
+      {/* ── Math insight banner ──────────────────────────────────────── */}
       <div className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4">
-        <h2 className="text-sm font-semibold text-blue-800 mb-1">💡 The Math Behind It</h2>
-        <p className="text-xs text-blue-700">
-          If a stock falls by <strong>d%</strong>, the new price is <strong>(1 − d/100)</strong> of the original. To
-          reach the original price again, the gain needed is:
-        </p>
+        <h2 className="text-sm font-semibold text-blue-800 mb-1">{TEXTS.LABELS.MATH_TITLE}</h2>
+        <p className="text-xs text-blue-700">{TEXTS.MESSAGES.MATH_DESCRIPTION}</p>
         <code className="block mt-2 text-xs bg-white border border-blue-200 rounded px-3 py-2 text-blue-900 font-mono">
-          Recovery % = [1 ÷ (1 − d/100) − 1] × 100
+          {TEXTS.MESSAGES.MATH_FORMULA}
         </code>
-        <p className="text-xs text-blue-600 mt-2">
-          A <strong>50% drop</strong> needs a <strong>100% gain</strong>; a <strong>90% drop</strong> needs a massive{' '}
-          <strong>900% gain</strong>!
-        </p>
+        <p className="text-xs text-blue-600 mt-2">{TEXTS.MESSAGES.MATH_EXAMPLE}</p>
       </div>
 
-      {/* ── Custom calculator ──────────────────────────────────────────── */}
+      {/* ── Custom calculator ────────────────────────────────────────── */}
       <div className="mb-8 bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-lg p-4 sm:p-6">
-        <h2 className="text-base sm:text-lg font-bold text-purple-800 mb-3">🔢 Custom Drop Calculator</h2>
-        <p className="text-xs text-purple-600 mb-4">
-          Enter any drop percentage (including values above 100 for theoretical scenarios).
-        </p>
+        <h2 className="text-base sm:text-lg font-bold text-purple-800 mb-3">{TEXTS.LABELS.CALCULATOR_TITLE}</h2>
+        <p className="text-xs text-purple-600 mb-4">{TEXTS.MESSAGES.PAGE_SUBTITLE}</p>
+
         <label htmlFor="custom-drop-input" className="block text-sm font-medium text-purple-700 mb-1">
-          Drop Percentage (%)
+          {TEXTS.LABELS.DROP_INPUT}
         </label>
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex-1">
@@ -247,20 +131,20 @@ function PercentageRecovery() {
               }}
               onKeyDown={(e) => e.key === 'Enter' && handleCalculate()}
               className="w-full px-3 py-2.5 border-2 border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-white text-gray-800"
-              placeholder="e.g. 35.5"
+              placeholder={TEXTS.PLACEHOLDERS.DROP_INPUT}
               aria-describedby="custom-drop-desc"
             />
             <p id="custom-drop-desc" className="text-xs text-purple-500 mt-1">
-              Values ≥ 100% are theoretically unrecoverable
+              {TEXTS.MESSAGES.INPUT_HINT}
             </p>
           </div>
           <button
             id="calculate-recovery-btn"
             onClick={handleCalculate}
             className="sm:self-start px-6 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-md hover:from-purple-700 hover:to-pink-700 transition-all shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 whitespace-nowrap"
-            aria-label="Calculate recovery percentage for custom drop value"
+            aria-label={TEXTS.ARIA.CALCULATE_BTN}
           >
-            Calculate Recovery
+            {TEXTS.BUTTONS.CALCULATE}
           </button>
         </div>
 
@@ -277,12 +161,12 @@ function PercentageRecovery() {
             className="mt-4 bg-white border-2 border-purple-300 rounded-lg p-4 flex flex-col sm:flex-row items-center gap-4"
           >
             <div className="text-center">
-              <div className="text-gray-500 text-xs font-medium mb-1">Drop entered</div>
+              <div className="text-gray-500 text-xs font-medium mb-1">{TEXTS.LABELS.RESULT_DROP}</div>
               <div className="text-2xl font-bold text-red-600">−{customDrop}%</div>
             </div>
             <div className="text-3xl text-gray-300 font-light hidden sm:block">→</div>
             <div className="text-center">
-              <div className="text-gray-500 text-xs font-medium mb-1">Recovery gain needed</div>
+              <div className="text-gray-500 text-xs font-medium mb-1">{TEXTS.LABELS.RESULT_GAIN}</div>
               <div className="text-3xl font-bold text-green-600">+{customResult.toFixed(4)}%</div>
             </div>
             <div className="text-xs text-gray-400 sm:ml-4 max-w-xs text-center sm:text-left">
@@ -293,7 +177,7 @@ function PercentageRecovery() {
         )}
       </div>
 
-      {/* ── Filter & Sort controls ─────────────────────────────────────── */}
+      {/* ── Filter & Sort panel ──────────────────────────────────────── */}
       <div className="mb-4 bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-4">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <h3 className="text-sm font-bold text-gray-700 flex items-center gap-2">
@@ -305,24 +189,24 @@ function PercentageRecovery() {
                 d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"
               />
             </svg>
-            Filter &amp; Sort
+            {TEXTS.LABELS.FILTER_TITLE}
           </h3>
           {filtersActive && (
             <button
               onClick={resetFilters}
               className="text-xs text-red-600 hover:text-red-800 font-medium border border-red-200 px-2 py-1 rounded hover:bg-red-50 transition-colors"
-              aria-label="Reset all filters and sorting to default"
+              aria-label={TEXTS.ARIA.RESET_BTN}
             >
-              ✕ Reset all
+              {TEXTS.BUTTONS.RESET}
             </button>
           )}
         </div>
 
-        {/* Row 1: Drop range */}
+        {/* Drop range inputs */}
         <div className="flex flex-wrap items-end gap-3">
           <div>
             <label htmlFor="filter-min-drop" className="block text-xs font-medium text-gray-600 mb-1">
-              Min Drop (%)
+              {TEXTS.LABELS.MIN_DROP}
             </label>
             <input
               id="filter-min-drop"
@@ -332,13 +216,13 @@ function PercentageRecovery() {
               value={minDrop}
               onChange={(e) => setMinDrop(e.target.value)}
               className="w-24 px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
-              aria-label="Minimum drop percentage filter"
+              aria-label={TEXTS.ARIA.MIN_DROP}
             />
           </div>
           <div className="text-gray-400 pb-1 font-medium text-sm">→</div>
           <div>
             <label htmlFor="filter-max-drop" className="block text-xs font-medium text-gray-600 mb-1">
-              Max Drop (%)
+              {TEXTS.LABELS.MAX_DROP}
             </label>
             <input
               id="filter-max-drop"
@@ -348,18 +232,18 @@ function PercentageRecovery() {
               value={maxDrop}
               onChange={(e) => setMaxDrop(e.target.value)}
               className="w-24 px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
-              aria-label="Maximum drop percentage filter"
+              aria-label={TEXTS.ARIA.MAX_DROP}
             />
           </div>
           <div className="text-xs text-gray-400 pb-1">Showing {tableRows.length} of 100 rows</div>
         </div>
 
-        {/* Row 2: Severity filter buttons */}
+        {/* Severity filter buttons */}
         <div>
-          <p className="text-xs font-medium text-gray-600 mb-2">Filter by Severity</p>
-          <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by severity level">
+          <p className="text-xs font-medium text-gray-600 mb-2">{TEXTS.LABELS.SEVERITY_FILTER}</p>
+          <div className="flex flex-wrap gap-2" role="group" aria-label={TEXTS.ARIA.SEVERITY_GROUP}>
             {(['All', ...ALL_SEVERITIES] as const).map((sev) => {
-              const styles = severityBtnStyle[sev];
+              const styles = SEVERITY_BTN_STYLE[sev];
               const isActive = severityFilter === sev;
               return (
                 <button
@@ -377,76 +261,68 @@ function PercentageRecovery() {
         </div>
       </div>
 
-      {/* ── Table ─────────────────────────────────────────────────────── */}
+      {/* ── Table ────────────────────────────────────────────────────── */}
       <div className="overflow-x-auto rounded-lg border border-gray-200 shadow">
         {tableRows.length === 0 ? (
           <div className="text-center py-12 text-gray-400">
             <div className="text-3xl mb-2">🔍</div>
-            <div className="text-sm font-medium">No rows match your filters.</div>
+            <div className="text-sm font-medium">{TEXTS.MESSAGES.EMPTY_STATE}</div>
             <button onClick={resetFilters} className="mt-3 text-xs text-blue-600 hover:underline">
-              Reset filters
+              {TEXTS.BUTTONS.EMPTY_RESET}
             </button>
           </div>
         ) : (
-          <table
-            className="min-w-full text-sm"
-            aria-label="Stock loss recovery percentage table — sortable and filterable"
-          >
+          <table className="min-w-full text-sm" aria-label={TEXTS.ARIA.TABLE}>
             <thead>
               <tr className="bg-gradient-to-r from-gray-700 to-gray-800 text-white select-none">
-                {/* # */}
                 <th scope="col" className="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wide w-10">
-                  #
+                  {TEXTS.LABELS.COL_INDEX}
                 </th>
 
-                {/* Drop — sortable */}
                 <th
                   scope="col"
-                  className="px-4 py-3 text-center font-semibold text-xs uppercase tracking-wide cursor-pointer hover:bg-white/10 transition-colors"
                   onClick={() => handleSort('drop')}
+                  className="px-4 py-3 text-center font-semibold text-xs uppercase tracking-wide cursor-pointer hover:bg-white/10 transition-colors"
                   aria-sort={sortKey === 'drop' ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}
-                  aria-label="Sort by drop percentage"
+                  aria-label={TEXTS.ARIA.SORT_DROP}
                 >
                   <span className="inline-flex items-center justify-center gap-0.5">
-                    Drop (%)
+                    {TEXTS.LABELS.COL_DROP}
                     <SortIcon active={sortKey === 'drop'} dir={sortDir} />
                   </span>
                 </th>
 
-                {/* Recovery — sortable */}
                 <th
                   scope="col"
-                  className="px-4 py-3 text-center font-semibold text-xs uppercase tracking-wide cursor-pointer hover:bg-white/10 transition-colors"
                   onClick={() => handleSort('recovery')}
+                  className="px-4 py-3 text-center font-semibold text-xs uppercase tracking-wide cursor-pointer hover:bg-white/10 transition-colors"
                   aria-sort={sortKey === 'recovery' ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}
-                  aria-label="Sort by recovery gain needed"
+                  aria-label={TEXTS.ARIA.SORT_RECOVERY}
                 >
                   <span className="inline-flex items-center justify-center gap-0.5">
-                    Recovery Gain (%)
+                    {TEXTS.LABELS.COL_RECOVERY}
                     <SortIcon active={sortKey === 'recovery'} dir={sortDir} />
                   </span>
                 </th>
 
-                {/* Severity — sortable */}
                 <th
                   scope="col"
-                  className="px-4 py-3 text-center font-semibold text-xs uppercase tracking-wide cursor-pointer hover:bg-white/10 transition-colors"
                   onClick={() => handleSort('severity')}
+                  className="px-4 py-3 text-center font-semibold text-xs uppercase tracking-wide cursor-pointer hover:bg-white/10 transition-colors"
                   aria-sort={sortKey === 'severity' ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none'}
-                  aria-label="Sort by severity"
+                  aria-label={TEXTS.ARIA.SORT_SEVERITY}
                 >
                   <span className="inline-flex items-center justify-center gap-0.5">
-                    Severity
+                    {TEXTS.LABELS.COL_SEVERITY}
                     <SortIcon active={sortKey === 'severity'} dir={sortDir} />
                   </span>
                 </th>
 
-                {/* Insight */}
                 <th
                   scope="col"
                   className="px-4 py-3 text-center font-semibold text-xs uppercase tracking-wide hidden sm:table-cell"
                 >
-                  Insight
+                  {TEXTS.LABELS.COL_INSIGHT}
                 </th>
               </tr>
             </thead>
@@ -492,9 +368,7 @@ function PercentageRecovery() {
 
       {/* Footer note */}
       <div className="mt-4 bg-gray-50 border border-gray-200 rounded-lg p-4 text-xs text-gray-500">
-        <strong>Note:</strong> The recovery percentage is calculated from the <em>new lower price</em>, not the original
-        price. This illustrates why avoiding large losses is critical — recovering from deep drawdowns requires
-        disproportionately large gains.
+        <strong>Note:</strong> {TEXTS.MESSAGES.FOOTER_NOTE}
       </div>
     </div>
   );
