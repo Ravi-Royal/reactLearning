@@ -234,7 +234,7 @@ function GoldVsSilverRatio() {
                   onChange={(e) => setGoldPrice(e.target.value)}
                   className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
                   placeholder={unit === 'ounce' ? '2000' : '64.30'}
-                  step="0.01"
+                  step="1"
                   disabled
                   title="Base price per ounce - use unit selector to view per gram"
                 />
@@ -258,7 +258,7 @@ function GoldVsSilverRatio() {
                   onChange={(e) => setSilverPrice(e.target.value)}
                   className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                   placeholder={unit === 'ounce' ? '25' : '0.80'}
-                  step="0.01"
+                  step="1"
                   disabled
                   title="Base price per ounce - use unit selector to view per gram"
                 />

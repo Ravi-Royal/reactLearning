@@ -122,7 +122,7 @@ function PercentageRecovery() {
               id="custom-drop-input"
               type="number"
               min="0"
-              step="0.01"
+              step="1"
               value={customDrop}
               onChange={(e) => {
                 setCustomDrop(e.target.value);

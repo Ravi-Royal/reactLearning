@@ -65,7 +65,7 @@ export const SWPInputSection: React.FC<SWPInputSectionProps> = ({ formState }) =
           value={inflationRate}
           onChange={(e) => setInflationRate(e.target.value)}
           placeholder="e.g., 6"
-          step="0.1"
+          step="1"
           min="0"
           className="w-full px-3 py-2 border-2 border-orange-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 bg-white"
         />

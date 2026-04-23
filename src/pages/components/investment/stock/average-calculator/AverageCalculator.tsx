@@ -275,7 +275,7 @@ function AverageCalculator() {
                   onChange={(e) => handleCurrentPriceChange(e.target.value)}
                   placeholder={AVERAGE_CALCULATOR_TEXTS.INITIAL_INVESTMENT.PRICE_PLACEHOLDER}
                   min="0"
-                  step="0.01"
+                  step="1"
                   className={`w-full ${RESPONSIVE_PATTERNS.padding.md} ${RESPONSIVE_PATTERNS.text.base} border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent`}
                 />
               </div>
@@ -294,7 +294,7 @@ function AverageCalculator() {
                   onChange={(e) => handleCurrentTotalPriceChange(e.target.value)}
                   placeholder={AVERAGE_CALCULATOR_TEXTS.INITIAL_INVESTMENT.TOTAL_PLACEHOLDER}
                   min="0"
-                  step="0.01"
+                  step="1"
                   className={`w-full ${RESPONSIVE_PATTERNS.padding.md} ${RESPONSIVE_PATTERNS.text.base} border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent`}
                 />
               </div>
@@ -390,7 +390,7 @@ function AverageCalculator() {
                       onChange={(e) => handleBuyPriceChange(e.target.value)}
                       placeholder={AVERAGE_CALCULATOR_TEXTS.ADDITIONAL_PURCHASES.PRICE_PLACEHOLDER}
                       min="0"
-                      step="0.01"
+                      step="1"
                       className={`w-full ${RESPONSIVE_PATTERNS.padding.md} ${RESPONSIVE_PATTERNS.text.base} border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent`}
                     />
                   </div>
@@ -410,7 +410,7 @@ function AverageCalculator() {
                       onChange={(e) => handleBuyTotalPriceChange(e.target.value)}
                       placeholder={AVERAGE_CALCULATOR_TEXTS.ADDITIONAL_PURCHASES.TOTAL_PLACEHOLDER}
                       min="0"
-                      step="0.01"
+                      step="1"
                       className={`w-full ${RESPONSIVE_PATTERNS.padding.md} ${RESPONSIVE_PATTERNS.text.base} border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent`}
                     />
                   </div>
@@ -439,7 +439,7 @@ function AverageCalculator() {
                     onChange={(e) => setCurrentMarketPrice(e.target.value)}
                     placeholder={AVERAGE_CALCULATOR_TEXTS.TARGET_ANALYSIS.CURRENT_PRICE_PLACEHOLDER}
                     min="0"
-                    step="0.01"
+                    step="1"
                     className={`w-full ${RESPONSIVE_PATTERNS.padding.md} ${RESPONSIVE_PATTERNS.text.base} border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
                   />
                 </div>
@@ -458,7 +458,7 @@ function AverageCalculator() {
                     onChange={(e) => setTargetAvgPrice(e.target.value)}
                     placeholder={AVERAGE_CALCULATOR_TEXTS.TARGET_ANALYSIS.TARGET_PRICE_PLACEHOLDER}
                     min="0"
-                    step="0.01"
+                    step="1"
                     className={`w-full ${RESPONSIVE_PATTERNS.padding.md} ${RESPONSIVE_PATTERNS.text.base} border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
                   />
                 </div>

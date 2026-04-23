@@ -268,6 +268,7 @@ function StockProfitCalculator() {
                   id={`num-stocks-${group.id}`}
                   type="number"
                   min="0"
+                  step="1"
                   value={group.numStocks}
                   onChange={(e) => updateStockGroup(group.id, 'numStocks', e.target.value)}
                   className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
@@ -282,6 +283,7 @@ function StockProfitCalculator() {
                   id={`price-per-stock-${group.id}`}
                   type="number"
                   min="0"
+                  step="1"
                   value={group.pricePerStock}
                   onChange={(e) => updateStockGroup(group.id, 'pricePerStock', e.target.value)}
                   className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
@@ -330,6 +332,7 @@ function StockProfitCalculator() {
                 {group.profitInputType === 'total' && (
                   <input
                     type="number"
+                    step="1"
                     value={group.totalProfit}
                     onChange={(e) => updateStockGroup(group.id, 'totalProfit', e.target.value)}
                     className="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white transition-all"
@@ -339,6 +342,7 @@ function StockProfitCalculator() {
                 {group.profitInputType === 'perShare' && (
                   <input
                     type="number"
+                    step="1"
                     value={group.profitPerShare}
                     onChange={(e) => updateStockGroup(group.id, 'profitPerShare', e.target.value)}
                     className="w-full px-3 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white transition-all"
@@ -348,6 +352,7 @@ function StockProfitCalculator() {
                 {group.profitInputType === 'currentPrice' && (
                   <input
                     type="number"
+                    step="1"
                     value={group.currentPricePerShare || ''}
                     onChange={(e) => updateStockGroup(group.id, 'currentPricePerShare', e.target.value)}
                     className="w-full px-3 py-2.5 border-2 border-blue-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-blue-50 transition-all"
@@ -363,6 +368,7 @@ function StockProfitCalculator() {
                   id={`age-${group.id}`}
                   type="number"
                   min="0"
+                  step="1"
                   value={group.age}
                   onChange={(e) => updateStockGroup(group.id, 'age', e.target.value)}
                   className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"

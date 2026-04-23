@@ -72,6 +72,7 @@ const ProfitSimulatorModal: React.FC<ProfitSimulatorModalProps> = ({
           {inputType === 'amount' ? (
             <input
               type="number"
+              step="1"
               className="w-full border-2 border-blue-200 rounded-lg p-3 text-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
               placeholder={PROFIT_CALCULATOR_TEXTS.SIMULATOR.AMOUNT_PLACEHOLDER}
               value={amount}
@@ -81,6 +82,7 @@ const ProfitSimulatorModal: React.FC<ProfitSimulatorModalProps> = ({
           ) : (
             <input
               type="number"
+              step="1"
               className="w-full border-2 border-blue-200 rounded-lg p-3 text-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
               placeholder={PROFIT_CALCULATOR_TEXTS.SIMULATOR.QUANTITY_PLACEHOLDER}
               value={quantity}
