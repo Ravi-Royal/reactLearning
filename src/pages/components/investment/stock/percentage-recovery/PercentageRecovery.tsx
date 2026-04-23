@@ -213,6 +213,7 @@ function PercentageRecovery() {
               type="number"
               min="1"
               max="100"
+              step="1"
               value={minDrop}
               onChange={(e) => setMinDrop(e.target.value)}
               className="w-24 px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
@@ -229,6 +230,7 @@ function PercentageRecovery() {
               type="number"
               min="1"
               max="100"
+              step="1"
               value={maxDrop}
               onChange={(e) => setMaxDrop(e.target.value)}
               className="w-24 px-2 py-1.5 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
