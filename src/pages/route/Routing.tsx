@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import { PageLoader } from '@pages/components/common/Loader';
 import BaseNavigation from '@pages/navigation/BaseNavigation';
+import useScrollToTop from '@hooks/useScrollToTop';
 
 const HomePage = lazy(() => import('../Home'));
 const AboutPage = lazy(() => import('../About'));
@@ -43,6 +44,12 @@ const GoldVsSilverRatio = lazy(
 
 const RouteFallback = (): React.ReactElement => <PageLoader message="Loading page..." />;
 
+/** Resets scroll to the top on every route change. Must be inside <BrowserRouter>. */
+function ScrollToTop(): null {
+  useScrollToTop();
+  return null;
+}
+
 function Routing(): React.ReactElement {
   // Use Vite's BASE_URL which changes based on build target
   // For Android: --base / results in BASE_URL = '/'
@@ -51,6 +58,7 @@ function Routing(): React.ReactElement {
 
   return (
     <BrowserRouter basename={basename}>
+      <ScrollToTop />
       <BaseNavigation />
       <Suspense fallback={<RouteFallback />}>
         <Routes>
