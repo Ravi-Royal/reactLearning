@@ -7,7 +7,10 @@
 /* Base styles for responsive design */
 html {
   font-size: 14px;
-  scroll-behavior: smooth;
+  /* Note: scroll-behavior is intentionally NOT set here.
+     The app uses window.scrollTo({ behavior: 'instant' }) for navigation resets.
+     Setting scroll-behavior: smooth on html overrides the JS behavior and causes
+     a visible animated scroll from bottom to top on every page navigation. */
   /* Remove browser-like tap highlight */
   -webkit-tap-highlight-color: transparent;
   /* Support notches and safe areas */
@@ -129,12 +132,10 @@ a:active {
   }
 }
 
-/* Smooth transitions for responsive changes */
-* {
-  transition-property: padding, margin, font-size;
-  transition-duration: 0.2s;
-  transition-timing-function: ease-in-out;
-}
+/* NOTE: The universal * transition rule has been intentionally removed.
+   It was applying a 0.2s CSS transition to EVERY DOM element for padding/margin/font-size.
+   On complex pages this causes layout jank on every mount and resize.
+   Add transitions explicitly on specific elements where needed. */
 
 /* Toast animation */
 @keyframes slideIn {

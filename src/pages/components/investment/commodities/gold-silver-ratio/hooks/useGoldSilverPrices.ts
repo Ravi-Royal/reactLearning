@@ -1,7 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { PriceResult } from '../types';
 import { GOLD_SILVER_TEXTS } from '../constants/goldSilver.constants';
 import { logApiFailure, logger } from '@utils/logger';
+
+// Cache duration: 5 minutes — skip auto-fetch if prices were already loaded recently
+const CACHE_DURATION_MS = 5 * 60 * 1000;
 
 export const useGoldSilverPrices = () => {
   const [goldPrice, setGoldPrice] = useState<string>('2050');
@@ -10,6 +13,8 @@ export const useGoldSilverPrices = () => {
   const [lastUpdated, setLastUpdated] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [priceDetails, setPriceDetails] = useState<PriceResult[]>([]);
+  // Track when prices were last successfully fetched to avoid redundant network calls
+  const lastFetchTimeRef = useRef<number>(0);
 
   const formatTime = useCallback((time: string | number) => {
     try {
@@ -153,6 +158,7 @@ export const useGoldSilverPrices = () => {
         setSilverPrice(sPrice.toFixed(2));
         setPriceDetails(validResults);
         setLastUpdated(`${new Date().toLocaleTimeString()} (${usedSource})`);
+        lastFetchTimeRef.current = Date.now(); // Record successful fetch time
       } else {
         throw new Error(GOLD_SILVER_TEXTS.ERRORS.INVALID_FORMAT);
       }
@@ -164,8 +170,13 @@ export const useGoldSilverPrices = () => {
     }
   }, [tryCoinPaprika, tryCurrencyApi, tryCoinGecko, getConsensus]);
 
+  // Auto-fetch on mount, but only if data is stale (older than CACHE_DURATION_MS)
+  // This prevents 3 external API calls firing every time the user navigates to this page
   useEffect(() => {
-    fetchLivePrices();
+    const isCacheStale = Date.now() - lastFetchTimeRef.current > CACHE_DURATION_MS;
+    if (isCacheStale) {
+      fetchLivePrices();
+    }
   }, [fetchLivePrices]);
 
   return {

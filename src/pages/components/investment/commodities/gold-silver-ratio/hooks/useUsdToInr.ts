@@ -84,32 +84,18 @@ export const useUsdToInr = () => {
     setError('');
 
     try {
-      // Try multiple APIs in sequence (first successful one wins)
-      const result = await tryExchangeRateApi();
+      // Run all APIs in parallel — use whichever responds successfully first.
+      // Previously these were sequential (await one, then next on failure),
+      // which meant slow/down APIs caused the user to wait for each timeout.
+      const result = await Promise.any([tryExchangeRateApi(), tryCurrencyApi(), tryFreeCurrencyApi()]);
+
       if (result) {
         setExchangeRate(result.rate);
         setSource(result.source);
         setLastUpdated(result.lastUpdated);
-        return;
+      } else {
+        throw new Error('All exchange rate APIs returned no data');
       }
-
-      const result2 = await tryCurrencyApi();
-      if (result2) {
-        setExchangeRate(result2.rate);
-        setSource(result2.source);
-        setLastUpdated(result2.lastUpdated);
-        return;
-      }
-
-      const result3 = await tryFreeCurrencyApi();
-      if (result3) {
-        setExchangeRate(result3.rate);
-        setSource(result3.source);
-        setLastUpdated(result3.lastUpdated);
-        return;
-      }
-
-      throw new Error('All exchange rate APIs failed');
     } catch (err) {
       console.error('Exchange rate fetch error:', err);
       setError('Unable to fetch USD to INR exchange rate. Please try again.');

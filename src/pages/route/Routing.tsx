@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom
 import { PageLoader } from '@pages/components/common/Loader';
 import BaseNavigation from '@pages/navigation/BaseNavigation';
 import useScrollToTop from '@hooks/useScrollToTop';
+import { useRoutePreloader } from '@hooks/useRoutePreloader';
 
 const HomePage = lazy(() => import('../Home'));
 const AboutPage = lazy(() => import('../About'));
@@ -50,6 +51,16 @@ function ScrollToTop(): null {
   return null;
 }
 
+/**
+ * Silently preloads all lazy route chunks in the background after the initial
+ * render, eliminating the 2-3s gap users experience on first navigation to a page.
+ * Must be inside <BrowserRouter> so it has router context.
+ */
+function RoutePreloader(): null {
+  useRoutePreloader();
+  return null;
+}
+
 function Routing(): React.ReactElement {
   // Use Vite's BASE_URL which changes based on build target
   // For Android: --base / results in BASE_URL = '/'
@@ -59,6 +70,7 @@ function Routing(): React.ReactElement {
   return (
     <BrowserRouter basename={basename}>
       <ScrollToTop />
+      <RoutePreloader />
       <BaseNavigation />
       <Suspense fallback={<RouteFallback />}>
         <Routes>
