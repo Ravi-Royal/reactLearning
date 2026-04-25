@@ -31,6 +31,12 @@ export const NAVIGATION_ITEMS: NavigationItem[] = [
     path: '/investment',
     isActiveCheck: (pathname: string) => pathname.startsWith('/investment'),
   },
+  {
+    id: 'angular',
+    label: 'Angular',
+    path: '/angular',
+    isActiveCheck: (pathname: string) => pathname.startsWith('/angular'),
+  },
 ];
 
 export const NAVIGATION_TAGLINE = {

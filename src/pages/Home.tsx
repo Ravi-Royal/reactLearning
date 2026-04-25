@@ -103,6 +103,35 @@ const investmentLinks: InvestmentSection[] = [
   },
 ];
 
+const angularLinks: InvestmentSection[] = [
+  {
+    section: 'Interview Questions',
+    links: [
+      { label: 'Angular Hub', to: '/angular', hint: 'Explore all Angular learning sections' },
+      {
+        label: 'Interview Questions',
+        to: '/angular/interview-questions',
+        hint: 'All Angular interview question sources',
+      },
+      {
+        label: 'GreatFrontEnd Questions',
+        to: '/angular/interview-questions/greatfrontend',
+        hint: '33 questions from GreatFrontEnd — core, RxJS, signals & more',
+      },
+      {
+        label: 'SudheerJ Questions',
+        to: '/angular/interview-questions/sudheerj',
+        hint: '20 curated questions from the popular SudheerJ repo',
+      },
+      {
+        label: 'WeCreateProblems Questions',
+        to: '/angular/interview-questions/wecreateproblems',
+        hint: '20 questions covering Angular basics to advanced topics',
+      },
+    ],
+  },
+];
+
 // Section color mapping for visual distinction
 const sectionStyles: Record<
   string,
@@ -145,13 +174,84 @@ const sectionStyles: Record<
   },
 };
 
+const angularSectionStyles: Record<
+  string,
+  { bg: string; border: string; headerText: string; linkText: string; icon: string }
+> = {
+  'Interview Questions': {
+    bg: 'bg-gradient-to-br from-red-50 to-orange-50',
+    border: 'border-red-300',
+    headerText: 'text-red-700',
+    linkText: 'text-red-600 hover:text-red-800',
+    icon: '🅰️',
+  },
+};
+
 function HomePage() {
   return (
     <div className="p-3 sm:p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
         <Breadcrumbs />
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-3 sm:mb-4">Welcome to Invest</h1>
-        <p className="mb-6 text-base sm:text-lg text-gray-600">Explore all investment tools and calculators below:</p>
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-3 sm:mb-4">
+          Welcome to React Learning
+        </h1>
+        <p className="mb-6 text-base sm:text-lg text-gray-600">
+          Explore all investment tools, calculators, and learning resources below:
+        </p>
+
+        {/* Angular Section */}
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-gray-700 mb-3 flex items-center gap-2">
+            <span>🅰️</span> Angular Learning
+          </h2>
+          <div className="grid grid-cols-1 gap-4 sm:gap-6">
+            {angularLinks.map((section) => {
+              const styles = angularSectionStyles[section.section] || {
+                bg: 'bg-gray-50',
+                border: 'border-gray-200',
+                headerText: 'text-gray-700',
+                linkText: 'text-gray-600 hover:text-gray-800',
+                icon: '📖',
+              };
+              return (
+                <div
+                  key={section.section}
+                  className={`rounded-lg shadow-lg p-4 sm:p-5 border-2 transition duration-200 ${styles.bg} ${styles.border}`}
+                >
+                  <h3 className={`text-lg sm:text-xl font-bold mb-3 flex items-center gap-2 ${styles.headerText}`}>
+                    <span className="text-xl sm:text-2xl">{styles.icon}</span>
+                    {section.section}
+                  </h3>
+                  <ul className="space-y-3">
+                    {section.links.map((link) => (
+                      <li key={link.to} className="group">
+                        <Link
+                          to={link.to}
+                          className={`block py-2 px-3 rounded-md transition-all hover:bg-white/40 ${styles.linkText}`}
+                        >
+                          <div className="font-medium text-sm sm:text-base flex items-start">
+                            <span className="mr-2 flex-shrink-0">→</span>
+                            <span>{link.label}</span>
+                          </div>
+                          <div className="text-xs sm:text-sm text-gray-600 ml-5 mt-1 opacity-80 group-hover:opacity-100">
+                            {link.hint}
+                          </div>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Investment Section */}
+        <div className="mb-2">
+          <h2 className="text-xl font-bold text-gray-700 mb-3 flex items-center gap-2">
+            <span>💹</span> Investment Tools
+          </h2>
+        </div>
         <div className="grid grid-cols-1 gap-4 sm:gap-6">
           {investmentLinks.map((section) => {
             const styles = sectionStyles[section.section] || {

@@ -107,6 +107,32 @@ function Breadcrumbs() {
         const capitalizedHook = hookName.charAt(0).toUpperCase() + hookName.slice(1);
         breadcrumbItems.push({ label: capitalizedHook, path: `${BREADCRUMB_PATHS.HOOKS}/${hookName}` });
       }
+    } else if (pathnames.includes(PATH_SEGMENTS.ANGULAR)) {
+      breadcrumbItems.push({ label: BREADCRUMB_LABELS.ANGULAR, path: BREADCRUMB_PATHS.ANGULAR });
+
+      if (pathnames.includes(PATH_SEGMENTS.INTERVIEW_QUESTIONS)) {
+        breadcrumbItems.push({
+          label: BREADCRUMB_LABELS.ANGULAR_INTERVIEW_QUESTIONS,
+          path: BREADCRUMB_PATHS.ANGULAR_INTERVIEW_QUESTIONS,
+        });
+
+        if (pathnames.includes(PATH_SEGMENTS.GREATFRONTEND)) {
+          breadcrumbItems.push({
+            label: BREADCRUMB_LABELS.ANGULAR_GREATFRONTEND,
+            path: BREADCRUMB_PATHS.ANGULAR_GREATFRONTEND,
+          });
+        } else if (pathnames.includes(PATH_SEGMENTS.SUDHEERJ)) {
+          breadcrumbItems.push({
+            label: BREADCRUMB_LABELS.ANGULAR_SUDHEERJ,
+            path: BREADCRUMB_PATHS.ANGULAR_SUDHEERJ,
+          });
+        } else if (pathnames.includes(PATH_SEGMENTS.WECREATEPROBLEMS)) {
+          breadcrumbItems.push({
+            label: BREADCRUMB_LABELS.ANGULAR_WECREATEPROBLEMS,
+            path: BREADCRUMB_PATHS.ANGULAR_WECREATEPROBLEMS,
+          });
+        }
+      }
     }
 
     return breadcrumbItems;

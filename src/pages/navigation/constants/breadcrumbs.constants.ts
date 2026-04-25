@@ -32,6 +32,13 @@ export const BREADCRUMB_LABELS = {
 
   // Calculator Section
   CALCULATOR: 'Calculator',
+
+  // Angular Section
+  ANGULAR: 'Angular',
+  ANGULAR_INTERVIEW_QUESTIONS: 'Interview Questions',
+  ANGULAR_GREATFRONTEND: 'GreatFrontEnd',
+  ANGULAR_SUDHEERJ: 'SudheerJ',
+  ANGULAR_WECREATEPROBLEMS: 'WeCreateProblems',
 } as const;
 
 export const BREADCRUMB_PATHS = {
@@ -70,6 +77,13 @@ export const BREADCRUMB_PATHS = {
   CALCULATOR_STOCK_AVERAGE: '/investment/calculator/stock-average',
   CALCULATOR_STOCK_PROFIT: '/investment/calculator/stock-profit',
   CALCULATOR_MUTUAL_FUND: '/investment/mutual-fund/calculator',
+
+  // Angular Section
+  ANGULAR: '/angular',
+  ANGULAR_INTERVIEW_QUESTIONS: '/angular/interview-questions',
+  ANGULAR_GREATFRONTEND: '/angular/interview-questions/greatfrontend',
+  ANGULAR_SUDHEERJ: '/angular/interview-questions/sudheerj',
+  ANGULAR_WECREATEPROBLEMS: '/angular/interview-questions/wecreateproblems',
 } as const;
 
 export const BREADCRUMB_ARIA_LABELS = {
@@ -96,4 +110,9 @@ export const PATH_SEGMENTS = {
   STOCK_PROFIT: 'stock-profit',
   HOOKS: 'hooks',
   USE: 'use',
+  ANGULAR: 'angular',
+  INTERVIEW_QUESTIONS: 'interview-questions',
+  GREATFRONTEND: 'greatfrontend',
+  SUDHEERJ: 'sudheerj',
+  WECREATEPROBLEMS: 'wecreateproblems',
 } as const;

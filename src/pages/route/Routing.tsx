@@ -15,6 +15,16 @@ const MutualFundNavigation = lazy(() => import('../navigation/MutualFundNavigati
 const CommoditiesNavigation = lazy(() => import('../navigation/CommoditiesNavigation'));
 const CalculatorNavigation = lazy(() => import('../navigation/CalculatorNavigation'));
 
+const AngularNavigation = lazy(() => import('../navigation/AngularNavigation'));
+const InterviewQuestionsHub = lazy(() => import('../components/angular/interview-questions/InterviewQuestionsHub'));
+const GreatFrontEndQuestions = lazy(
+  () => import('../components/angular/interview-questions/greatfrontend/GreatFrontEndQuestions'),
+);
+const SudheerJQuestions = lazy(() => import('../components/angular/interview-questions/sudheerj/SudheerJQuestions'));
+const WeCreateProblemsQuestions = lazy(
+  () => import('../components/angular/interview-questions/wecreateproblems/WeCreateProblemsQuestions'),
+);
+
 const UseStateHook = lazy(() => import('../components/hookRef/UseStateHook'));
 const UseEffectHook = lazy(() => import('../components/hookRef/UseEffectHook'));
 const UseRefHook = lazy(() => import('../components/hookRef/UseRefHook'));
@@ -118,6 +128,15 @@ function Routing(): React.ReactElement {
               <Route index element={<CalculatorNavigation />} />
               <Route path="stock-average" element={<AverageCalculator />} />
               <Route path="stock-profit" element={<StockProfitCalculator />} />
+            </Route>
+          </Route>
+          <Route path="/angular" element={<Outlet />}>
+            <Route index element={<AngularNavigation />} />
+            <Route path="interview-questions" element={<Outlet />}>
+              <Route index element={<InterviewQuestionsHub />} />
+              <Route path="greatfrontend" element={<GreatFrontEndQuestions />} />
+              <Route path="sudheerj" element={<SudheerJQuestions />} />
+              <Route path="wecreateproblems" element={<WeCreateProblemsQuestions />} />
             </Route>
           </Route>
           <Route path="*" element={<Navigate to="/home" replace />} />
