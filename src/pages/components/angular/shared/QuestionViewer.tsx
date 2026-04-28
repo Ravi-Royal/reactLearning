@@ -34,6 +34,7 @@ function QuestionViewer({ questions, categories, sourceLabel, sourceUrl }: Quest
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
   const [activeDifficulty, setActiveDifficulty] = useState<'all' | Difficulty>('all');
+  const [showFilters, setShowFilters] = useState(false);
 
   const filtered = useMemo(() => {
     return questions.filter((q) => {
@@ -155,65 +156,127 @@ function QuestionViewer({ questions, categories, sourceLabel, sourceUrl }: Quest
       {/* ── Sticky Controls ── */}
       <div className={`sticky top-0 z-10 px-4 sm:px-6 lg:px-8 py-3 ${headerBg}`}>
         <div className="max-w-5xl mx-auto space-y-2.5">
-          {/* Search */}
-          <div className="relative">
-            <span className={`absolute left-3 top-1/2 -translate-y-1/2 ${dark ? 'text-white/40' : 'text-gray-400'}`}>
-              🔍
-            </span>
-            <input
-              type="text"
-              id="angular-question-search"
-              placeholder="Search questions or answers..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className={`w-full pl-10 pr-9 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 transition-all ${searchBg}`}
-            />
-            {search && (
-              <button
-                onClick={() => setSearch('')}
-                className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm transition-colors ${dark ? 'text-white/40 hover:text-white' : 'text-gray-400 hover:text-gray-700'}`}
-              >
-                ✕
-              </button>
-            )}
-          </div>
+          {/* Search + Filter Toggle */}
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <span className={`absolute left-3 top-1/2 -translate-y-1/2 ${dark ? 'text-white/40' : 'text-gray-400'}`}>
+                🔍
+              </span>
+              <input
+                type="text"
+                id="angular-question-search"
+                placeholder="Search questions or answers..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className={`w-full pl-10 pr-9 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 transition-all ${searchBg}`}
+              />
+              {search && (
+                <button
+                  onClick={() => setSearch('')}
+                  className={`absolute right-3 top-1/2 -translate-y-1/2 text-sm transition-colors ${dark ? 'text-white/40 hover:text-white' : 'text-gray-400 hover:text-gray-700'}`}
+                >
+                  ✕
+                </button>
+              )}
+            </div>
 
-          {/* Category filter */}
-          <div className="flex flex-wrap gap-1.5">
             <button
-              onClick={() => setActiveCategory('all')}
-              className={`px-3 py-1 rounded-full text-xs font-medium border transition-all ${filterAll(activeCategory === 'all')}`}
+              onClick={() => setShowFilters(!showFilters)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm border transition-all duration-300 ${
+                showFilters
+                  ? dark
+                    ? 'bg-cyan-500 border-cyan-400 text-white'
+                    : 'bg-blue-600 border-blue-500 text-white shadow-md'
+                  : dark
+                    ? 'bg-white/10 border-white/20 text-white/80 hover:bg-white/20'
+                    : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-100 shadow-sm'
+              }`}
             >
-              All Topics
+              <span>{showFilters ? '▲' : '▼'}</span>
+              Filters
+              {(activeCategory !== 'all' || activeDifficulty !== 'all') && (
+                <span className="flex h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
+              )}
             </button>
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setActiveCategory(cat.id)}
-                className={`px-3 py-1 rounded-full text-xs font-medium border transition-all ${filterAll(activeCategory === cat.id)}`}
-              >
-                {cat.icon} {cat.label}
-              </button>
-            ))}
           </div>
 
-          {/* Difficulty filter */}
-          <div className="flex flex-wrap gap-1.5 items-center">
-            <span className={`text-xs ${dark ? 'text-white/40' : 'text-gray-500'}`}>Difficulty:</span>
-            {(['all', 'beginner', 'intermediate', 'advanced'] as const).map((d) => (
-              <button
-                key={d}
-                onClick={() => setActiveDifficulty(d)}
-                className={`px-3 py-1 rounded-full text-xs font-medium border transition-all ${diffAll(activeDifficulty === d)}`}
-              >
-                {d === 'all' ? '🌐 All' : DIFFICULTY_LABELS[d]}
-              </button>
-            ))}
-          </div>
+          {/* Collapsible Filters */}
+          {showFilters && (
+            <div
+              className={`p-4 rounded-2xl border animate-in fade-in slide-in-from-top-2 duration-300 ${dark ? 'bg-white/5 border-white/10' : 'bg-gray-50 border-gray-200 shadow-inner'}`}
+            >
+              {/* Category filter */}
+              <div className="space-y-2 mb-4">
+                <span
+                  className={`text-xs font-bold uppercase tracking-wider ${dark ? 'text-white/40' : 'text-gray-500'}`}
+                >
+                  Categories
+                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  <button
+                    onClick={() => {
+                      setActiveCategory('all');
+                      setShowFilters(false);
+                    }}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${filterAll(activeCategory === 'all')}`}
+                  >
+                    All Topics
+                  </button>
+                  {categories.map((cat) => (
+                    <button
+                      key={cat.id}
+                      onClick={() => {
+                        setActiveCategory(cat.id);
+                        setShowFilters(false);
+                      }}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${filterAll(activeCategory === cat.id)}`}
+                    >
+                      {cat.icon} {cat.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Difficulty filter */}
+              <div className="space-y-2">
+                <span
+                  className={`text-xs font-bold uppercase tracking-wider ${dark ? 'text-white/40' : 'text-gray-500'}`}
+                >
+                  Difficulty
+                </span>
+                <div className="flex flex-wrap gap-1.5 items-center">
+                  {(['all', 'beginner', 'intermediate', 'advanced'] as const).map((d) => (
+                    <button
+                      key={d}
+                      onClick={() => {
+                        setActiveDifficulty(d);
+                        setShowFilters(false);
+                      }}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${diffAll(activeDifficulty === d)}`}
+                    >
+                      {d === 'all' ? '🌐 All' : DIFFICULTY_LABELS[d]}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
 
           <p className={`text-xs ${statsText}`}>
             Showing <span className={`font-semibold ${statsHighlight}`}>{filtered.length}</span> of {questions.length}{' '}
             questions
+            {(activeCategory !== 'all' || activeDifficulty !== 'all' || search) && (
+              <button
+                onClick={() => {
+                  setSearch('');
+                  setActiveCategory('all');
+                  setActiveDifficulty('all');
+                }}
+                className={`ml-2 underline hover:no-underline ${statsHighlight}`}
+              >
+                Reset filters
+              </button>
+            )}
           </p>
         </div>
       </div>

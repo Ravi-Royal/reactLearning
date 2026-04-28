@@ -1,5 +1,8 @@
 import { Link, useLocation } from 'react-router-dom';
 import Breadcrumbs from '@pages/navigation/Breadcrumbs';
+import { GREATFRONTEND_QUESTIONS } from './greatfrontend/data/greatfrontend.data';
+import { SUDHEERJ_QUESTIONS } from './sudheerj/data/sudheerj.data';
+import { WCP_QUESTIONS } from './wecreateproblems/data/wecreateproblems.data';
 
 const SOURCES = [
   {
@@ -8,7 +11,7 @@ const SOURCES = [
     subtitle: 'Top Angular Interview Questions',
     description:
       'Curated set of practical Angular questions covering core concepts, lifecycle, RxJS, signals, and modern features.',
-    questions: 33,
+    questions: GREATFRONTEND_QUESTIONS.length,
     difficulty: 'Beginner → Advanced',
     icon: '🎯',
     gradient: 'from-cyan-500 to-blue-600',
@@ -24,7 +27,7 @@ const SOURCES = [
     subtitle: '300 Angular Interview Questions',
     description:
       'Comprehensive collection by Sudheer Jonna covering everything from basics to advanced testing and performance topics.',
-    questions: 20,
+    questions: SUDHEERJ_QUESTIONS.length,
     difficulty: 'Beginner → Expert',
     icon: '🚀',
     gradient: 'from-violet-500 to-purple-600',
@@ -40,7 +43,7 @@ const SOURCES = [
     subtitle: '100+ Angular Interview Questions',
     description:
       'Questions designed for recruiters and developers, covering architecture, forms, routing, performance and state management.',
-    questions: 20,
+    questions: WCP_QUESTIONS.length,
     difficulty: 'Beginner → Advanced',
     icon: '💡',
     gradient: 'from-rose-500 to-pink-600',
@@ -77,9 +80,12 @@ function InterviewQuestionsHub() {
         {/* Stats bar */}
         <div className="grid grid-cols-3 gap-4 mb-8">
           {[
-            { label: 'Total Questions', value: '73+' },
-            { label: 'Sources', value: '3' },
-            { label: 'Categories', value: '20+' },
+            {
+              label: 'Total Questions',
+              value: GREATFRONTEND_QUESTIONS.length + SUDHEERJ_QUESTIONS.length + WCP_QUESTIONS.length + '+',
+            },
+            { label: 'Sources', value: SOURCES.length.toString() },
+            { label: 'Categories', value: '25+' },
           ].map((stat) => (
             <div key={stat.label} className="bg-white rounded-2xl p-4 text-center shadow-sm border border-gray-200">
               <div className="text-2xl sm:text-3xl font-extrabold text-gray-900">{stat.value}</div>
