@@ -10,6 +10,7 @@ export const GREATFRONTEND_CATEGORIES: QuestionCategory[] = [
   { id: 'rxjs', label: 'HTTP & RxJS', icon: '🌐' },
   { id: 'performance', label: 'Change Detection', icon: '⚡' },
   { id: 'advanced', label: 'Advanced', icon: '🚀' },
+  { id: 'modern', label: 'Modern Angular (17+)', icon: '🆕' },
 ];
 
 export const GREATFRONTEND_QUESTIONS: AngularQuestion[] = [
@@ -97,6 +98,7 @@ Standalone components (Angular 14+) reduce the need for NgModules.`,
 export class AppModule {}`,
     category: 'core',
     difficulty: 'beginner',
+    legacy: true,
   },
   {
     id: 6,
@@ -244,6 +246,7 @@ export class AppComponent {
 </div>`,
     category: 'directives',
     difficulty: 'beginner',
+    legacy: true,
   },
   {
     id: 13,
@@ -2340,5 +2343,108 @@ transition(':enter', [
     code: `"budgets": [{ "type": "initial", "maximumWarning": "500kb" }]`,
     category: 'performance',
     difficulty: 'intermediate',
+  },
+  {
+    id: 151,
+    question: 'What are Signal-based inputs and why are they better than @Input?',
+    answer: `Introduced in Angular 17.1, signal inputs provide a reactive way to handle data from parent components.
+    
+Key advantages:
+• Type safety — required inputs are handled better
+• Reactivity — they integrate naturally with computed() and effect()
+• Simplified monitoring — no need for ngOnChanges to watch property changes
+• Performance — enables fine-grained change detection`,
+    code: `@Component({ ... })
+export class UserProfileComponent {
+  // Required signal input
+  userId = input.required<string>();
+  
+  // Optional signal input with default
+  theme = input<'light' | 'dark'>('light');
+  
+  // Derived state from input
+  userData = computed(() => this.fetchUser(this.userId()));
+}`,
+    category: 'modern',
+    difficulty: 'intermediate',
+    isNew: true,
+  },
+  {
+    id: 152,
+    question: 'What is the @defer block (Deferrable Views)?',
+    answer: `Deferrable views (@defer) allow you to lazily load parts of a template based on triggers, reducing the initial bundle size and improving PageSpeed scores.
+    
+Triggers:
+• idle — when browser is idle (default)
+• viewport — when element enters the viewport
+• interaction — when user clicks/types
+• hover — when user hovers over the area
+• timer(ms) — after a delay
+• when (condition) — custom logic`,
+    code: `@defer (on viewport) {
+  <app-heavy-chart [data]="stats" />
+} @placeholder {
+  <div class="skeleton">Loading chart...</div>
+} @error {
+  <p>Failed to load chart.</p>
+}`,
+    category: 'modern',
+    difficulty: 'advanced',
+    isNew: true,
+  },
+  {
+    id: 153,
+    question: 'What is the difference between signal() and BehaviorSubject?',
+    answer: `Signals are the modern way to handle state in Angular, while BehaviorSubjects (RxJS) are the legacy/classic way.
+    
+| Feature | Signals | BehaviorSubject |
+|---------|---------|-----------------|
+| Reactivity | Fine-grained (glitch-free) | Coarse-grained (Zone.js) |
+| Syntax | user() / user.set() | user$.value / user$.next() |
+| Subscriptions | No manual unsubscribe | Must manage subscriptions |
+| Memoization | Built-in via computed() | Must use distinctUntilChanged |
+| Interop | toSignal / toObservable | N/A |`,
+    category: 'modern',
+    difficulty: 'intermediate',
+    isNew: true,
+  },
+  {
+    id: 154,
+    question: 'What are Model Inputs (model()) in Angular 17.2+?',
+    answer: `Model inputs create a reactive, two-way relationship between a parent and child. They replace the classic @Input/@Output "banana-in-a-box" pattern with a single signal primitive.`,
+    code: `// Child component
+export class CustomCounter {
+  value = model(0); // writable signal
+  
+  increment() {
+    this.value.update(v => v + 1);
+  }
+}
+
+// Parent usage
+<app-custom-counter [(value)]="count" />`,
+    category: 'modern',
+    difficulty: 'intermediate',
+    isNew: true,
+  },
+  {
+    id: 155,
+    question: 'What is Zoneless Angular and why is it important?',
+    answer: `In Angular 18+, you can opt-out of Zone.js entirely. This makes the framework faster, smaller, and easier to debug by removing the global interceptor of async tasks.
+    
+Benefits:
+• Smaller bundle size (no Zone.js library)
+• Better performance (less overhead per async task)
+• Clearer stack traces
+• True fine-grained reactivity via Signals`,
+    code: `// bootstrapApplication configuration
+bootstrapApplication(App, {
+  providers: [
+    provideExperimentalZonelessChangeDetection()
+  ]
+});`,
+    category: 'modern',
+    difficulty: 'advanced',
+    isNew: true,
   },
 ];

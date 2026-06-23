@@ -7,6 +7,9 @@ export interface AngularQuestion {
   code?: string;
   category: string;
   difficulty: Difficulty;
+  deprecated?: boolean;
+  legacy?: boolean;
+  isNew?: boolean;
 }
 
 export interface QuestionCategory {

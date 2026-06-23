@@ -10,6 +10,7 @@ export const WCP_CATEGORIES: QuestionCategory[] = [
   { id: 'rxjs', label: 'RxJS & HTTP', icon: '🌐' },
   { id: 'performance', label: 'Performance', icon: '⚡' },
   { id: 'advanced', label: 'Advanced Topics', icon: '🚀' },
+  { id: 'modern', label: 'Modern Angular (18+)', icon: '🆕' },
 ];
 
 export const WCP_QUESTIONS: AngularQuestion[] = [
@@ -3789,5 +3790,21 @@ create() {
     answer: `\`ComponentRef\` is a reference to a dynamically created component. It allows you to access the component instance, change its inputs, and destroy it.`,
     category: 'core',
     difficulty: 'advanced',
+  },
+  {
+    id: 101,
+    question: 'What is the purpose of the provideExperimentalZonelessChangeDetection() function?',
+    answer: `It enables zoneless change detection in Angular 18+, removing the dependency on Zone.js and improving performance and developer experience.`,
+    category: 'modern',
+    difficulty: 'advanced',
+    isNew: true,
+  },
+  {
+    id: 102,
+    question: 'What are the benefits of using @defer in Angular templates?',
+    answer: `1. Reduced initial bundle size\n2. Faster First Contentful Paint (FCP)\n3. On-demand loading of heavy components\n4. Built-in support for placeholders, loading states, and error handling.`,
+    category: 'modern',
+    difficulty: 'intermediate',
+    isNew: true,
   },
 ];

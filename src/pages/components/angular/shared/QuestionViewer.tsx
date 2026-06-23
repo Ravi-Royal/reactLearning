@@ -311,6 +311,21 @@ function QuestionViewer({ questions, categories, sourceLabel, sourceUrl }: Quest
                   <div className="flex-1 min-w-0">
                     <p className={`font-semibold text-sm sm:text-base leading-snug ${questionText}`}>{q.question}</p>
                     <div className="flex flex-wrap items-center gap-2 mt-2">
+                      {q.isNew && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500 text-white font-bold tracking-wider">
+                          LATEST
+                        </span>
+                      )}
+                      {q.deprecated && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-600 text-white font-bold tracking-wider">
+                          DEPRECATED
+                        </span>
+                      )}
+                      {q.legacy && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500 text-white font-bold tracking-wider">
+                          LEGACY
+                        </span>
+                      )}
                       <span
                         className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${difficultyStyle(q.difficulty)}`}
                       >

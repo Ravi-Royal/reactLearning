@@ -10,6 +10,7 @@ export const SUDHEERJ_CATEGORIES: QuestionCategory[] = [
   { id: 'rxjs', label: 'RxJS & HTTP', icon: '🌐' },
   { id: 'performance', label: 'Performance', icon: '⚡' },
   { id: 'testing', label: 'Testing', icon: '🧪' },
+  { id: 'modern', label: 'Modern Angular (17+)', icon: '🆕' },
 ];
 
 export const SUDHEERJ_QUESTIONS: AngularQuestion[] = [
@@ -4741,5 +4742,26 @@ currentCount = this.count(); // Access value`,
     answer: `\`take(1)\` emits only the first value from the source observable and then completes. It is often used for HTTP requests or one-time data fetches to ensure the subscription is automatically closed.`,
     category: 'rxjs',
     difficulty: 'beginner',
+  },
+  {
+    id: 301,
+    question: 'How do you migrate from NgModules to Standalone components?',
+    answer: `Migration involves removing \`@NgModule\` declarations and setting \`standalone: true\` on components, directives, and pipes.
+    
+Steps:
+1. Set \`standalone: true\` in the component decorator
+2. Move necessary dependencies from \`AppModule\` into the component's \`imports\` array
+3. Use \`bootstrapApplication\` in \`main.ts\` instead of \`platformBrowserDynamic\`.`,
+    category: 'modern',
+    difficulty: 'intermediate',
+    isNew: true,
+  },
+  {
+    id: 302,
+    question: 'What is the purpose of signal.asReadonly()?',
+    answer: `It returns a read-only version of a writable signal. This is a best practice for exposing state from services: the service can update the signal internally, but components can only consume it, preventing accidental state mutations from outside.`,
+    category: 'modern',
+    difficulty: 'intermediate',
+    isNew: true,
   },
 ];
