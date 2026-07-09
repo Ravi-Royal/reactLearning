@@ -77,6 +77,7 @@ interface YahooQuoteSummaryResult {
     bookValue?: { raw?: number };
     earningsQuarterlyGrowth?: { raw?: number };
     dividendYield?: { raw?: number };
+    priceToBook?: { raw?: number };
   };
   financialData?: {
     returnOnEquity?: { raw?: number };
@@ -275,7 +276,7 @@ export async function getFullData(symbol: string): Promise<StockDetails> {
 
   if (useFallback && chartMeta) {
     profile = {
-      name: chartMeta.longName || chartMeta.shortName || normalized.split('.')[0],
+      name: chartMeta.longName || chartMeta.shortName || normalized.split('.')[0] || normalized,
       symbol: normalized,
       sector: 'Unavailable on Free Tier',
       industry: 'Unavailable on Free Tier',
@@ -352,7 +353,7 @@ function adaptCompanyProfile(summary: YahooQuoteSummaryResult, symbol: string): 
   const profile = summary?.assetProfile || {};
   const priceObj = summary?.price || {};
   return {
-    name: priceObj.longName || priceObj.shortName || symbol.split('.')[0],
+    name: priceObj.longName || priceObj.shortName || symbol.split('.')[0] || symbol,
     symbol: symbol,
     sector: profile.sector || 'N/A',
     industry: profile.industry || 'N/A',
