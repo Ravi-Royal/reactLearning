@@ -44,6 +44,11 @@ const investmentLinks: InvestmentSection[] = [
         to: '/investment/stock/percentage-recovery',
         hint: 'See how much % gain is needed to recover from any % drop',
       },
+      {
+        label: 'Current Stock Details',
+        to: '/current-stock-details',
+        hint: 'Inspect live stock prices, statistics, leverage charts, and dividend history',
+      },
     ],
   },
   {

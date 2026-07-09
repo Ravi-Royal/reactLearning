@@ -52,6 +52,9 @@ const MutualFundChecklist = lazy(() => import('../components/investment/mutual-f
 const GoldVsSilverRatio = lazy(
   () => import('../components/investment/commodities/gold-silver-ratio/GoldVsSilverRatio'),
 );
+const CurrentStockDetailsPage = lazy(
+  () => import('../components/investment/stock/current-stock-details/CurrentStockDetailsPage'),
+);
 
 const RouteFallback = (): React.ReactElement => <PageLoader message="Loading page..." />;
 
@@ -87,6 +90,7 @@ function Routing(): React.ReactElement {
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/current-stock-details" element={<CurrentStockDetailsPage />} />
           <Route path="/hooks" element={<Outlet />}>
             <Route index element={<HooksNavigation />} />
             <Route path="useState" element={<UseStateHook />} />

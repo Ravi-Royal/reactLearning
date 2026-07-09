@@ -97,12 +97,29 @@ export const STOCK_NAVIGATION_ITEMS = [
       inactive: 'bg-red-50 text-red-600 hover:bg-red-100',
     },
   },
+  {
+    id: 'current-stock-details',
+    title: 'Current Stock Details',
+    description:
+      'Inspect live market prices, key valuation multiples, leverage checks, and dividend trends for NSE & BSE equities.',
+    icon: {
+      path: 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z',
+      bgColor: 'bg-indigo-100',
+      color: 'text-indigo-600',
+    },
+    route: '/current-stock-details',
+    buttonText: 'View Stock Details',
+    buttonColors: {
+      active: 'bg-indigo-600 text-white',
+      inactive: 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100',
+    },
+  },
 ];
 
 export const STOCK_QUICK_STATS = [
   {
     id: 'tools',
-    value: '6',
+    value: '7',
     label: 'Analysis Tools',
     color: 'text-blue-600',
   },

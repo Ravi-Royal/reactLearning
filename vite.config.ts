@@ -54,7 +54,7 @@ export default defineConfig({
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https:",
               "font-src 'self' data:",
-              "connect-src 'self' https://query1.finance.yahoo.com https://api.coinpaprika.com https://api.coingecko.com https://latest.currency-api.pages.dev https://api.exchangerate-api.com https://api.freecurrencyapi.com",
+              "connect-src 'self' https://query1.finance.yahoo.com https://query2.finance.yahoo.com https://api.allorigins.win https://corsproxy.io https://thingproxy.freeboard.io https://api.coinpaprika.com https://api.coingecko.com https://latest.currency-api.pages.dev https://api.exchangerate-api.com https://api.freecurrencyapi.com",
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",
@@ -73,6 +73,17 @@ export default defineConfig({
   ],
   server: {
     proxy: {
+      // For local development to bypass CORS completely without hitting public proxy rate limits
+      '/yahooFinance1': {
+        target: 'https://query1.finance.yahoo.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/yahooFinance1/, ''),
+      },
+      '/yahooFinance2': {
+        target: 'https://query2.finance.yahoo.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/yahooFinance2/, ''),
+      },
       // Any request starting with /yahooFinance will be forwarded to Yahoo
       '/yahooFinance': {
         target: 'https://query1.finance.yahoo.com',
