@@ -1,144 +1,66 @@
+import { useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import {
-  BREADCRUMB_LABELS,
-  BREADCRUMB_PATHS,
-  BREADCRUMB_ARIA_LABELS,
-  PATH_SEGMENTS,
-} from './constants/breadcrumbs.constants';
+import { BREADCRUMB_LABELS, BREADCRUMB_PATHS, BREADCRUMB_ARIA_LABELS } from './constants/breadcrumbs.constants';
 
 interface BreadcrumbItem {
   label: string;
   path: string;
 }
 
+// Maps static paths to their corresponding breadcrumb labels
+const BREADCRUMB_MAP: Record<string, string> = {
+  [BREADCRUMB_PATHS.INVESTMENT]: BREADCRUMB_LABELS.INVESTMENT,
+  [BREADCRUMB_PATHS.HOOKS]: BREADCRUMB_LABELS.HOOKS,
+  [BREADCRUMB_PATHS.STOCK]: BREADCRUMB_LABELS.STOCK,
+  [BREADCRUMB_PATHS.STOCK_ANALYSIS]: BREADCRUMB_LABELS.STOCK_ANALYSIS,
+  [BREADCRUMB_PATHS.STOCK_ZERODHA]: BREADCRUMB_LABELS.STOCK_ZERODHA,
+  [BREADCRUMB_PATHS.STOCK_FAVORITES]: BREADCRUMB_LABELS.STOCK_FAVORITES,
+  [BREADCRUMB_PATHS.STOCK_CHECKLIST]: BREADCRUMB_LABELS.STOCK_CHECKLIST,
+  [BREADCRUMB_PATHS.STOCK_AVERAGE_CALCULATOR]: BREADCRUMB_LABELS.STOCK_AVERAGE_CALCULATOR,
+  [BREADCRUMB_PATHS.STOCK_PROFIT_CALCULATOR]: BREADCRUMB_LABELS.STOCK_PROFIT_CALCULATOR,
+  [BREADCRUMB_PATHS.MUTUAL_FUND]: BREADCRUMB_LABELS.MUTUAL_FUND,
+  [BREADCRUMB_PATHS.MUTUAL_FUND_CHECKLIST]: BREADCRUMB_LABELS.MUTUAL_FUND_CHECKLIST,
+  [BREADCRUMB_PATHS.MUTUAL_FUND_CALCULATOR]: BREADCRUMB_LABELS.MUTUAL_FUND_CALCULATOR,
+  [BREADCRUMB_PATHS.BONDS]: BREADCRUMB_LABELS.BONDS,
+  [BREADCRUMB_PATHS.BONDS_BEFORE_STARTING]: BREADCRUMB_LABELS.BONDS_BEFORE_STARTING,
+  [BREADCRUMB_PATHS.BONDS_CHECKLIST]: BREADCRUMB_LABELS.BONDS_CHECKLIST,
+  [BREADCRUMB_PATHS.COMMODITIES]: BREADCRUMB_LABELS.COMMODITIES,
+  [BREADCRUMB_PATHS.GOLD_SILVER_RATIO]: BREADCRUMB_LABELS.GOLD_SILVER_RATIO,
+  [BREADCRUMB_PATHS.CALCULATOR]: BREADCRUMB_LABELS.CALCULATOR,
+  [BREADCRUMB_PATHS.CALCULATOR_STOCK_AVERAGE]: BREADCRUMB_LABELS.STOCK_AVERAGE_CALCULATOR,
+  [BREADCRUMB_PATHS.CALCULATOR_STOCK_PROFIT]: BREADCRUMB_LABELS.STOCK_PROFIT_CALCULATOR,
+  [BREADCRUMB_PATHS.ANGULAR]: BREADCRUMB_LABELS.ANGULAR,
+  [BREADCRUMB_PATHS.ANGULAR_INTERVIEW_QUESTIONS]: BREADCRUMB_LABELS.ANGULAR_INTERVIEW_QUESTIONS,
+  [BREADCRUMB_PATHS.ANGULAR_GREATFRONTEND]: BREADCRUMB_LABELS.ANGULAR_GREATFRONTEND,
+  [BREADCRUMB_PATHS.ANGULAR_SUDHEERJ]: BREADCRUMB_LABELS.ANGULAR_SUDHEERJ,
+  [BREADCRUMB_PATHS.ANGULAR_WECREATEPROBLEMS]: BREADCRUMB_LABELS.ANGULAR_WECREATEPROBLEMS,
+};
+
 function Breadcrumbs() {
   const location = useLocation();
 
-  const getBreadcrumbs = (): BreadcrumbItem[] => {
-    const pathnames = location.pathname.split('/').filter((x) => x);
+  // Dynamically compute the breadcrumb items based on the active path
+  const breadcrumbs = useMemo((): BreadcrumbItem[] => {
+    const pathnames = location.pathname.split('/').filter(Boolean);
+    const items: BreadcrumbItem[] = [{ label: BREADCRUMB_LABELS.HOME, path: BREADCRUMB_PATHS.HOME }];
 
-    const breadcrumbItems: BreadcrumbItem[] = [{ label: BREADCRUMB_LABELS.HOME, path: BREADCRUMB_PATHS.HOME }];
+    let currentPath = '';
+    pathnames.forEach((segment) => {
+      currentPath += `/${segment}`;
+      let label = BREADCRUMB_MAP[currentPath];
 
-    if (pathnames.includes(PATH_SEGMENTS.INVESTMENT)) {
-      breadcrumbItems.push({ label: BREADCRUMB_LABELS.INVESTMENT, path: BREADCRUMB_PATHS.INVESTMENT });
-
-      if (pathnames.includes(PATH_SEGMENTS.STOCK)) {
-        breadcrumbItems.push({ label: BREADCRUMB_LABELS.STOCK, path: BREADCRUMB_PATHS.STOCK });
-
-        if (pathnames.includes(PATH_SEGMENTS.ANALYSIS)) {
-          breadcrumbItems.push({ label: BREADCRUMB_LABELS.STOCK_ANALYSIS, path: BREADCRUMB_PATHS.STOCK_ANALYSIS });
-
-          if (pathnames.includes(PATH_SEGMENTS.ZERODHA)) {
-            breadcrumbItems.push({ label: BREADCRUMB_LABELS.STOCK_ZERODHA, path: BREADCRUMB_PATHS.STOCK_ZERODHA });
-          }
-        } else if (pathnames.includes(PATH_SEGMENTS.FAVORITES)) {
-          breadcrumbItems.push({ label: BREADCRUMB_LABELS.STOCK_FAVORITES, path: BREADCRUMB_PATHS.STOCK_FAVORITES });
-        } else if (pathnames.includes(PATH_SEGMENTS.CHECKLIST)) {
-          breadcrumbItems.push({ label: BREADCRUMB_LABELS.STOCK_CHECKLIST, path: BREADCRUMB_PATHS.STOCK_CHECKLIST });
-        } else if (pathnames.includes(PATH_SEGMENTS.AVERAGE_CALCULATOR)) {
-          breadcrumbItems.push({
-            label: BREADCRUMB_LABELS.STOCK_AVERAGE_CALCULATOR,
-            path: BREADCRUMB_PATHS.STOCK_AVERAGE_CALCULATOR,
-          });
-        } else if (pathnames.includes(PATH_SEGMENTS.PROFIT_CALCULATOR)) {
-          breadcrumbItems.push({
-            label: BREADCRUMB_LABELS.STOCK_PROFIT_CALCULATOR,
-            path: BREADCRUMB_PATHS.STOCK_PROFIT_CALCULATOR,
-          });
-        }
-      } else if (pathnames.includes(PATH_SEGMENTS.MUTUAL_FUND)) {
-        breadcrumbItems.push({ label: BREADCRUMB_LABELS.MUTUAL_FUND, path: BREADCRUMB_PATHS.MUTUAL_FUND });
-
-        if (pathnames.includes(PATH_SEGMENTS.CHECKLIST)) {
-          breadcrumbItems.push({
-            label: BREADCRUMB_LABELS.MUTUAL_FUND_CHECKLIST,
-            path: BREADCRUMB_PATHS.MUTUAL_FUND_CHECKLIST,
-          });
-        } else if (pathnames.includes(PATH_SEGMENTS.CALCULATOR)) {
-          breadcrumbItems.push({
-            label: BREADCRUMB_LABELS.MUTUAL_FUND_CALCULATOR,
-            path: BREADCRUMB_PATHS.MUTUAL_FUND_CALCULATOR,
-          });
-        }
-      } else if (pathnames.includes(PATH_SEGMENTS.BONDS)) {
-        breadcrumbItems.push({ label: BREADCRUMB_LABELS.BONDS, path: BREADCRUMB_PATHS.BONDS });
-        // Add child breadcrumb for before-starting
-        if (pathnames.includes(PATH_SEGMENTS.BEFORE_STARTING)) {
-          breadcrumbItems.push({
-            label: BREADCRUMB_LABELS.BONDS_BEFORE_STARTING,
-            path: BREADCRUMB_PATHS.BONDS_BEFORE_STARTING,
-          });
-        } else if (pathnames.includes(PATH_SEGMENTS.CHECKLIST)) {
-          breadcrumbItems.push({ label: BREADCRUMB_LABELS.BONDS_CHECKLIST, path: BREADCRUMB_PATHS.BONDS_CHECKLIST });
-        }
-      } else if (pathnames.includes(PATH_SEGMENTS.COMMODITIES)) {
-        breadcrumbItems.push({ label: BREADCRUMB_LABELS.COMMODITIES, path: BREADCRUMB_PATHS.COMMODITIES });
-
-        if (pathnames.includes(PATH_SEGMENTS.GOLD_SILVER_RATIO)) {
-          breadcrumbItems.push({
-            label: BREADCRUMB_LABELS.GOLD_SILVER_RATIO,
-            path: BREADCRUMB_PATHS.GOLD_SILVER_RATIO,
-          });
-        }
-      } else if (pathnames.includes(PATH_SEGMENTS.CALCULATOR)) {
-        breadcrumbItems.push({ label: BREADCRUMB_LABELS.CALCULATOR, path: BREADCRUMB_PATHS.CALCULATOR });
-        if (pathnames.includes(PATH_SEGMENTS.STOCK_AVERAGE)) {
-          breadcrumbItems.push({
-            label: BREADCRUMB_LABELS.STOCK_AVERAGE_CALCULATOR,
-            path: BREADCRUMB_PATHS.CALCULATOR_STOCK_AVERAGE,
-          });
-        } else if (pathnames.includes(PATH_SEGMENTS.STOCK_PROFIT)) {
-          breadcrumbItems.push({
-            label: BREADCRUMB_LABELS.STOCK_PROFIT_CALCULATOR,
-            path: BREADCRUMB_PATHS.CALCULATOR_STOCK_PROFIT,
-          });
-        } else if (pathnames.includes(PATH_SEGMENTS.MUTUAL_FUND)) {
-          breadcrumbItems.push({
-            label: BREADCRUMB_LABELS.MUTUAL_FUND_CALCULATOR,
-            path: BREADCRUMB_PATHS.CALCULATOR_MUTUAL_FUND,
-          });
-        }
+      // Handle dynamic segments e.g. React hooks names
+      if (!label && currentPath.startsWith('/hooks/')) {
+        label = segment.charAt(0).toUpperCase() + segment.slice(1);
       }
-    } else if (pathnames.includes(PATH_SEGMENTS.HOOKS)) {
-      breadcrumbItems.push({ label: BREADCRUMB_LABELS.HOOKS, path: BREADCRUMB_PATHS.HOOKS });
 
-      const hookName = pathnames.find((p) => p.startsWith(PATH_SEGMENTS.USE));
-      if (hookName) {
-        const capitalizedHook = hookName.charAt(0).toUpperCase() + hookName.slice(1);
-        breadcrumbItems.push({ label: capitalizedHook, path: `${BREADCRUMB_PATHS.HOOKS}/${hookName}` });
+      if (label) {
+        items.push({ label, path: currentPath });
       }
-    } else if (pathnames.includes(PATH_SEGMENTS.ANGULAR)) {
-      breadcrumbItems.push({ label: BREADCRUMB_LABELS.ANGULAR, path: BREADCRUMB_PATHS.ANGULAR });
+    });
 
-      if (pathnames.includes(PATH_SEGMENTS.INTERVIEW_QUESTIONS)) {
-        breadcrumbItems.push({
-          label: BREADCRUMB_LABELS.ANGULAR_INTERVIEW_QUESTIONS,
-          path: BREADCRUMB_PATHS.ANGULAR_INTERVIEW_QUESTIONS,
-        });
-
-        if (pathnames.includes(PATH_SEGMENTS.GREATFRONTEND)) {
-          breadcrumbItems.push({
-            label: BREADCRUMB_LABELS.ANGULAR_GREATFRONTEND,
-            path: BREADCRUMB_PATHS.ANGULAR_GREATFRONTEND,
-          });
-        } else if (pathnames.includes(PATH_SEGMENTS.SUDHEERJ)) {
-          breadcrumbItems.push({
-            label: BREADCRUMB_LABELS.ANGULAR_SUDHEERJ,
-            path: BREADCRUMB_PATHS.ANGULAR_SUDHEERJ,
-          });
-        } else if (pathnames.includes(PATH_SEGMENTS.WECREATEPROBLEMS)) {
-          breadcrumbItems.push({
-            label: BREADCRUMB_LABELS.ANGULAR_WECREATEPROBLEMS,
-            path: BREADCRUMB_PATHS.ANGULAR_WECREATEPROBLEMS,
-          });
-        }
-      }
-    }
-
-    return breadcrumbItems;
-  };
-
-  const breadcrumbs = getBreadcrumbs();
+    return items;
+  }, [location.pathname]);
 
   return (
     <nav className="flex mb-2 sm:mb-3 overflow-x-auto" aria-label={BREADCRUMB_ARIA_LABELS.NAVIGATION}>
