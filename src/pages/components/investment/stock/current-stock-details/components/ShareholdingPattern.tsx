@@ -205,11 +205,27 @@ export default function ShareholdingPattern({ details }: ShareholdingPatternProp
             {CATEGORIES.map((category) => (
               <tr key={category.key}>
                 <td className={`py-2 px-3 text-[11px] font-bold ${category.textColor}`}>{category.label}</td>
-                {recent.map((row) => (
-                  <td key={row.quarter} className="py-2 px-3 text-[11px] font-semibold text-gray-700">
-                    {formatPct(row[category.key])}
-                  </td>
-                ))}
+                {recent.map((row, index) => {
+                  const change = delta(row[category.key], index > 0 ? recent[index - 1][category.key] : null);
+                  return (
+                    <td
+                      key={row.quarter}
+                      className="py-2 px-3 text-[11px] font-semibold text-gray-700 whitespace-nowrap"
+                    >
+                      <span>{formatPct(row[category.key])}</span>
+                      {change !== null && (
+                        <span
+                          className={`ml-1 text-[9px] font-bold ${
+                            change > 0 ? 'text-green-600' : change < 0 ? 'text-red-600' : 'text-gray-400'
+                          }`}
+                        >
+                          ({change > 0 ? '▲ +' : change < 0 ? '▼ −' : ''}
+                          {Math.abs(change).toFixed(2)}%)
+                        </span>
+                      )}
+                    </td>
+                  );
+                })}
               </tr>
             ))}
           </tbody>

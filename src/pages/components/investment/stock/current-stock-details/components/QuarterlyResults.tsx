@@ -23,6 +23,30 @@ function formatQuarter(quarter: string): string {
   return `${match[1]}'${match[2].slice(2)}`;
 }
 
+/** % change vs the previous quarter (null when either side is missing or zero). */
+function pctChange(value: number | null | undefined, previous: number | null | undefined): number | null {
+  if (value === null || value === undefined || previous === null || previous === undefined || previous === 0) {
+    return null;
+  }
+  return ((value - previous) / Math.abs(previous)) * 100;
+}
+
+function Delta({ change }: { change: number | null }) {
+  if (change === null) {
+    return null;
+  }
+  return (
+    <span
+      className={`ml-1 text-[9px] font-bold ${
+        change > 0 ? 'text-green-600' : change < 0 ? 'text-red-600' : 'text-gray-400'
+      }`}
+    >
+      ({change > 0 ? '▲ +' : change < 0 ? '▼ −' : ''}
+      {Math.abs(change).toFixed(1)}%)
+    </span>
+  );
+}
+
 export default function QuarterlyResults({ quarters }: QuarterlyResultsProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const chartRef = useRef<Chart | null>(null);
@@ -125,15 +149,30 @@ export default function QuarterlyResults({ quarters }: QuarterlyResultsProps) {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {[...recent].reverse().map((q) => (
-              <tr key={q.quarter} className="hover:bg-gray-50/50 transition">
-                <td className="py-2 px-3 font-bold text-gray-800">{q.quarter}</td>
-                <td className="py-2 px-3 text-right text-gray-700">{formatCr(q.sales)}</td>
-                <td className="py-2 px-3 text-right text-gray-700">{q.opm !== null ? `${q.opm.toFixed(1)}%` : '—'}</td>
-                <td className="py-2 px-3 text-right text-gray-700">{formatCr(q.netProfit)}</td>
-                <td className="py-2 px-3 text-right text-gray-700">{q.eps !== null ? `₹ ${q.eps.toFixed(2)}` : '—'}</td>
-              </tr>
-            ))}
+            {[...recent].reverse().map((q, index) => {
+              // Newest first, so the previous quarter is the row below.
+              const previous = recent[recent.length - 2 - index];
+              return (
+                <tr key={q.quarter} className="hover:bg-gray-50/50 transition">
+                  <td className="py-2 px-3 font-bold text-gray-800">{q.quarter}</td>
+                  <td className="py-2 px-3 text-right text-gray-700 whitespace-nowrap">
+                    <span>{formatCr(q.sales)}</span>
+                    <Delta change={pctChange(q.sales, previous?.sales)} />
+                  </td>
+                  <td className="py-2 px-3 text-right text-gray-700">
+                    {q.opm !== null ? `${q.opm.toFixed(1)}%` : '—'}
+                  </td>
+                  <td className="py-2 px-3 text-right text-gray-700 whitespace-nowrap">
+                    <span>{formatCr(q.netProfit)}</span>
+                    <Delta change={pctChange(q.netProfit, previous?.netProfit)} />
+                  </td>
+                  <td className="py-2 px-3 text-right text-gray-700 whitespace-nowrap">
+                    <span>{q.eps !== null ? `₹ ${q.eps.toFixed(2)}` : '—'}</span>
+                    <Delta change={pctChange(q.eps, previous?.eps)} />
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
