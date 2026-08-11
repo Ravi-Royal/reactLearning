@@ -168,14 +168,13 @@ export default function CompanyOverview({ details }: CompanyOverviewProps) {
         </div>
 
         {/* ROCE */}
-        <div className="bg-gray-50 border border-dashed border-gray-200 hover:-translate-y-0.5 rounded-xl p-4 flex items-center gap-3 shadow-sm transition duration-300">
-          <div className="text-2xl w-11 h-11 rounded-lg bg-white flex items-center justify-center flex-shrink-0">
+        <div className="bg-white border border-gray-200 hover:border-gray-300 hover:-translate-y-0.5 rounded-xl p-4 flex items-center gap-3 shadow-sm transition duration-300">
+          <div className="text-2xl w-11 h-11 rounded-lg bg-gray-50 flex items-center justify-center flex-shrink-0">
             🛡️
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">ROCE</span>
-            <span className="text-xs font-semibold text-gray-400">Not Available</span>
-            <span className="text-[8px] text-gray-300 leading-tight">Requires balance sheet</span>
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">ROCE</span>
+            <span className="text-sm font-bold text-gray-800 truncate">{formatPercent(fundamentals.roce)}</span>
           </div>
         </div>
 

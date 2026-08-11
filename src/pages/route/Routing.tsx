@@ -55,6 +55,7 @@ const GoldVsSilverRatio = lazy(
 const CurrentStockDetailsPage = lazy(
   () => import('../components/investment/stock/current-stock-details/CurrentStockDetailsPage'),
 );
+const TopMoversPage = lazy(() => import('../components/investment/stock/top-movers/TopMovers'));
 
 const RouteFallback = (): React.ReactElement => <PageLoader message="Loading page..." />;
 
@@ -90,7 +91,6 @@ function Routing(): React.ReactElement {
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/current-stock-details" element={<CurrentStockDetailsPage />} />
           <Route path="/hooks" element={<Outlet />}>
             <Route index element={<HooksNavigation />} />
             <Route path="useState" element={<UseStateHook />} />
@@ -109,6 +109,8 @@ function Routing(): React.ReactElement {
                 <Route path="zerodha" element={<StockResult />} />
               </Route>
               <Route path="favorites" element={<MyFavStocks />} />
+              <Route path="top-movers" element={<TopMoversPage />} />
+              <Route path="current-stock-details" element={<CurrentStockDetailsPage />} />
               <Route path="checklist" element={<StockCheckList />} />
               <Route path="average-calculator" element={<AverageCalculator />} />
               <Route path="profit-calculator" element={<StockProfitCalculator />} />

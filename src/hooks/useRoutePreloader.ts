@@ -39,6 +39,7 @@ const ROUTE_IMPORTERS: Array<() => Promise<unknown>> = [
   () => import('@pages/components/investment/stock/average-calculator/AverageCalculator'),
   () => import('@pages/components/investment/stock/profit-calculator/StockProfitCalculator'),
   () => import('@pages/components/investment/stock/percentage-recovery/PercentageRecovery'),
+  () => import('@pages/components/investment/stock/top-movers/TopMovers'),
 
   // Investment: Mutual Fund
   () => import('@pages/components/investment/mutual-fund/calculator/MutualFundCalculator'),

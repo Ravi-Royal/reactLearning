@@ -5,7 +5,7 @@ interface DebtAnalysisProps {
 }
 
 export default function DebtAnalysis({ fundamentals }: DebtAnalysisProps) {
-  const { debtToEquity, totalDebt, cashReserves } = fundamentals;
+  const { debtToEquity, totalDebt, cashReserves, interestCoverageRatio } = fundamentals;
 
   // Determine status configurations
   const getDebtStatus = () => {
@@ -68,6 +68,22 @@ export default function DebtAnalysis({ fundamentals }: DebtAnalysisProps) {
     }
     return value.toFixed(2);
   };
+
+  // Interest coverage status: > 4x comfortable, 2-4x acceptable, < 2x risky
+  const getCoverageStatus = () => {
+    if (interestCoverageRatio === null || interestCoverageRatio === undefined) {
+      return { textColor: 'text-gray-400', note: 'Not reported by free sources' };
+    }
+    if (interestCoverageRatio > 4) {
+      return { textColor: 'text-green-600', note: 'Comfortably covers interest expenses' };
+    }
+    if (interestCoverageRatio >= 2) {
+      return { textColor: 'text-yellow-600', note: 'Adequate but watch during downturns' };
+    }
+    return { textColor: 'text-red-600', note: 'Elevated interest payment risk' };
+  };
+
+  const coverageStatus = getCoverageStatus();
 
   // Map 0.0 to 2.0+ onto 0% to 100%
   const getProgressWidth = () => {
@@ -137,10 +153,14 @@ export default function DebtAnalysis({ fundamentals }: DebtAnalysisProps) {
         </div>
 
         {/* Interest Coverage Ratio */}
-        <div className="bg-gray-50 border border-dashed border-gray-200 rounded-xl p-4 flex flex-col gap-1.5">
-          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Interest Coverage Ratio</span>
-          <span className="text-base font-semibold text-gray-400">Not Available</span>
-          <span className="text-[10px] text-gray-300 leading-tight">Requires premium financial statement APIs</span>
+        <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 flex flex-col gap-1.5">
+          <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Interest Coverage Ratio</span>
+          <span className={`text-xl font-extrabold ${coverageStatus.textColor}`}>
+            {interestCoverageRatio === null || interestCoverageRatio === undefined
+              ? 'Not Available'
+              : `${interestCoverageRatio.toFixed(1)}x`}
+          </span>
+          <span className="text-[10px] text-gray-400 leading-tight">{coverageStatus.note}</span>
         </div>
       </div>
 

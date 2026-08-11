@@ -107,11 +107,28 @@ export const STOCK_NAVIGATION_ITEMS = [
       bgColor: 'bg-indigo-100',
       color: 'text-indigo-600',
     },
-    route: '/current-stock-details',
+    route: 'current-stock-details',
     buttonText: 'View Stock Details',
     buttonColors: {
       active: 'bg-indigo-600 text-white',
       inactive: 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100',
+    },
+  },
+  {
+    id: 'top-movers',
+    title: 'Top Losers & Gainers',
+    description:
+      'Live top falling and rising stocks across NIFTY 50/100/500 over any period - free public APIs, no login or saving.',
+    icon: {
+      path: 'M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4',
+      bgColor: 'bg-rose-100',
+      color: 'text-rose-600',
+    },
+    route: 'top-movers',
+    buttonText: 'View Movers',
+    buttonColors: {
+      active: 'bg-rose-600 text-white',
+      inactive: 'bg-rose-50 text-rose-600 hover:bg-rose-100',
     },
   },
 ];

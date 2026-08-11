@@ -7,9 +7,13 @@ import type { StockDetails } from './types';
 
 // React Children Imports
 import StockSearch from './components/StockSearch';
+import HeroHeader from './components/HeroHeader';
 import CompanyOverview from './components/CompanyOverview';
 import DebtAnalysis from './components/DebtAnalysis';
 import FinancialScore from './components/FinancialScore';
+import FinancialPerformance from './components/FinancialPerformance';
+import QuarterlyResults from './components/QuarterlyResults';
+import BalanceSheetCashFlow from './components/BalanceSheetCashFlow';
 import ShareholdingPattern from './components/ShareholdingPattern';
 import DividendHistory from './components/DividendHistory';
 
@@ -252,7 +256,10 @@ export default function CurrentStockDetailsPage() {
             </div>
           )}
 
-          {/* Top Profile / Metrics Cards */}
+          {/* Hero: name, live price, sparkline, quick stats */}
+          <HeroHeader details={details} />
+
+          {/* Profile & Key Statistics */}
           <CompanyOverview details={details} />
 
           {/* Semicircle score & Debt sections */}
@@ -260,6 +267,13 @@ export default function CurrentStockDetailsPage() {
             <FinancialScore financialScore={details.financialScore} />
             <DebtAnalysis fundamentals={details.fundamentals} />
           </div>
+
+          {/* Annual & quarterly performance */}
+          <FinancialPerformance annuals={details.annuals} />
+          <QuarterlyResults quarters={details.quarters} />
+
+          {/* Balance sheet & cash flow */}
+          <BalanceSheetCashFlow balanceSheet={details.balanceSheet} cashFlow={details.cashFlow} />
 
           {/* Shareholding & Dividend details */}
           <ShareholdingPattern details={details} />

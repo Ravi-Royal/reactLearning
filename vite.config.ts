@@ -54,7 +54,7 @@ export default defineConfig({
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https:",
               "font-src 'self' data:",
-              "connect-src 'self' https://query1.finance.yahoo.com https://query2.finance.yahoo.com https://api.allorigins.win https://corsproxy.io https://thingproxy.freeboard.io https://api.coinpaprika.com https://api.coingecko.com https://latest.currency-api.pages.dev https://api.exchangerate-api.com https://api.freecurrencyapi.com",
+              "connect-src 'self' https://query1.finance.yahoo.com https://query2.finance.yahoo.com https://api.allorigins.win https://corsproxy.io https://api.codetabs.com https://thingproxy.freeboard.io https://api.coinpaprika.com https://api.coingecko.com https://latest.currency-api.pages.dev https://api.exchangerate-api.com https://api.freecurrencyapi.com",
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",

@@ -46,8 +46,13 @@ const investmentLinks: InvestmentSection[] = [
       },
       {
         label: 'Current Stock Details',
-        to: '/current-stock-details',
+        to: '/investment/stock/current-stock-details',
         hint: 'Inspect live stock prices, statistics, leverage charts, and dividend history',
+      },
+      {
+        label: 'Top Losers & Gainers',
+        to: '/investment/stock/top-movers',
+        hint: 'Live top falling and rising NIFTY 50/100/500 stocks over any period',
       },
     ],
   },

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { fetchWithProxy } from '@utils';
 import type {
   StockSearchResult,
   StockDetails,
@@ -7,8 +8,17 @@ import type {
   DividendItem,
   FinancialScoreResult,
   FinancialHealthRating,
+  PriceHistory,
 } from './types';
 import { getCache, setCache } from './cache';
+import { fetchScreenerEnrichment, type ScreenerEnrichment } from './screener';
+
+/**
+ * Bump when the cached StockDetails shape changes so stale localStorage
+ * entries from older app versions are ignored and re-fetched with the new
+ * fields instead of being served for the full TTL.
+ */
+const CACHE_SCHEMA_VERSION = 'v2';
 
 /**
  * Helper: Normalize symbol (e.g. TCS -> TCS.NS)
@@ -105,57 +115,6 @@ interface YahooQuoteSummaryResponse {
 }
 
 /**
- * Helper to fetch a URL using local dev proxy when running locally,
- * or rotating through multiple public CORS proxies when in production.
- */
-async function fetchWithProxy<T = unknown>(url: string): Promise<T> {
-  const isLocal =
-    typeof window !== 'undefined' &&
-    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-
-  if (isLocal) {
-    let localUrl = url;
-    if (url.startsWith('https://query1.finance.yahoo.com')) {
-      localUrl = url.replace('https://query1.finance.yahoo.com', '/yahooFinance1');
-    } else if (url.startsWith('https://query2.finance.yahoo.com')) {
-      localUrl = url.replace('https://query2.finance.yahoo.com', '/yahooFinance2');
-    }
-    try {
-      const res = await axios.get<T>(localUrl);
-      if (res.data) {
-        return res.data;
-      }
-    } catch (e) {
-      console.warn('Local dev proxy failed or returned error, falling back to public CORS proxies', e);
-    }
-  }
-
-  // List of public CORS proxies to try
-  const proxyBuilders = [
-    (targetUrl: string) => `https://corsproxy.io/?url=${encodeURIComponent(targetUrl)}`,
-    (targetUrl: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
-    (targetUrl: string) => `https://thingproxy.freeboard.io/fetch/${targetUrl}`,
-  ];
-
-  let lastError: Error | null = null;
-  for (const buildProxyUrl of proxyBuilders) {
-    const proxyUrl = buildProxyUrl(url);
-    try {
-      const res = await axios.get<T>(proxyUrl, { timeout: 8000 });
-      if (res.data) {
-        return res.data;
-      }
-    } catch (err: unknown) {
-      const errorMsg = err instanceof Error ? err.message : String(err);
-      console.warn(`CORS proxy failed: ${proxyUrl}`, errorMsg);
-      lastError = err instanceof Error ? err : new Error(errorMsg);
-    }
-  }
-
-  throw lastError || new Error('All CORS proxies failed to fetch data');
-}
-
-/**
  * Search stocks from Yahoo Finance autocomplete
  */
 export async function searchStocks(query: string): Promise<StockSearchResult[]> {
@@ -216,18 +175,84 @@ export async function getDividends(symbol: string): Promise<DividendItem[]> {
   }
 }
 
+interface SparkSeriesData {
+  close?: (number | null)[];
+  previousClose?: number;
+  chartPreviousClose?: number;
+}
+
+/**
+ * ~1 year of daily closes + yesterday's close for the hero, via the Yahoo
+ * spark endpoint (single symbol, no crumb needed).
+ *
+ * Two small calls: range=1y&interval=1d supplies the sparkline closes, while
+ * range=1d supplies the true previous close (chartPreviousClose for a 1y
+ * window is the anchor ~1 year ago, not yesterday).
+ */
+export async function getPriceHistory(symbol: string): Promise<PriceHistory | null> {
+  const normalized = normalizeSymbol(symbol);
+  const sparkUrl = (range: string, interval: string) =>
+    `https://query1.finance.yahoo.com/v8/finance/spark?symbols=${encodeURIComponent(
+      normalized,
+    )}&range=${range}&interval=${interval}&indicators=close`;
+
+  try {
+    const [yearly, daily] = await Promise.all([
+      fetchWithProxy<Record<string, SparkSeriesData>>(sparkUrl('1y', '1d')),
+      fetchWithProxy<Record<string, SparkSeriesData>>(sparkUrl('1d', '5m')),
+    ]);
+    const closes = (yearly?.[normalized]?.close ?? []).filter(
+      (close): close is number => close !== null && close !== undefined,
+    );
+    if (closes.length === 0) {
+      return null;
+    }
+    const dailyData = daily?.[normalized];
+    return {
+      closes,
+      previousClose: dailyData?.chartPreviousClose ?? dailyData?.previousClose ?? null,
+    };
+  } catch (error) {
+    console.warn(`Price history fetch failed for ${normalized}:`, error);
+    return null;
+  }
+}
+
 /**
  * Fetch quote summary (assetProfile, defaultKeyStatistics, financialData, summaryDetail)
  */
 export async function getFullData(symbol: string): Promise<StockDetails> {
   const normalized = normalizeSymbol(symbol);
-  const cacheKey = `stock_details_${normalized}`;
+  const cacheKey = `stock_details_${CACHE_SCHEMA_VERSION}_${normalized}`;
+
+  // One-time cleanup: drop pre-v2 cache entries (old StockDetails shape) so
+  // they can never be mistaken for fresh enriched data.
+  try {
+    const prefix = `stock_details_${CACHE_SCHEMA_VERSION}_`;
+    const stale: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('stock_details_') && !key.startsWith(prefix)) {
+        stale.push(key);
+      }
+    }
+    stale.forEach((key) => localStorage.removeItem(key));
+  } catch {
+    // localStorage may be unavailable (private mode) - not fatal.
+  }
 
   // Check cache
   const cached = getCache<StockDetails>(cacheKey);
   if (cached) {
     return cached;
   }
+
+  // Kick off the screener.in enrichment and the price history spark call in
+  // parallel with the Yahoo flow so their latency overlaps. Screener fills
+  // fields Yahoo's free tier lacks: ROCE, interest coverage, shareholding,
+  // annual/quarterly results, balance sheet and cash flow.
+  const screenerPromise = fetchScreenerEnrichment(normalized.split('.')[0] || normalized).catch(() => null);
+  const priceHistoryPromise = getPriceHistory(normalized).catch(() => null);
 
   const url = `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${normalized}?modules=assetProfile,defaultKeyStatistics,financialData,summaryDetail`;
 
@@ -272,7 +297,6 @@ export async function getFullData(symbol: string): Promise<StockDetails> {
 
   let profile: CompanyProfile;
   let fundamentals: StockFundamentals;
-  let financialScore: FinancialScoreResult;
 
   if (useFallback && chartMeta) {
     profile = {
@@ -302,16 +326,24 @@ export async function getFullData(symbol: string): Promise<StockDetails> {
       cashReserves: null,
       interestCoverageRatio: null,
     };
-
-    financialScore = calculateFinancialScore(fundamentals, null);
   } else {
     if (!summary) {
       throw new Error('NOT_FOUND');
     }
     profile = adaptCompanyProfile(summary, normalized);
     fundamentals = adaptFundamentals(summary);
-    financialScore = calculateFinancialScore(fundamentals, summary);
   }
+
+  // Merge screener.in enrichment on top of the Yahoo data (screener wins for
+  // the fields it covers - it is a more reliable source for Indian equities).
+  const screener = await screenerPromise;
+  if (screener) {
+    applyScreenerEnrichment(profile, fundamentals, screener);
+  }
+
+  // Score after the enrichment merge so real ROE/leverage numbers (e.g. from
+  // screener.in) feed the algorithm instead of "data not available" defaults.
+  const financialScore = calculateFinancialScore(fundamentals, summary);
 
   // Fetch dividends
   const dividends = await getDividends(normalized);
@@ -336,14 +368,87 @@ export async function getFullData(symbol: string): Promise<StockDetails> {
     profile,
     fundamentals,
     dividends,
-    shareholding: null, // Not available on free APIs
+    shareholding: screener?.shareholding ?? null,
     financialScore,
+    annuals: screener?.annuals ?? null,
+    quarters: screener?.quarters ?? null,
+    balanceSheet: screener?.balanceSheet ?? null,
+    cashFlow: screener?.cashFlow ?? null,
+    priceHistory: await priceHistoryPromise,
   };
 
-  // Cache final details
-  setCache(cacheKey, finalDetails, 24);
+  // Cache final details. When the screener.in enrichment failed (rate-limited
+  // or the feed was down) the result is missing the deep sections - cache it
+  // briefly so the page retries the screener part soon instead of serving a
+  // half-empty report for the full 24h.
+  const enriched =
+    screener !== null && (Boolean(screener.annuals) || Boolean(screener.balanceSheet) || Boolean(screener.cashFlow));
+  setCache(cacheKey, finalDetails, enriched ? 24 : 0.5);
 
   return finalDetails;
+}
+
+/**
+ * Merge screener.in enrichment into the Yahoo-derived profile/fundamentals.
+ * Only non-null enrichment fields override the existing values.
+ */
+function applyScreenerEnrichment(
+  profile: CompanyProfile,
+  fundamentals: StockFundamentals,
+  screener: ScreenerEnrichment,
+): void {
+  if (screener.marketCap !== undefined) {
+    fundamentals.marketCap = screener.marketCap;
+  }
+  if (screener.currentPrice !== undefined) {
+    fundamentals.currentPrice = screener.currentPrice;
+  }
+  if (screener.fiftyTwoWeekHigh !== undefined) {
+    fundamentals.fiftyTwoWeekHigh = screener.fiftyTwoWeekHigh;
+  }
+  if (screener.fiftyTwoWeekLow !== undefined) {
+    fundamentals.fiftyTwoWeekLow = screener.fiftyTwoWeekLow;
+  }
+  if (screener.peRatio !== undefined) {
+    fundamentals.peRatio = screener.peRatio;
+  }
+  if (screener.pbRatio !== undefined) {
+    fundamentals.pbRatio = screener.pbRatio;
+  }
+  if (screener.bookValue !== undefined) {
+    fundamentals.bookValue = screener.bookValue;
+  }
+  if (screener.dividendYield !== undefined) {
+    fundamentals.dividendYield = screener.dividendYield;
+  }
+  if (screener.roce !== undefined) {
+    fundamentals.roce = screener.roce;
+  }
+  if (screener.roe !== undefined) {
+    fundamentals.roe = screener.roe;
+  }
+  if (screener.debtToEquity !== undefined) {
+    fundamentals.debtToEquity = screener.debtToEquity;
+  }
+  if (screener.eps !== undefined) {
+    fundamentals.eps = screener.eps;
+  }
+  if (screener.interestCoverageRatio !== undefined) {
+    fundamentals.interestCoverageRatio = screener.interestCoverageRatio;
+  }
+
+  if (screener.sector) {
+    profile.sector = screener.sector;
+  }
+  if (screener.industry) {
+    profile.industry = screener.industry;
+  }
+  if (screener.website) {
+    profile.website = screener.website;
+  }
+  if (screener.description) {
+    profile.description = screener.description;
+  }
 }
 
 /**

@@ -15,6 +15,8 @@ export const BREADCRUMB_LABELS = {
   STOCK_CHECKLIST: 'Stock Checklist',
   STOCK_AVERAGE_CALCULATOR: 'Average Calculator',
   STOCK_PROFIT_CALCULATOR: 'Stock Profit Calculator',
+  STOCK_MOVERS: 'Top Losers & Gainers',
+  STOCK_CURRENT_DETAILS: 'Current Stock Details',
 
   // Mutual Fund Section
   MUTUAL_FUND: 'Mutual Fund',
@@ -57,6 +59,8 @@ export const BREADCRUMB_PATHS = {
   STOCK_CHECKLIST: '/investment/stock/checklist',
   STOCK_AVERAGE_CALCULATOR: '/investment/stock/average-calculator',
   STOCK_PROFIT_CALCULATOR: '/investment/stock/profit-calculator',
+  STOCK_MOVERS: '/investment/stock/top-movers',
+  STOCK_CURRENT_DETAILS: '/investment/stock/current-stock-details',
 
   // Mutual Fund Section
   MUTUAL_FUND: '/investment/mutual-fund',

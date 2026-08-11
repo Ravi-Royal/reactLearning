@@ -7,6 +7,7 @@ A comprehensive React-based investment analysis and calculation application with
 ### 📊 Investment Analysis
 
 - Stock analysis and profit calculators
+- **Top Losers & Gainers** - live top falling/rising NIFTY 50/100/500 stocks over any period (free public APIs, no login)
 - Mutual fund calculators and checklists
 - Bond investment tools
 - Commodity analysis (Gold vs Silver ratio)
@@ -145,6 +146,7 @@ reactLearning/
    - **Save passwords securely!**
 
 3. **Build Production APK**
+
    ```bash
    npm run android:release
    ```
